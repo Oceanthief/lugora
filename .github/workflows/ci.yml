@@ -1,0 +1,119 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  web:
+    name: Web (lint, tipos, testes, build)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v6
+
+      # O app só existe a partir da Fatia 0. Antes disso, o job passa sem fazer nada.
+      - name: Verificar se o app existe
+        id: app
+        working-directory: .
+        run: |
+          if [ -f web/package.json ]; then
+            echo "existe=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "existe=false" >> "$GITHUB_OUTPUT"
+            echo "web/package.json ainda não existe: nada a verificar."
+          fi
+
+      - uses: actions/setup-node@v4
+        if: steps.app.outputs.existe == 'true'
+        with:
+          node-version: lts/*
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Instalar dependências
+        if: steps.app.outputs.existe == 'true'
+        run: npm ci
+
+      - name: Lint
+        if: steps.app.outputs.existe == 'true'
+        run: npm run lint
+
+      - name: Tipos
+        if: steps.app.outputs.existe == 'true'
+        run: npm run typecheck
+
+      - name: Testes
+        if: steps.app.outputs.existe == 'true'
+        run: npm test --if-present
+
+      - name: Build
+        if: steps.app.outputs.existe == 'true'
+        run: npm run build
+
+  database:
+    name: Banco (testes pgTAP)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      # O banco só existe a partir da Fatia 2.
+      - name: Verificar se o Supabase foi iniciado
+        id: db
+        run: |
+          if [ -f supabase/config.toml ]; then
+            echo "existe=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "existe=false" >> "$GITHUB_OUTPUT"
+            echo "supabase/config.toml ainda não existe: nada a verificar."
+          fi
+
+      - uses: supabase/setup-cli@v1
+        if: steps.db.outputs.existe == 'true'
+        with:
+          version: latest
+
+      - name: Subir o banco local
+        if: steps.db.outputs.existe == 'true'
+        run: supabase db start
+
+      - name: Testes de acesso e regras (pgTAP)
+        if: steps.db.outputs.existe == 'true'
+        run: supabase test db
+
+  pipelines:
+    name: Pipelines (Python)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r pipelines/overture/requirements.txt
+          pip install pytest
+
+      - name: Verificar sintaxe
+        run: python -m compileall -q pipelines
+
+      - name: Testes
+        run: |
+          if [ -d pipelines/overture/tests ]; then
+            pytest pipelines/overture/tests
+          else
+            echo "Ainda não há testes em pipelines/overture/tests."
+          fi

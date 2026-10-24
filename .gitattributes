@@ -1,0 +1,10 @@
+# Fim de linha padronizado (LF) para o mesmo arquivo não "mudar" entre Windows e a CI.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.ico binary
+*.pdf binary
+*.parquet binary

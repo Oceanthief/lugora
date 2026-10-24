@@ -1,0 +1,46 @@
+# Dependências e builds
+node_modules/
+.next/
+out/
+build/
+dist/
+coverage/
+*.tsbuildinfo
+next-env.d.ts
+
+# Testes
+playwright-report/
+test-results/
+
+# Segredos: nunca commitar
+.env
+.env.*
+!.env.example
+
+# Supabase local
+supabase/.temp/
+supabase/.branches/
+
+# Pipelines: snapshots e saídas ficam só na sua máquina
+pipelines/**/dados/
+pipelines/**/relatorio/
+*.parquet
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Vercel
+.vercel/
+
+# Claude Code: preferências pessoais
+CLAUDE.local.md
+.claude/settings.local.json
+
+# Sistema
+.DS_Store
+Thumbs.db
+desktop.ini

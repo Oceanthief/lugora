@@ -1,0 +1,20 @@
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+
+  # Ativo a partir da Fatia 0 (antes disso o Dependabot avisa que não achou o package.json).
+  - package-ecosystem: "npm"
+    directory: "/web"
+    schedule:
+      interval: "monthly"
+    groups:
+      dependencias:
+        patterns: ["*"]
+
+  - package-ecosystem: "pip"
+    directory: "/pipelines/overture"
+    schedule:
+      interval: "monthly"
