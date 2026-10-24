@@ -20,7 +20,7 @@ jobs:
       run:
         working-directory: web
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       # O app só existe a partir da Fatia 0. Antes disso, o job passa sem fazer nada.
       - name: Verificar se o app existe
@@ -65,7 +65,7 @@ jobs:
     name: Banco (testes pgTAP)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       # O banco só existe a partir da Fatia 2.
       - name: Verificar se o Supabase foi iniciado
@@ -95,7 +95,7 @@ jobs:
     name: Pipelines (Python)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
 
       - uses: actions/setup-python@v5
         with:
