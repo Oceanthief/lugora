@@ -78,7 +78,7 @@ jobs:
             echo "supabase/config.toml ainda não existe: nada a verificar."
           fi
 
-      - uses: supabase/setup-cli@v1
+      - uses: supabase/setup-cli@v3
         if: steps.db.outputs.existe == 'true'
         with:
           version: latest
