@@ -6,8 +6,8 @@ Para criar um novo, use a skill `/adr <título>` no Claude Code, ou copie `0000-
 
 | # | Decisão | Status |
 | --- | --- | --- |
-| [0001](0001-stack.md) | Stack: PWA em Next.js, Supabase e MapLibre | proposta |
-| [0002](0002-estrutura-do-repositorio.md) | Estrutura do repositório | proposta |
-| [0003](0003-idioma-do-codigo.md) | Código em inglês, interface em português | proposta |
+| [0001](0001-stack.md) | Stack: PWA em Next.js, Supabase e MapLibre | aceita |
+| [0002](0002-estrutura-do-repositorio.md) | Estrutura do repositório | aceita |
+| [0003](0003-idioma-do-codigo.md) | Código em inglês, interface em português | aceita |
 | [0004](0004-base-de-lugares-overture.md) | Base de lugares: Overture Maps | aceita |
 | [0005](0005-privacidade-nos-agregados.md) | Privacidade nos números e mapas públicos | aceita |
