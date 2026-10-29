@@ -34,21 +34,21 @@ export type MockVisit = {
 
 export const mockPlaces: readonly MockPlace[] = [
   // Centro
-  { id: "p1", name: "Café Meia-Lua", category: "cafe", location: [-43.3496, -21.7612] },
+  { id: "p1", name: "Café Meia-Lua", category: "cafe", location: [-43.3483, -21.7637] },
   // São Mateus
-  { id: "p2", name: "Bar da Ladeira", category: "bar", location: [-43.3545, -21.774] },
+  { id: "p2", name: "Bar da Ladeira", category: "bar", location: [-43.3586, -21.7717] },
   // Granbery
-  { id: "p3", name: "Padaria Pão Quente", category: "bakery", location: [-43.3437, -21.768] },
+  { id: "p3", name: "Padaria Pão Quente", category: "bakery", location: [-43.3423, -21.7705] },
   // Cascatinha
-  { id: "p4", name: "Cantina da Serra", category: "restaurant", location: [-43.3625, -21.7835] },
+  { id: "p4", name: "Cantina da Serra", category: "restaurant", location: [-43.359, -21.7809] },
   // Poço Rico
-  { id: "p5", name: "Livraria Entrelinhas", category: "bookstore", location: [-43.339, -21.7635] },
+  { id: "p5", name: "Livraria Entrelinhas", category: "bookstore", location: [-43.338, -21.761] },
   // Jardim Santa Helena
-  { id: "p6", name: "Sorveteria Ipê Amarelo", category: "ice_cream", location: [-43.353, -21.757] },
+  { id: "p6", name: "Sorveteria Ipê Amarelo", category: "ice_cream", location: [-43.3479, -21.7566] },
   // Mariano Procópio
-  { id: "p7", name: "Boteco da Estação", category: "bar", location: [-43.355, -21.748] },
+  { id: "p7", name: "Boteco da Estação", category: "bar", location: [-43.3586, -21.7478] },
   // Bom Pastor
-  { id: "p8", name: "Restaurante Varanda Verde", category: "restaurant", location: [-43.3455, -21.7765] },
+  { id: "p8", name: "Restaurante Varanda Verde", category: "restaurant", location: [-43.3491, -21.7753] },
 ];
 
 export const mockVisits: readonly MockVisit[] = [

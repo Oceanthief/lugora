@@ -29,7 +29,8 @@ export const strings = {
   map: {
     title: "Mapa",
     placesList: "Lugares no mapa",
-    markerLabel: (name: string, rating: string) => `${name}, nota ${rating}`,
+    markerLabel: (name: string, category: string, rating: string) =>
+      `${name}, ${category}, nota ${rating}`,
     rating: (rating: string) => `Nota ${rating}`,
     visitedOn: (date: string) => `Visitado em ${date}`,
     // Textos dos botões do próprio MapLibre (zoom, fechar o balão etc.).
