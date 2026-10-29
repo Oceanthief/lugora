@@ -20,3 +20,31 @@ export function formatVisitDate(isoDate: string): string {
   const [year, month, day] = isoDate.split("-");
   return `${day}/${month}/${year}`;
 }
+
+/**
+ * O dia de `date` no fuso do aparelho, como AAAA-MM-DD.
+ *
+ * Não usa toISOString(), que converte para UTC: às 23h em Brasília, já seria
+ * o dia seguinte.
+ */
+export function toISODate(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+const countryNames = new Intl.DisplayNames("pt-BR", { type: "region" });
+
+/** Nome do país em português a partir do código: "PT" vira "Portugal". */
+export function formatCountryName(countryCode: string): string {
+  return countryNames.of(countryCode) ?? countryCode;
+}
+
+/** Site de um link "onde eu vi", sem o "www.": "instagram.com". */
+export function formatSourceHost(url: string): string {
+  try {
+    return new URL(url).hostname.replace(/^www\./, "");
+  } catch {
+    return url;
+  }
+}
