@@ -9,3 +9,14 @@ export function formatRating(rating: number): string {
     maximumFractionDigits: 1,
   }).format(rating);
 }
+
+/**
+ * Formata a data de uma visita (AAAA-MM-DD) no padrão brasileiro: 23/10/2026.
+ *
+ * Monta o texto direto, sem `new Date()`: "2026-10-23" vira meia-noite em UTC,
+ * que no horário de Brasília ainda é dia 22.
+ */
+export function formatVisitDate(isoDate: string): string {
+  const [year, month, day] = isoDate.split("-");
+  return `${day}/${month}/${year}`;
+}
