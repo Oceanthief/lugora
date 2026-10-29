@@ -63,9 +63,9 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 - [x] Aceitar (ou ajustar) os ADRs 0001 a 0003.
 - [x] Criar `web/` com `create-next-app`: TypeScript, Tailwind, App Router, ESLint, pasta `src/`, npm, sem iniciar outro repositório git.
 - [x] Scripts no `package.json`: `dev`, `build`, `lint`, `typecheck` (`tsc --noEmit`) e `test` (Vitest).
-- [ ] Layout mobile-first com a barra inferior e as rotas `/mapa`, `/feed`, `/registrar`, `/quero-ir` e `/perfil`.
+- [x] Layout mobile-first com a barra inferior e as rotas `/mapa`, `/feed`, `/registrar`, `/quero-ir` e `/perfil`.
 - [ ] Dados fictícios num único arquivo (`web/src/lib/mock-data.ts`), para serem trocados pelo banco depois.
-- [ ] Mapa com MapLibre GL JS e OpenFreeMap, centrado em Juiz de Fora, com atribuição visível e pontos fictícios.
+- [x] Mapa com MapLibre GL JS e OpenFreeMap, centrado em Juiz de Fora, com atribuição visível e pontos fictícios.
 - [ ] Textos da interface em `web/src/content/pt-BR.ts`.
 - [ ] Manifesto PWA (nome Lugora, ícone provisório), para o app poder ser instalado no celular.
 - [x] Um teste Vitest de exemplo: formatar a nota 4.5 como "4,5".

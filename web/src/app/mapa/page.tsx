@@ -1,12 +1,35 @@
 import type { Metadata } from "next";
 
-import { PagePlaceholder } from "@/components/page-placeholder";
+import { VisitMap } from "@/components/visit-map";
 import { strings } from "@/content/pt-BR";
+import { formatRating, formatVisitDate } from "@/lib/format";
+import { getVisitedPlaces } from "@/lib/mock-data";
 
-const text = strings.pages.map;
+const text = strings.map;
 
 export const metadata: Metadata = { title: text.title };
 
 export default function MapPage() {
-  return <PagePlaceholder title={text.title} text={text.placeholder} />;
+  const places = getVisitedPlaces();
+
+  return (
+    <section className="h-full">
+      <h1 className="sr-only">{text.title}</h1>
+      <VisitMap places={places} />
+
+      {/* Alternativa em lista para leitores de tela (seção 13). */}
+      <div className="sr-only">
+        <h2>{text.placesList}</h2>
+        <ul>
+          {places.map((place) => (
+            <li key={place.id}>
+              {place.name}, {strings.categories[place.category]},{" "}
+              {text.rating(formatRating(place.rating))},{" "}
+              {text.visitedOn(formatVisitDate(place.visitedOn))}
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
 }

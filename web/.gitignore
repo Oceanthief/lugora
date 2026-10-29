@@ -20,6 +20,9 @@
 # production
 /build
 
+# copiado de node_modules antes do dev e do build (scripts/copy-maplibre-worker.mjs)
+/public/maplibre-gl-worker.mjs
+
 # misc
 .DS_Store
 *.pem

@@ -18,11 +18,32 @@ export const strings = {
     wantToGo: "Quero ir",
     profile: "Perfil",
   },
-  pages: {
-    map: {
-      title: "Mapa",
-      placeholder: "O mapa de Juiz de Fora aparece aqui.",
+  categories: {
+    cafe: "Café",
+    bar: "Bar",
+    restaurant: "Restaurante",
+    bakery: "Padaria",
+    bookstore: "Livraria",
+    ice_cream: "Sorveteria",
+  },
+  map: {
+    title: "Mapa",
+    placesList: "Lugares no mapa",
+    markerLabel: (name: string, rating: string) => `${name}, nota ${rating}`,
+    rating: (rating: string) => `Nota ${rating}`,
+    visitedOn: (date: string) => `Visitado em ${date}`,
+    // Textos dos botões do próprio MapLibre (zoom, fechar o balão etc.).
+    controls: {
+      "AttributionControl.ToggleAttribution": "Mostrar ou ocultar a atribuição",
+      "Map.Title": "Mapa",
+      "Marker.Title": "Lugar no mapa",
+      "NavigationControl.ResetBearing": "Apontar para o norte",
+      "NavigationControl.ZoomIn": "Aproximar",
+      "NavigationControl.ZoomOut": "Afastar",
+      "Popup.Close": "Fechar",
     },
+  },
+  pages: {
     feed: {
       title: "Feed",
       placeholder: "As visitas de quem você segue aparecem aqui.",
