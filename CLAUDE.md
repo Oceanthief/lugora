@@ -47,7 +47,7 @@ Base: `docs/visao/09-privacidade-seguranca-e-lgpd.md`.
 
 Atualize esta seção sempre que um comando mudar.
 
-- App: `cd web` e `npm run dev`, depois abrir http://localhost:3000
+- App: `cd web` e `npm run dev`, depois abrir http://localhost:3000. Use sempre `npm run dev`/`npm run build`, não `next dev` direto: eles copiam antes o worker do MapLibre para `public/` (ADR 0006); sem ele, o mapa fica em branco.
 - Qualidade (em `web/`): `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`
 - Banco local (a partir da Fatia 2, na raiz): `npx supabase start`, `npx supabase db reset`, `npx supabase test db`. Studio em http://127.0.0.1:54323
 - Pipeline (em `pipelines/overture/`): `python relatorio_jf.py`
