@@ -67,7 +67,7 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 - [x] Dados fictícios num único arquivo (`web/src/lib/mock-data.ts`), para serem trocados pelo banco depois.
 - [x] Mapa com MapLibre GL JS e OpenFreeMap, centrado em Juiz de Fora, com atribuição visível e pontos fictícios.
 - [x] Textos da interface em `web/src/content/pt-BR.ts`.
-- [ ] Manifesto PWA (nome Lugora, ícone provisório), para o app poder ser instalado no celular.
+- [x] Manifesto PWA (nome Lugora, ícone provisório), para o app poder ser instalado no celular.
 - [x] Um teste Vitest de exemplo: formatar a nota 4.5 como "4,5".
 - [ ] CI verde no GitHub (`.github/workflows/ci.yml`, job "web").
 - [ ] Ver no celular: `npm run dev` e abrir o endereço "Network" que o Next mostra, com o celular na mesma rede Wi-Fi. Se o Next avisar sobre origem cruzada, configurar `allowedDevOrigins`.

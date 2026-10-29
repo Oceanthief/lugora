@@ -22,6 +22,12 @@ export const metadata: Metadata = {
     template: `%s · ${strings.app.name}`,
   },
   description: strings.app.description,
+  // No iPhone, o app instalado usa este nome e abre sem a barra do Safari.
+  appleWebApp: {
+    capable: true,
+    title: strings.app.name,
+    statusBarStyle: "default",
+  },
 };
 
 // "cover" deixa o app usar a tela inteira no iPhone; a barra inferior
@@ -30,6 +36,11 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
+  // Cor da barra de status, igual ao fundo do app em cada tema.
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
