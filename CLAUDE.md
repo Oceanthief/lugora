@@ -56,6 +56,7 @@ Atualize esta seção sempre que um comando mudar.
 
 - Windows, com PowerShell ou Git Bash. O repositório fica fora do OneDrive.
 - No celular, o GPS exige HTTPS: use o deploy de preview. Em `http://IP-do-PC:3000` o navegador bloqueia a localização.
+- Celular na mesma Wi-Fi: `npm run dev` e abrir `http://IP-do-PC:3000`, com o IP do adaptador Wi-Fi (`ipconfig`, geralmente `192.168.…`). O endereço "Network" que o Next mostra pode ser de outro adaptador de rede (VPN, módulo de segurança), que não serve. Pela Wi-Fi o app abre, mas só instala com HTTPS (preview da Vercel).
 
 ## Idioma
 
