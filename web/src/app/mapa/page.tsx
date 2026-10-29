@@ -24,7 +24,7 @@ export default function MapPage() {
           {places.map((place) => (
             <li key={place.id}>
               {place.name}, {strings.categories[place.category]},{" "}
-              {text.rating(formatRating(place.rating))},{" "}
+              {strings.rating(formatRating(place.rating))},{" "}
               {text.visitedOn(formatVisitDate(place.visitedOn))}
             </li>
           ))}

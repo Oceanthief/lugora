@@ -64,9 +64,9 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 - [x] Criar `web/` com `create-next-app`: TypeScript, Tailwind, App Router, ESLint, pasta `src/`, npm, sem iniciar outro repositório git.
 - [x] Scripts no `package.json`: `dev`, `build`, `lint`, `typecheck` (`tsc --noEmit`) e `test` (Vitest).
 - [x] Layout mobile-first com a barra inferior e as rotas `/mapa`, `/feed`, `/registrar`, `/quero-ir` e `/perfil`.
-- [ ] Dados fictícios num único arquivo (`web/src/lib/mock-data.ts`), para serem trocados pelo banco depois.
+- [x] Dados fictícios num único arquivo (`web/src/lib/mock-data.ts`), para serem trocados pelo banco depois.
 - [x] Mapa com MapLibre GL JS e OpenFreeMap, centrado em Juiz de Fora, com atribuição visível e pontos fictícios.
-- [ ] Textos da interface em `web/src/content/pt-BR.ts`.
+- [x] Textos da interface em `web/src/content/pt-BR.ts`.
 - [ ] Manifesto PWA (nome Lugora, ícone provisório), para o app poder ser instalado no celular.
 - [x] Um teste Vitest de exemplo: formatar a nota 4.5 como "4,5".
 - [ ] CI verde no GitHub (`.github/workflows/ci.yml`, job "web").

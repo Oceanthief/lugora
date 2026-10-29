@@ -231,7 +231,7 @@ function popupContent(place: VisitedPlace): HTMLElement {
   name.textContent = place.name;
 
   const details = document.createElement("p");
-  details.textContent = `${strings.categories[place.category]} · ${strings.map.rating(formatRating(place.rating))}`;
+  details.textContent = `${strings.categories[place.category]} · ${strings.rating(formatRating(place.rating))}`;
 
   const date = document.createElement("p");
   date.className = "text-zinc-600";
