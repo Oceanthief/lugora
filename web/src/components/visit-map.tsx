@@ -12,6 +12,7 @@ import { strings } from "@/content/pt-BR";
 import { categoryIconPaths } from "@/lib/category-icons";
 import { formatRating, formatVisitDate } from "@/lib/format";
 import {
+  boundsOf,
   JUIZ_DE_FORA,
   MAP_POINT_COLORS,
   MAP_STYLE_URL,
@@ -29,8 +30,9 @@ const ICON_PIXEL_RATIO = 2;
 export function VisitMap({ places }: { places: readonly VisitedPlace[] }) {
   const containerRef = useRef<HTMLDivElement>(null);
   // Ao trocar de aba, o Next esconde esta tela e o efeito abaixo desmonta o
-  // mapa. A câmera fica guardada aqui para o mapa voltar onde estava.
-  const cameraRef = useRef<MapCamera>(JUIZ_DE_FORA);
+  // mapa. A câmera fica guardada aqui para o mapa voltar onde estava; vazia,
+  // o mapa ainda não foi aberto.
+  const cameraRef = useRef<MapCamera | null>(null);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -44,11 +46,23 @@ export function VisitMap({ places }: { places: readonly VisitedPlace[] }) {
       if (cancelled) return;
 
       maplibregl.setWorkerUrl(MAP_WORKER_URL);
+      // Na primeira vez, enquadra todos os lugares visitados (com margem para
+      // os botões e as notas); depois, volta para onde a pessoa deixou.
+      const saved = cameraRef.current;
+      const bounds = saved ? null : boundsOf(places.map((place) => place.location));
+      const camera = saved ?? JUIZ_DE_FORA;
       const instance = new maplibregl.Map({
         container,
         style: MAP_STYLE_URL,
-        center: cameraRef.current.center,
-        zoom: cameraRef.current.zoom,
+        center: camera.center,
+        zoom: camera.zoom,
+        ...(bounds && {
+          bounds,
+          fitBoundsOptions: {
+            padding: { top: 64, right: 40, bottom: 80, left: 40 },
+            maxZoom: 15,
+          },
+        }),
         // Atribuição sempre aberta: em telas estreitas, o padrão a recolhe
         // num botão "i", e ela precisa continuar visível (seção 10).
         attributionControl: { compact: false },

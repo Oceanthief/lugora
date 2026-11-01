@@ -21,6 +21,22 @@ export const JUIZ_DE_FORA: MapCamera = {
 };
 
 /**
+ * Menor retângulo que contém todos os pontos, como [[oeste, sul], [leste, norte]]
+ * (o formato que o MapLibre usa para enquadrar). Sem pontos, devolve null.
+ */
+export function boundsOf(
+  locations: readonly (readonly [lng: number, lat: number])[],
+): [[number, number], [number, number]] | null {
+  if (locations.length === 0) return null;
+  const lngs = locations.map(([lng]) => lng);
+  const lats = locations.map(([, lat]) => lat);
+  return [
+    [Math.min(...lngs), Math.min(...lats)],
+    [Math.max(...lngs), Math.max(...lats)],
+  ];
+}
+
+/**
  * Cores dos pontos visitados. Neutras e provisórias: viram tokens na Fatia 1.
  * O MapLibre pinta no canvas, então não dá para usar as classes do Tailwind.
  */
