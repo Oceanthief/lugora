@@ -1,6 +1,6 @@
 # 0003. Idioma: código em inglês, interface em português
 
-- **Status:** proposta (aceitar ou mudar antes da Fatia 0)
+- **Status:** aceita (Fatia 0)
 - **Data:** 2026-10-23
 
 ## Contexto
