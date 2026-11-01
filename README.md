@@ -34,6 +34,22 @@ docs/        visão do produto, roadmap, decisões técnicas, glossário
 
 Disponível a partir da Fatia 0. Veja o [guia de início](docs/guia-de-inicio.md).
 
+## Dados de demonstração
+
+Enquanto o banco não chega, o app roda com dados de demonstração:
+
+- **Lugares reais:** 100 lugares de Juiz de Fora, da base aberta do [Overture Maps](https://overturemaps.org/). Foram escolhidos pelo script de curadoria `selecionar_lugares.py` (filtro de qualidade, categorias, exclusão de grandes redes e duplicatas) e tiveram os nomes revisados à mão. O resultado está em [`data/seed/lugares_jf_seed.csv`](data/seed/README.md).
+- **O resto é fictício:** usuários, quem segue quem, visitas, notas, tags e a lista "Quero ir" são gerados por script. O usuário logado leva o nome do autor (Victor Ramos), mas as visitas dele também são de demonstração. **As notas não são avaliações reais desses estabelecimentos.**
+
+Para recriar os dados (em `web/`):
+
+```bash
+npm run seed:lugares   # importa o CSV para web/src/data/places.json
+npm run seed:demo      # gera usuários, visitas e "Quero ir" em web/src/data/demo.json
+```
+
+Os dois comandos podem ser repetidos sem duplicar nada. O `seed:demo` usa semente fixa (42) e gera sempre o mesmo resultado; rode-o de novo sempre que os lugares mudarem.
+
 ## Dados e atribuição
 
 Dados de lugares © Overture Maps Foundation e contribuidores. Mapas e limites © OpenStreetMap contributors.
