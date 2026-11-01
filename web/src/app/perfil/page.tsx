@@ -9,7 +9,7 @@ import {
   mockProfile,
   mockVisits,
 } from "@/lib/mock-data";
-import { computeProfileStats, MIN_VISITS_FOR_TRAVEL_SHARE } from "@/lib/stats";
+import { computeProfileStats, describeTravel, type TravelSummary } from "@/lib/stats";
 
 const text = strings.profile;
 
@@ -24,10 +24,14 @@ export default function ProfilePage() {
   });
   const homeCity = getCity(mockProfile.homeCityId);
   const countryNames = stats.countryCodes.map(formatCountryName).join(", ");
+  const cityNames = stats.cityIds
+    .map((id) => getCity(id)?.name ?? id)
+    .sort((a, b) => a.localeCompare(b, "pt-BR"))
+    .join(", ");
 
   const numbers = [
     { label: text.countries, value: stats.countryCodes.length, detail: countryNames },
-    { label: text.cities, value: stats.cities },
+    { label: text.cities, value: stats.cityIds.length, detail: cityNames },
     { label: text.places, value: stats.places },
     { label: text.visits, value: stats.visits },
   ];
@@ -75,11 +79,22 @@ export default function ProfilePage() {
       <div className="mt-3 rounded-xl bg-zinc-100 p-4 dark:bg-zinc-900">
         <h2 className="font-semibold">{text.travelerTitle}</h2>
         <p className="mt-1 text-zinc-700 dark:text-zinc-300">
-          {stats.travelSharePercent === null
-            ? text.travelShareLocked(MIN_VISITS_FOR_TRAVEL_SHARE - stats.visits)
-            : text.travelShare(stats.travelSharePercent)}
+          {travelText(describeTravel(stats), homeCity?.name)}
         </p>
       </div>
     </section>
   );
+}
+
+function travelText(summary: TravelSummary, homeCityName = "sua cidade"): string {
+  switch (summary.kind) {
+    case "locked":
+      return text.travelShareLocked(summary.missing);
+    case "none":
+      return text.travelShareNone(homeCityName);
+    case "underOne":
+      return text.travelShareUnderOne;
+    case "share":
+      return text.travelShare(summary.percent);
+  }
 }

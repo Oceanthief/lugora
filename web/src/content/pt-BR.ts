@@ -109,6 +109,9 @@ export const strings = {
     travelerTitle: "Seu jeito de viajar",
     travelShare: (percent: number) =>
       `${percent}% das suas visitas foram em viagem.`,
+    travelShareUnderOne: "Menos de 1% das suas visitas foram em viagem.",
+    travelShareNone: (city: string) =>
+      `Todas as suas visitas foram em ${city}. Registre um lugar fora da cidade para ver seu jeito de viajar.`,
     travelShareLocked: (missing: number) =>
       `Seu jeito de viajar aparece a partir de 10 visitas. Faltam ${missing}.`,
   },
