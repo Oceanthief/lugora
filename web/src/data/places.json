@@ -1,0 +1,1302 @@
+[
+  {
+    "id": "d3ebd2e6-7339-4106-a55a-65bd6a29e7b6",
+    "gersId": "d3ebd2e6-7339-4106-a55a-65bd6a29e7b6",
+    "name": "Academia do Livro",
+    "category": "bookstore",
+    "cityId": "jf",
+    "location": [
+      -43.34858612,
+      -21.76460895
+    ],
+    "address": "Av. Barão do Rio Branco, 2585",
+    "postalCode": "36010-011"
+  },
+  {
+    "id": "e5c6c295-ca5f-403c-ba0b-0f4e65553c6c",
+    "gersId": "e5c6c295-ca5f-403c-ba0b-0f4e65553c6c",
+    "name": "Acallento Café & Doce",
+    "category": "cafe",
+    "cityId": "jf",
+    "location": [
+      -43.34843838,
+      -21.7611967
+    ],
+    "address": "R. Halfeld, 735 - Lj 2",
+    "postalCode": "36010-003"
+  },
+  {
+    "id": "8e7eaa92-6896-42f6-9fb0-87330a31410d",
+    "gersId": "8e7eaa92-6896-42f6-9fb0-87330a31410d",
+    "name": "Adega Bar de Vinhos",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.30160257,
+      -21.79010506
+    ],
+    "address": "Av. Dr. Francisco Álvares de Assis, 490",
+    "postalCode": "36073-130"
+  },
+  {
+    "id": "5f9edeb8-87c4-4278-b35f-9d83acbb8837",
+    "gersId": "5f9edeb8-87c4-4278-b35f-9d83acbb8837",
+    "name": "Aquarium Japa Pub",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.35868368,
+      -21.77125874
+    ],
+    "address": "R. Belo Horizonte, 326",
+    "postalCode": "36016-430"
+  },
+  {
+    "id": "8d37097f-bebb-4ce6-b7c5-75e062ff95e4",
+    "gersId": "8d37097f-bebb-4ce6-b7c5-75e062ff95e4",
+    "name": "Artezannale Pizzeria e Cervejaria",
+    "category": "pizzeria",
+    "cityId": "jf",
+    "location": [
+      -43.35364404,
+      -21.72332992
+    ],
+    "address": "Rua Aurora Tristão, 166",
+    "postalCode": "36047-100"
+  },
+  {
+    "id": "d1894824-172d-4463-bde7-9a244d7cc6e0",
+    "gersId": "d1894824-172d-4463-bde7-9a244d7cc6e0",
+    "name": "Assunta Forneria",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.35692716,
+      -21.78251864
+    ],
+    "address": "Avenida Alexandre Leonel, 221",
+    "postalCode": "36033-330"
+  },
+  {
+    "id": "e87ac1b4-037c-4f26-84c5-2a9f8160e90d",
+    "gersId": "e87ac1b4-037c-4f26-84c5-2a9f8160e90d",
+    "name": "Babbo Giabba Pizzeria",
+    "category": "pizzeria",
+    "cityId": "jf",
+    "location": [
+      -43.35521009,
+      -21.77208109
+    ],
+    "address": "R. Padre Café, 384",
+    "postalCode": "36016-450"
+  },
+  {
+    "id": "17c55efa-0538-4ef7-91b5-0ac6790d0d13",
+    "gersId": "17c55efa-0538-4ef7-91b5-0ac6790d0d13",
+    "name": "Bar Dias",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.36102991,
+      -21.73662752
+    ],
+    "address": "R. Luís Rocha, N° 02",
+    "postalCode": "36046-130"
+  },
+  {
+    "id": "7d100eef-696b-4d49-8ac8-56ef95378b0c",
+    "gersId": "7d100eef-696b-4d49-8ac8-56ef95378b0c",
+    "name": "Bar do Bené",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.37892996,
+      -21.77275888
+    ],
+    "address": "Avenida Presidente Costa e Silva, 2305",
+    "postalCode": "36037-000"
+  },
+  {
+    "id": "a6f92530-caaa-4c2f-8470-987542d24af7",
+    "gersId": "a6f92530-caaa-4c2f-8470-987542d24af7",
+    "name": "Bar Du Buneco",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.34939191,
+      -21.74189558
+    ],
+    "address": "R. Eugênio Fontainha, 337",
+    "postalCode": "36051-000"
+  },
+  {
+    "id": "c83aaccd-65be-4996-a6bb-4e209f138198",
+    "gersId": "c83aaccd-65be-4996-a6bb-4e209f138198",
+    "name": "Bistrô Quatro Estações",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.35140163,
+      -21.7599998
+    ],
+    "address": "R. Santo Antônio, 765",
+    "postalCode": "36015-001"
+  },
+  {
+    "id": "5ef3830c-19a1-40be-bcc4-1170737047c8",
+    "gersId": "5ef3830c-19a1-40be-bcc4-1170737047c8",
+    "name": "Bohème Café",
+    "category": "cafe",
+    "cityId": "jf",
+    "location": [
+      -43.35164905,
+      -21.76934649
+    ],
+    "address": "R. Francisco Brandi, 177",
+    "postalCode": "36016-360"
+  },
+  {
+    "id": "9c215949-6085-4132-b54b-446f3fecfa75",
+    "gersId": "9c215949-6085-4132-b54b-446f3fecfa75",
+    "name": "Bom Clima Sorvetes Artesanais",
+    "category": "ice_cream",
+    "cityId": "jf",
+    "location": [
+      -43.35194661,
+      -21.77224645
+    ],
+    "address": "R. Padre Café, 36",
+    "postalCode": "36016-450"
+  },
+  {
+    "id": "84e5c4b3-e0d4-40ee-aaa1-604c05daf7ff",
+    "gersId": "84e5c4b3-e0d4-40ee-aaa1-604c05daf7ff",
+    "name": "Brasador",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.3486881,
+      -21.77733436
+    ],
+    "address": "R. Machado Sobrinho, 146",
+    "postalCode": "36026-380"
+  },
+  {
+    "id": "aa0f07e1-d484-4782-a3e2-73fdff4549a7",
+    "gersId": "aa0f07e1-d484-4782-a3e2-73fdff4549a7",
+    "name": "Brasão Restaurante",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.34967067,
+      -21.76192159
+    ],
+    "address": "Av. Barão do Rio Branco, 2262",
+    "postalCode": "36046-030"
+  },
+  {
+    "id": "48c123d6-8bfe-4755-9e55-02aa0b94a60c",
+    "gersId": "48c123d6-8bfe-4755-9e55-02aa0b94a60c",
+    "name": "Broncs | Hamburgueria e Meat House",
+    "category": "burger",
+    "cityId": "jf",
+    "location": [
+      -43.3615914,
+      -21.73725498
+    ],
+    "address": "Av. Rui Barbosa, 1152",
+    "postalCode": "36046-000"
+  },
+  {
+    "id": "5b2baea6-7cde-416e-9a35-38ef30a8d4f3",
+    "gersId": "5b2baea6-7cde-416e-9a35-38ef30a8d4f3",
+    "name": "Brownie da Fabi",
+    "category": "dessert_shop",
+    "cityId": "jf",
+    "location": [
+      -43.35885451,
+      -21.75311904
+    ],
+    "address": "R. Uruguaiana, 56",
+    "postalCode": "36015-020"
+  },
+  {
+    "id": "f100f479-a4b0-4006-8529-f60936cc7902",
+    "gersId": "f100f479-a4b0-4006-8529-f60936cc7902",
+    "name": "Cabana do Celinho",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.36538898,
+      -21.79146236
+    ],
+    "address": "Av. Deusdedith Salgado, 1705",
+    "postalCode": "36033-000"
+  },
+  {
+    "id": "790a58f5-af02-46db-87e6-248d39b68cf6",
+    "gersId": "790a58f5-af02-46db-87e6-248d39b68cf6",
+    "name": "Café com Arte",
+    "category": "cafe",
+    "cityId": "jf",
+    "location": [
+      -43.36326207,
+      -21.74165895
+    ],
+    "address": "Av. Rui Barbosa, 591 - 06",
+    "postalCode": "36045-410"
+  },
+  {
+    "id": "e083ad41-3bff-4720-89cc-347e8ed7199b",
+    "gersId": "e083ad41-3bff-4720-89cc-347e8ed7199b",
+    "name": "Café Mulino - Unidade Centro",
+    "category": "cafe",
+    "cityId": "jf",
+    "location": [
+      -43.34808543,
+      -21.76143667
+    ],
+    "address": "Galeria Azarias Vilela, 30 - lojas 101 e 102",
+    "postalCode": "36010-200"
+  },
+  {
+    "id": "c1034aee-49c3-4158-8094-4d3efa28cc6c",
+    "gersId": "c1034aee-49c3-4158-8094-4d3efa28cc6c",
+    "name": "Café Muzik",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.34847424,
+      -21.76410752
+    ],
+    "address": "R. Espírito Santo, 1081",
+    "postalCode": "36010-041"
+  },
+  {
+    "id": "7c26388d-8ae5-4b74-aacf-1a303f867bbf",
+    "gersId": "7c26388d-8ae5-4b74-aacf-1a303f867bbf",
+    "name": "Centro Cultural Bernardo Mascarenhas",
+    "category": "cultural_center",
+    "cityId": "jf",
+    "location": [
+      -43.34478606,
+      -21.76140131
+    ],
+    "address": "Av. Getúlio Vargas, 200",
+    "postalCode": "36010-000"
+  },
+  {
+    "id": "80fe1925-d051-4fc8-982b-c106134d010b",
+    "gersId": "80fe1925-d051-4fc8-982b-c106134d010b",
+    "name": "Cervejaria Barbante",
+    "category": "brewery",
+    "cityId": "jf",
+    "location": [
+      -43.386224400898,
+      -21.77104938783
+    ],
+    "address": "Avenida Senhor dos Passos, 1585",
+    "postalCode": "36037-490"
+  },
+  {
+    "id": "8ef59408-2e6f-406f-bd27-3c7d38ae6c6c",
+    "gersId": "8ef59408-2e6f-406f-bd27-3c7d38ae6c6c",
+    "name": "Cervejaria Carioca do Brejo",
+    "category": "brewery",
+    "cityId": "jf",
+    "location": [
+      -43.38896455,
+      -21.77503827
+    ],
+    "address": "Av. Sr. dos Passos, 2107",
+    "postalCode": "36037-490"
+  },
+  {
+    "id": "5d0d0927-ff9d-49b2-8f4f-594b55d04cb1",
+    "gersId": "5d0d0927-ff9d-49b2-8f4f-594b55d04cb1",
+    "name": "Cervejaria Escola Mirante",
+    "category": "brewery",
+    "cityId": "jf",
+    "location": [
+      -43.39632441,
+      -21.81203578
+    ],
+    "address": "Rodovia BR-040 Km 796.7 Lookout BR040",
+    "postalCode": "36026-500"
+  },
+  {
+    "id": "6fb86003-ed27-4dfe-b0c9-fb0c7ec51a97",
+    "gersId": "6fb86003-ed27-4dfe-b0c9-fb0c7ec51a97",
+    "name": "Cervejaria Fathach",
+    "category": "brewery",
+    "cityId": "jf",
+    "location": [
+      -43.33781973,
+      -21.74905446
+    ],
+    "address": "R. Clorindo Burnier, 147/121",
+    "postalCode": "36060-270"
+  },
+  {
+    "id": "bfd06caf-5706-44d4-8763-97d25864f022",
+    "gersId": "bfd06caf-5706-44d4-8763-97d25864f022",
+    "name": "Cervejaria Golem",
+    "category": "brewery",
+    "cityId": "jf",
+    "location": [
+      -43.36420448,
+      -21.74029222
+    ],
+    "address": "R. Josué de Queirós, Galpão",
+    "postalCode": "36080-090"
+  },
+  {
+    "id": "3096c7a8-2618-4c5a-a30b-eb651c134ec5",
+    "gersId": "3096c7a8-2618-4c5a-a30b-eb651c134ec5",
+    "name": "Cervejaria Württemberg",
+    "category": "brewery",
+    "cityId": "jf",
+    "location": [
+      -43.43012525,
+      -21.69323022
+    ],
+    "address": "R. Dias de Gouvêia, 106",
+    "postalCode": "36090-130"
+  },
+  {
+    "id": "816ca396-06ad-4fcf-8f80-5cc0e4d99f51",
+    "gersId": "816ca396-06ad-4fcf-8f80-5cc0e4d99f51",
+    "name": "Change Cacau e Café",
+    "category": "cafe",
+    "cityId": "jf",
+    "location": [
+      -43.34884901,
+      -21.75937722
+    ],
+    "address": "R. Mr. Moore, 70 - Lj 162-B",
+    "postalCode": "36013-901"
+  },
+  {
+    "id": "88b4004a-351a-4813-b59a-b458d96e12bc",
+    "gersId": "88b4004a-351a-4813-b59a-b458d96e12bc",
+    "name": "Chimarron Churrascaria",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.35397151,
+      -21.74586111
+    ],
+    "address": "Av. Barão do Rio Branco, 700",
+    "postalCode": "36045-000"
+  },
+  {
+    "id": "bafbd0e7-b762-46e2-8629-6465c930b3b1",
+    "gersId": "bafbd0e7-b762-46e2-8629-6465c930b3b1",
+    "name": "Chocolates Brasil Cacau",
+    "category": "dessert_shop",
+    "cityId": "jf",
+    "location": [
+      -43.3623,
+      -21.78113
+    ],
+    "address": "Avenida Presidente Itamar Franco, 3600",
+    "postalCode": "36033-318"
+  },
+  {
+    "id": "9df589c0-d812-424b-a0f0-0afba163fcfc",
+    "gersId": "9df589c0-d812-424b-a0f0-0afba163fcfc",
+    "name": "Choupana",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.36185297,
+      -21.74473344
+    ],
+    "address": "R. Barão de Ibertioga, 110",
+    "postalCode": "36080-040"
+  },
+  {
+    "id": "7c4c92fd-5060-4e4c-9635-aa4fe1f8454a",
+    "gersId": "7c4c92fd-5060-4e4c-9635-aa4fe1f8454a",
+    "name": "Churrascaria Potência do Sul",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.37645689,
+      -21.80686239
+    ],
+    "address": "Av. Deusdedith Salgado, 4060",
+    "postalCode": "36033-000"
+  },
+  {
+    "id": "93d71971-92ae-48b7-918e-78d6e20dc7c0",
+    "gersId": "93d71971-92ae-48b7-918e-78d6e20dc7c0",
+    "name": "Churrasqueira BBQ",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.34791312,
+      -21.77762448
+    ],
+    "address": "R. Dom Viçoso, 111",
+    "postalCode": "36026-390"
+  },
+  {
+    "id": "ac7cdc19-cf5a-4ee3-84d3-87874d7efd12",
+    "gersId": "ac7cdc19-cf5a-4ee3-84d3-87874d7efd12",
+    "name": "Churrasqueira São Mateus",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.35234274,
+      -21.77241114
+    ],
+    "address": "R. Padre Café, 73",
+    "postalCode": "36016-450"
+  },
+  {
+    "id": "d5fd53dd-8252-4df1-b7bb-6ccf6107c9fb",
+    "gersId": "d5fd53dd-8252-4df1-b7bb-6ccf6107c9fb",
+    "name": "Cine-Theatro Central",
+    "category": "cultural_center",
+    "cityId": "jf",
+    "location": [
+      -43.34787649,
+      -21.76146146
+    ],
+    "address": "Praça João Pessoa, S/N",
+    "postalCode": "36010-150"
+  },
+  {
+    "id": "6417915b-aa8d-4181-a36b-394a252cc7e3",
+    "gersId": "6417915b-aa8d-4181-a36b-394a252cc7e3",
+    "name": "Clube da Gota",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.33721818,
+      -21.76377697
+    ],
+    "address": "R. Alagoas, 37",
+    "postalCode": "36020-140"
+  },
+  {
+    "id": "7db6c2b6-5498-43fa-b121-d3b1d8e4bbdf",
+    "gersId": "7db6c2b6-5498-43fa-b121-d3b1d8e4bbdf",
+    "name": "Contemporânea JF",
+    "category": "cafe",
+    "cityId": "jf",
+    "location": [
+      -43.34653,
+      -21.76371
+    ],
+    "address": "Avenida Presidente Itamar Franco, 748",
+    "postalCode": "36010-021"
+  },
+  {
+    "id": "5f458677-d48d-4213-acc9-d04e04de55a6",
+    "gersId": "5f458677-d48d-4213-acc9-d04e04de55a6",
+    "name": "Dom Barone Pizzaria e Costelaria",
+    "category": "pizzeria",
+    "cityId": "jf",
+    "location": [
+      -43.40006241,
+      -21.71850518
+    ],
+    "address": "R. Honório de Brito, nº10",
+    "postalCode": "36085-130"
+  },
+  {
+    "id": "211633fa-d649-4890-b81f-03fca3626a31",
+    "gersId": "211633fa-d649-4890-b81f-03fca3626a31",
+    "name": "Duka's Lanches",
+    "category": "burger",
+    "cityId": "jf",
+    "location": [
+      -43.39385562,
+      -21.73442902
+    ],
+    "address": "R. Tomás Gonzaga, 16",
+    "postalCode": "36081-690"
+  },
+  {
+    "id": "e4f7b212-f290-4359-83a0-df83edaad699",
+    "gersId": "e4f7b212-f290-4359-83a0-df83edaad699",
+    "name": "Experimental Container Bar",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.34771388,
+      -21.7698556
+    ],
+    "address": "Av. Barão do Rio Branco, 3162",
+    "postalCode": "36016-311"
+  },
+  {
+    "id": "cec4e0a5-924e-4e74-84b6-513f39dd33e9",
+    "gersId": "cec4e0a5-924e-4e74-84b6-513f39dd33e9",
+    "name": "Fábrica de Doces Brasil",
+    "category": "bakery",
+    "cityId": "jf",
+    "location": [
+      -43.34797141,
+      -21.75940909
+    ],
+    "address": "Rua Marechal Deodoro, 384",
+    "postalCode": "36015-460"
+  },
+  {
+    "id": "9beb648e-f7af-4e2b-84e4-54e6ee2e6397",
+    "gersId": "9beb648e-f7af-4e2b-84e4-54e6ee2e6397",
+    "name": "Fundação Museu Mariano Procópio",
+    "category": "museum",
+    "cityId": "jf",
+    "location": [
+      -43.36093851590688,
+      -21.74692021023239
+    ],
+    "address": "Rua Mariano Procópio, 1100",
+    "postalCode": "36035-780"
+  },
+  {
+    "id": "1e11bc9c-4830-43d5-8912-f17b6517849e",
+    "gersId": "1e11bc9c-4830-43d5-8912-f17b6517849e",
+    "name": "Giotti Cafés Microtorrefação",
+    "category": "cafe",
+    "cityId": "jf",
+    "location": [
+      -43.35368943,
+      -21.76193908
+    ],
+    "address": "R. Tiradentes, 762",
+    "postalCode": "36015-455"
+  },
+  {
+    "id": "1649b029-0a5a-4d4b-923d-837ad9960a6c",
+    "gersId": "1649b029-0a5a-4d4b-923d-837ad9960a6c",
+    "name": "Gruta Burger & Beer",
+    "category": "burger",
+    "cityId": "jf",
+    "location": [
+      -43.38133524,
+      -21.78686619
+    ],
+    "address": "Av. Eugênio do Nascimento, 838",
+    "postalCode": "36038-330"
+  },
+  {
+    "id": "3e3316d0-e433-4990-9c64-de8768c9c51f",
+    "gersId": "3e3316d0-e433-4990-9c64-de8768c9c51f",
+    "name": "Havanna Independência Shopping",
+    "category": "dessert_shop",
+    "cityId": "jf",
+    "location": [
+      -43.35999434,
+      -21.78064107
+    ],
+    "address": "Piso L1 - Loja 135, Av. Presidente Itamar Franco, 3600",
+    "postalCode": "36025-290"
+  },
+  {
+    "id": "496ef30b-bffa-48ed-b8e9-e7ee63d4bbcc",
+    "gersId": "496ef30b-bffa-48ed-b8e9-e7ee63d4bbcc",
+    "name": "Japa Temaki",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.3596584,
+      -21.78069883
+    ],
+    "address": "Avenida Presidente Itamar Franco, 3600",
+    "postalCode": "36025-320"
+  },
+  {
+    "id": "5b8be58b-6686-4567-a0a8-9749c8c2a589",
+    "gersId": "5b8be58b-6686-4567-a0a8-9749c8c2a589",
+    "name": "Jardim Botânico da UFJF",
+    "category": "park",
+    "cityId": "jf",
+    "location": [
+      -43.36937101,
+      -21.7378181
+    ],
+    "address": "Rua Coronel Almeida Novais, 246",
+    "postalCode": "36045-500"
+  },
+  {
+    "id": "2d69701d-1d04-4dc3-b13e-d25cc421ce45",
+    "gersId": "2d69701d-1d04-4dc3-b13e-d25cc421ce45",
+    "name": "Ki Bocão Burguer",
+    "category": "burger",
+    "cityId": "jf",
+    "location": [
+      -43.3729792,
+      -21.77237766
+    ],
+    "address": "Av. Pres. Costa e Silva, 1654",
+    "postalCode": "36037-000"
+  },
+  {
+    "id": "af7670dc-7ecb-4b12-a89b-daaa66f4019e",
+    "gersId": "af7670dc-7ecb-4b12-a89b-daaa66f4019e",
+    "name": "Leve Pizza JF",
+    "category": "pizzeria",
+    "cityId": "jf",
+    "location": [
+      -43.352822893,
+      -21.774221466
+    ],
+    "address": "Igreja do São Mateus, Rua São Mateus, 629",
+    "postalCode": "36025-001"
+  },
+  {
+    "id": "967e95cb-e149-4603-a34b-422bd5040627",
+    "gersId": "967e95cb-e149-4603-a34b-422bd5040627",
+    "name": "Livraria Arco-Íris",
+    "category": "bookstore",
+    "cityId": "jf",
+    "location": [
+      -43.34859152,
+      -21.76083894
+    ],
+    "address": "R. Halfeld, 744 - Loja, 4",
+    "postalCode": "36010-003"
+  },
+  {
+    "id": "a6da435f-dea3-4385-9d45-b9979c5b39d0",
+    "gersId": "a6da435f-dea3-4385-9d45-b9979c5b39d0",
+    "name": "Livraria Flamingo",
+    "category": "bookstore",
+    "cityId": "jf",
+    "location": [
+      -43.34969817,
+      -21.76008197
+    ],
+    "address": "Avenida Br Rio Branco, 2069",
+    "postalCode": "36013-020"
+  },
+  {
+    "id": "9a7d9612-32bd-47a0-b536-6021e7b23301",
+    "gersId": "9a7d9612-32bd-47a0-b536-6021e7b23301",
+    "name": "Livraria Internacional SBS",
+    "category": "bookstore",
+    "cityId": "jf",
+    "location": [
+      -43.34793756,
+      -21.76234742
+    ],
+    "address": "Rua Santa Rita, 490",
+    "postalCode": "36010-071"
+  },
+  {
+    "id": "29ef92ce-fdfd-4edf-a0aa-d3eb7a670252",
+    "gersId": "29ef92ce-fdfd-4edf-a0aa-d3eb7a670252",
+    "name": "Lourdes Square Gastronomia",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.3572621,
+      -21.78249733
+    ],
+    "address": "Ladeira Alexandre Leonel, 221 - Lj 102",
+    "postalCode": "36033-240"
+  },
+  {
+    "id": "9c3540c1-fdb6-4058-bdc6-bb7ab6e29e63",
+    "gersId": "9c3540c1-fdb6-4058-bdc6-bb7ab6e29e63",
+    "name": "Maia Pub",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.3783091,
+      -21.78094804
+    ],
+    "address": "Rua José da Fonseca Silva - S/N",
+    "postalCode": "36037-500"
+  },
+  {
+    "id": "e152937f-58bf-4e13-aba0-f2ca586bce6f",
+    "gersId": "e152937f-58bf-4e13-aba0-f2ca586bce6f",
+    "name": "Manollo Pizzaria",
+    "category": "pizzeria",
+    "cityId": "jf",
+    "location": [
+      -43.38461066,
+      -21.78032516
+    ],
+    "address": "R. José de Souza Braga, 41",
+    "postalCode": "36038-190"
+  },
+  {
+    "id": "96632926-27e0-420e-b1be-b9738f03ff0d",
+    "gersId": "96632926-27e0-420e-b1be-b9738f03ff0d",
+    "name": "Milos Restaurante",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.34826759,
+      -21.77797769
+    ],
+    "address": "R. Dom Viçoso, 177",
+    "postalCode": "36026-390"
+  },
+  {
+    "id": "6428a193-5cef-4e9c-91de-1e8f38221db6",
+    "gersId": "6428a193-5cef-4e9c-91de-1e8f38221db6",
+    "name": "Mirante do Morro do Imperador",
+    "category": "park",
+    "cityId": "jf",
+    "location": [
+      -43.35779172,
+      -21.76358058
+    ],
+    "address": "Estr. Eng. Gentil Forn",
+    "postalCode": "36036-430"
+  },
+  {
+    "id": "59270deb-0a87-4317-9b4a-05243a9cd1ec",
+    "gersId": "59270deb-0a87-4317-9b4a-05243a9cd1ec",
+    "name": "Mr Mix Milk Shakes",
+    "category": "ice_cream",
+    "cityId": "jf",
+    "location": [
+      -43.34637455,
+      -21.76264021
+    ],
+    "address": "R. Batista de Oliveira, 765",
+    "postalCode": "36010-121"
+  },
+  {
+    "id": "801f4652-3b31-4236-8269-f91c44b0aa55",
+    "gersId": "801f4652-3b31-4236-8269-f91c44b0aa55",
+    "name": "Mr. Pina Gourmet",
+    "category": "cafe",
+    "cityId": "jf",
+    "location": [
+      -43.36092691,
+      -21.78144443
+    ],
+    "address": "Av. Presidente Itamar Franco, 3600 - l1",
+    "postalCode": "36025-290"
+  },
+  {
+    "id": "5d0e66fa-edde-4a5f-a3d9-c9754ca2fdcf",
+    "gersId": "5d0e66fa-edde-4a5f-a3d9-c9754ca2fdcf",
+    "name": "Museu de Arte Murilo Mendes",
+    "category": "museum",
+    "cityId": "jf",
+    "location": [
+      -43.35217693,
+      -21.75627453
+    ],
+    "address": "Rua Benjamin Constant, 790",
+    "postalCode": "36015-400"
+  },
+  {
+    "id": "34aa84ea-e2dc-4b33-91ed-297c4a15245f",
+    "gersId": "34aa84ea-e2dc-4b33-91ed-297c4a15245f",
+    "name": "Museu Dinâmico de Ciência e Tecnologia",
+    "category": "museum",
+    "cityId": "jf",
+    "location": [
+      -43.34892205,
+      -21.7584602
+    ],
+    "address": "Av. Getúlio Vargas, 763",
+    "postalCode": "36010-110"
+  },
+  {
+    "id": "12645fe0-e3be-48a8-9360-92112df3cf40",
+    "gersId": "12645fe0-e3be-48a8-9360-92112df3cf40",
+    "name": "Museu do Crédito Real",
+    "category": "museum",
+    "cityId": "jf",
+    "location": [
+      -43.34635119,
+      -21.76044386
+    ],
+    "address": "Av. Getúlio Vargas, 455",
+    "postalCode": "36010-110"
+  },
+  {
+    "id": "fc05eac7-780a-4641-bffd-a7b36607ea32",
+    "gersId": "fc05eac7-780a-4641-bffd-a7b36607ea32",
+    "name": "Museu do Disco",
+    "category": "bookstore",
+    "cityId": "jf",
+    "location": [
+      -43.34483098,
+      -21.76254035
+    ],
+    "address": "R. Barbosa Lima, 185",
+    "postalCode": "36010-050"
+  },
+  {
+    "id": "bcd557ca-794b-4293-8120-d3a440547b02",
+    "gersId": "bcd557ca-794b-4293-8120-d3a440547b02",
+    "name": "Museu Ferroviário de Juiz de Fora",
+    "category": "museum",
+    "cityId": "jf",
+    "location": [
+      -43.34353015,
+      -21.7588482
+    ],
+    "address": "Av. Brasil, 2001",
+    "postalCode": "36060-010"
+  },
+  {
+    "id": "79691536-9376-4a61-8fe7-216dad108a2a",
+    "gersId": "79691536-9376-4a61-8fe7-216dad108a2a",
+    "name": "Nosso Bar JF",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.43384557,
+      -21.69011404
+    ],
+    "address": "R. Tomé de Souza, 92",
+    "postalCode": "36090-270"
+  },
+  {
+    "id": "d4f063e7-51f7-45bd-a4b2-b2bdeb07fb3e",
+    "gersId": "d4f063e7-51f7-45bd-a4b2-b2bdeb07fb3e",
+    "name": "Padaria Branca de Neve",
+    "category": "bakery",
+    "cityId": "jf",
+    "location": [
+      -43.35464628,
+      -21.75748909
+    ],
+    "address": "R. Benjamin Constant, 1090",
+    "postalCode": "36015-400"
+  },
+  {
+    "id": "e4487b87-e9d9-45c4-b5c9-2a873ff3d004",
+    "gersId": "e4487b87-e9d9-45c4-b5c9-2a873ff3d004",
+    "name": "Padaria Center Pão",
+    "category": "bakery",
+    "cityId": "jf",
+    "location": [
+      -43.36316675,
+      -21.74055891
+    ],
+    "address": "Av. Rui Barbosa, 735",
+    "postalCode": "36045-410"
+  },
+  {
+    "id": "c0ae4923-79cc-4439-ab47-4fc911bfbb47",
+    "gersId": "c0ae4923-79cc-4439-ab47-4fc911bfbb47",
+    "name": "Padaria Del Grano",
+    "category": "bakery",
+    "cityId": "jf",
+    "location": [
+      -43.3402277,
+      -21.76353666
+    ],
+    "address": "R. Osório de Almeida, 155",
+    "postalCode": "36020-020"
+  },
+  {
+    "id": "8e8462af-14ba-422f-9006-b0ea344f871a",
+    "gersId": "8e8462af-14ba-422f-9006-b0ea344f871a",
+    "name": "Padaria Mais Pão",
+    "category": "bakery",
+    "cityId": "jf",
+    "location": [
+      -43.35532054,
+      -21.75988775
+    ],
+    "address": "Avenida Olegário Maciel, 466",
+    "postalCode": "36015-350"
+  },
+  {
+    "id": "5dfddc24-9997-49ab-b4f5-0b3eb8232d37",
+    "gersId": "5dfddc24-9997-49ab-b4f5-0b3eb8232d37",
+    "name": "Padaria Pralis",
+    "category": "bakery",
+    "cityId": "jf",
+    "location": [
+      -43.3489847,
+      -21.76443912
+    ],
+    "address": "Av. Barão do Rio Branco, 2580",
+    "postalCode": "36013-020"
+  },
+  {
+    "id": "7fb25cd8-2442-4d82-834f-11fd5b79fd5a",
+    "gersId": "7fb25cd8-2442-4d82-834f-11fd5b79fd5a",
+    "name": "Parque da Lajinha",
+    "category": "park",
+    "cityId": "jf",
+    "location": [
+      -43.36631,
+      -21.792662
+    ],
+    "address": "Avenida Doutor Paulo Japiassu Coelho s/n",
+    "postalCode": "36033-000"
+  },
+  {
+    "id": "9b43fee2-3615-416b-855a-0f4679cf500c",
+    "gersId": "9b43fee2-3615-416b-855a-0f4679cf500c",
+    "name": "Parque Halfeld",
+    "category": "park",
+    "cityId": "jf",
+    "location": [
+      -43.35034227,
+      -21.76116679
+    ],
+    "address": "R. Halfeld, S/N",
+    "postalCode": "36010-002"
+  },
+  {
+    "id": "161ad194-c4a2-4428-8d9f-67d56154c382",
+    "gersId": "161ad194-c4a2-4428-8d9f-67d56154c382",
+    "name": "Parque Municipal de Juiz de Fora",
+    "category": "park",
+    "cityId": "jf",
+    "location": [
+      -43.39812711,
+      -21.7932889
+    ],
+    "address": "R. do Contôrno, 8",
+    "postalCode": "36039-270"
+  },
+  {
+    "id": "95a8eb8b-d757-48ab-8b9f-984b0aec68da",
+    "gersId": "95a8eb8b-d757-48ab-8b9f-984b0aec68da",
+    "name": "Pedacinho do Céu Confeitaria e Café",
+    "category": "cafe",
+    "cityId": "jf",
+    "location": [
+      -43.36982247,
+      -21.77095556
+    ],
+    "address": "Rua José Lourenço Kelmer, 1300",
+    "postalCode": "36036-630"
+  },
+  {
+    "id": "b57ea5a8-a5e9-4a3d-92a7-ee8f549620bf",
+    "gersId": "b57ea5a8-a5e9-4a3d-92a7-ee8f549620bf",
+    "name": "Picanha Pimenta e Pinga",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.37636562,
+      -21.78611043
+    ],
+    "address": "Av. Eugênio do Nascimento, 310",
+    "postalCode": "36038-330"
+  },
+  {
+    "id": "82180081-08c7-4c65-9eb1-99e6abe879e3",
+    "gersId": "82180081-08c7-4c65-9eb1-99e6abe879e3",
+    "name": "Pizzaria Tio Luigi",
+    "category": "pizzeria",
+    "cityId": "jf",
+    "location": [
+      -43.39605733,
+      -21.73480505
+    ],
+    "address": "R. Tomás Gonzaga, 283",
+    "postalCode": "36081-690"
+  },
+  {
+    "id": "20be025a-b907-4754-8e33-c055334cfa25",
+    "gersId": "20be025a-b907-4754-8e33-c055334cfa25",
+    "name": "Point Nobre",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.35287663,
+      -21.7436991
+    ],
+    "address": "Av. Gov. Valadares, 473",
+    "postalCode": "36045-000"
+  },
+  {
+    "id": "77123902-939c-4226-a6e9-b6d9a7f8cc9b",
+    "gersId": "77123902-939c-4226-a6e9-b6d9a7f8cc9b",
+    "name": "Prost Pub",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.35112555,
+      -21.77447844
+    ],
+    "address": "R. Taváres Bastos, 49",
+    "postalCode": "36025-180"
+  },
+  {
+    "id": "cb5dcf03-6bff-4cf4-9ebf-e12d47dc5ce1",
+    "gersId": "cb5dcf03-6bff-4cf4-9ebf-e12d47dc5ce1",
+    "name": "Restaurante Caçarola",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.35482367,
+      -21.75028985
+    ],
+    "address": "Av. dos Andradas, 730",
+    "postalCode": "36036-000"
+  },
+  {
+    "id": "72b31c1b-7bf9-4053-b9fa-38bed851e6f8",
+    "gersId": "72b31c1b-7bf9-4053-b9fa-38bed851e6f8",
+    "name": "Restaurante Cirola",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.42191496,
+      -21.70156166
+    ],
+    "address": "Av. Pres. Juscelino Kubitschek 5431",
+    "postalCode": "36087-280"
+  },
+  {
+    "id": "744d680a-b6e4-4ec5-9f93-30671b292fe9",
+    "gersId": "744d680a-b6e4-4ec5-9f93-30671b292fe9",
+    "name": "Restaurante da Cris",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.3462012,
+      -21.73440036
+    ],
+    "address": "R. Américo Lôbo, 2.321",
+    "postalCode": "36050-000"
+  },
+  {
+    "id": "f9ae4281-7b9a-4755-bd12-99fb543a6ec1",
+    "gersId": "f9ae4281-7b9a-4755-bd12-99fb543a6ec1",
+    "name": "Restaurante Estação",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.38372925,
+      -21.74048638
+    ],
+    "address": "Av. Olavo Bilac, 581",
+    "postalCode": "36080-350"
+  },
+  {
+    "id": "0c6059b0-88d5-4dda-83aa-6dc53e1adf34",
+    "gersId": "0c6059b0-88d5-4dda-83aa-6dc53e1adf34",
+    "name": "Rosquinhas Bel Sabor",
+    "category": "dessert_shop",
+    "cityId": "jf",
+    "location": [
+      -43.35207185,
+      -21.72501787
+    ],
+    "address": "R. Esperanto, 185",
+    "postalCode": "36047-060"
+  },
+  {
+    "id": "9719bdac-830e-4436-bde4-61d7b94e91b9",
+    "gersId": "9719bdac-830e-4436-bde4-61d7b94e91b9",
+    "name": "Salsa Parrilla",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.359366,
+      -21.780819
+    ],
+    "address": "Avenida Presidente Itamar Franco, 3600",
+    "postalCode": "36033-318"
+  },
+  {
+    "id": "bfa0331e-5237-4ebf-8e11-11568244a772",
+    "gersId": "bfa0331e-5237-4ebf-8e11-11568244a772",
+    "name": "Santo Café",
+    "category": "cafe",
+    "cityId": "jf",
+    "location": [
+      -43.34776683,
+      -21.76559511
+    ],
+    "address": "Av. Presidente Itamar Franco, 1010 - Lj 06",
+    "postalCode": "36010-021"
+  },
+  {
+    "id": "f1dbf3cb-adf6-4b8f-a287-6b817622c034",
+    "gersId": "f1dbf3cb-adf6-4b8f-a287-6b817622c034",
+    "name": "São Bartolomeu",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.35006924,
+      -21.76956
+    ],
+    "address": "R. São Mateus, 41 - Lj 4",
+    "postalCode": "36025-010"
+  },
+  {
+    "id": "dc70bc75-c883-4687-bebf-3b3b934c56ed",
+    "gersId": "dc70bc75-c883-4687-bebf-3b3b934c56ed",
+    "name": "Sartoni Steakhouse",
+    "category": "restaurant",
+    "cityId": "jf",
+    "location": [
+      -43.3525754,
+      -21.7725654
+    ],
+    "address": "Rua Manoel Bernardino, 25",
+    "postalCode": "36016-460"
+  },
+  {
+    "id": "371d3c2f-02a9-4917-b0bd-fe7ede78caac",
+    "gersId": "371d3c2f-02a9-4917-b0bd-fe7ede78caac",
+    "name": "Sesc Juiz de Fora",
+    "category": "cultural_center",
+    "cityId": "jf",
+    "location": [
+      -43.34795909,
+      -21.7691137
+    ],
+    "address": "Av. Barão do Rio Branco, 3090",
+    "postalCode": "36016-311"
+  },
+  {
+    "id": "62f30051-b3ec-44b0-8857-167f5ec06a9e",
+    "gersId": "62f30051-b3ec-44b0-8857-167f5ec06a9e",
+    "name": "Sol e Neve",
+    "category": "ice_cream",
+    "cityId": "jf",
+    "location": [
+      -43.34846729,
+      -21.77580649
+    ],
+    "address": "R. Morais e Castro, 353",
+    "postalCode": "36025-160"
+  },
+  {
+    "id": "f07b3e82-a131-4aa5-b1f1-86a556d2a211",
+    "gersId": "f07b3e82-a131-4aa5-b1f1-86a556d2a211",
+    "name": "Sorveteria DeliGeli",
+    "category": "ice_cream",
+    "cityId": "jf",
+    "location": [
+      -43.35241012,
+      -21.74374674
+    ],
+    "address": "Av. Gov. Valadares, 512",
+    "postalCode": "36045-000"
+  },
+  {
+    "id": "abfd88fe-fc6e-4d8e-811b-7cbee0b7fecf",
+    "gersId": "abfd88fe-fc6e-4d8e-811b-7cbee0b7fecf",
+    "name": "Studio B",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.34997555,
+      -21.76902738
+    ],
+    "address": "Rua Ch. Oswaldo Aranha, 216",
+    "postalCode": "36025-007"
+  },
+  {
+    "id": "0832fa26-f4fb-458c-85ac-ba5b05d08ba8",
+    "gersId": "0832fa26-f4fb-458c-85ac-ba5b05d08ba8",
+    "name": "Sublime Lanches",
+    "category": "burger",
+    "cityId": "jf",
+    "location": [
+      -43.34557587,
+      -21.7878251
+    ],
+    "address": "Av. Santa Luzia, 302",
+    "postalCode": "36030-450"
+  },
+  {
+    "id": "1c7b552c-bc3a-458a-8327-e623c9d7e6b7",
+    "gersId": "1c7b552c-bc3a-458a-8327-e623c9d7e6b7",
+    "name": "Tazz Burger",
+    "category": "burger",
+    "cityId": "jf",
+    "location": [
+      -43.39936373,
+      -21.71835405
+    ],
+    "address": "R. Eng. Hugo Vocurca Filho, 605",
+    "postalCode": "36085-060"
+  },
+  {
+    "id": "0f038bc8-6828-4906-bc8a-14570d89b0cc",
+    "gersId": "0f038bc8-6828-4906-bc8a-14570d89b0cc",
+    "name": "Teatro Paschoal Carlos Magno",
+    "category": "cultural_center",
+    "cityId": "jf",
+    "location": [
+      -43.35191203,
+      -21.76142662
+    ],
+    "address": "R. Gilberto de Alencar, 1",
+    "postalCode": "36015-470"
+  },
+  {
+    "id": "71ecd0b6-391c-4f74-8cd8-75cad48a6b71",
+    "gersId": "71ecd0b6-391c-4f74-8cd8-75cad48a6b71",
+    "name": "Tuc's Pizza",
+    "category": "pizzeria",
+    "cityId": "jf",
+    "location": [
+      -43.43355358,
+      -21.70588882
+    ],
+    "address": "R. Sábino Tortura, 74",
+    "postalCode": "36087-580"
+  },
+  {
+    "id": "a921bd8e-2b5b-4b66-8372-8dd9b787a1db",
+    "gersId": "a921bd8e-2b5b-4b66-8372-8dd9b787a1db",
+    "name": "UCI Cinemas",
+    "category": "cinema",
+    "cityId": "jf",
+    "location": [
+      -43.360358833461824,
+      -21.780861156589605
+    ],
+    "address": "Avenida Independência, 3600",
+    "postalCode": "36033-318"
+  },
+  {
+    "id": "abdd6637-94ff-40b8-ae61-255c5f164c70",
+    "gersId": "abdd6637-94ff-40b8-ae61-255c5f164c70",
+    "name": "Vaporetto Pizzaria",
+    "category": "pizzeria",
+    "cityId": "jf",
+    "location": [
+      -43.3532458,
+      -21.75406926
+    ],
+    "address": "Rua Br Cataguases, 102",
+    "postalCode": "36015-370"
+  },
+  {
+    "id": "b97c98ad-7ed9-4d1d-b391-0b0a0aaf549b",
+    "gersId": "b97c98ad-7ed9-4d1d-b391-0b0a0aaf549b",
+    "name": "Varanda Dinner",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.34360795,
+      -21.76869672
+    ],
+    "address": "R. Barão de Santa Helena, 596",
+    "postalCode": "36010-382"
+  },
+  {
+    "id": "5ec179f1-696b-466c-8413-2c46a17aa7d7",
+    "gersId": "5ec179f1-696b-466c-8413-2c46a17aa7d7",
+    "name": "Vero Vino Winebar",
+    "category": "bar",
+    "cityId": "jf",
+    "location": [
+      -43.35533513,
+      -21.77194309
+    ],
+    "address": "R. Padre Café, 394",
+    "postalCode": "36016-450"
+  }
+]

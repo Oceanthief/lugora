@@ -10,7 +10,8 @@
     "start": "next start",
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
-    "test": "vitest run"
+    "test": "vitest run",
+    "seed:lugares": "node scripts/seed-lugares.mjs"
   },
   "dependencies": {
     "maplibre-gl": "6.14.0",
