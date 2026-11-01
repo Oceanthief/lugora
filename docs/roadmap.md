@@ -69,7 +69,7 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 - [x] Textos da interface em `web/src/content/pt-BR.ts`.
 - [x] Manifesto PWA (nome Lugora, ícone provisório), para o app poder ser instalado no celular.
 - [x] Um teste Vitest de exemplo: formatar a nota 4.5 como "4,5".
-- [ ] CI verde no GitHub (`.github/workflows/ci.yml`, job "web").
+- [x] CI verde no GitHub (`.github/workflows/ci.yml`, job "web").
 - [x] Ver no celular: `npm run dev` e abrir `http://IP-do-PC:3000`, com o celular na mesma rede Wi-Fi (o IP certo está explicado no `CLAUDE.md`). Se o Next avisar sobre origem cruzada, configurar `allowedDevOrigins`.
 - [ ] (Recomendado) Conectar o repositório à Vercel com Root Directory = `web`. Cada PR ganha um link de preview em HTTPS.
 
