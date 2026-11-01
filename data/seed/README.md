@@ -3,7 +3,9 @@
 | Arquivo | O que é |
 | --- | --- |
 | `lugares_jf_seed.csv` | 100 lugares reais de Juiz de Fora (Overture Maps), com nomes corrigidos à mão. Exportado em UTF-8, sem nenhuma mudança de valor, da aba "Lugares" da planilha `lugares_jf_nomes_corrigidos.xlsx`. |
-| `mock-data_ficticio_backup.ts` | Cópia de `web/src/lib/mock-data.ts` antes da troca: lugares, visitas, feed e "Quero ir" fictícios. Só para consulta; não é usado pelo app. |
+| `mock-data_ficticio_backup.ts` | Cópia de `web/src/lib/mock-data.ts` antes da troca: lugares, visitas, feed e "Quero ir" fictícios. Só para consulta; não é usado pelo app. Só o nome do usuário logado foi trocado pelo do Victor Ramos, como no app; o resto está como era. |
+
+Os usuários e as visitas de demonstração não vêm daqui: são gerados por `npm run seed:demo` (em `web/`), com semente fixa, em `web/src/data/demo.json`.
 
 ## Como os lugares chegam ao app
 

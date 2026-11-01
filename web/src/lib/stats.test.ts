@@ -16,6 +16,7 @@ const places: MockPlace[] = [
 function visitsTo(placeId: string, count: number): MockVisit[] {
   return Array.from({ length: count }, (_, i) => ({
     id: `${placeId}-${i}`,
+    userId: "u0",
     placeId,
     visitedOn: "2026-10-01",
     rating: 4,

@@ -66,6 +66,7 @@ O documento de visão usa nomes em português. O código e o banco usam inglês 
 | tipo (lista) | `kind` | `want_to_go`, `curated` |
 | link_origem | `source_url` | "onde eu vi" |
 | seguidor_id / seguido_id | `follower_id` / `followee_id` | |
+| usuario_id | `user_id` | dono da visita, da lista etc. |
 | tipo (sinalização) | `kind` | `closed_permanently`, `closed_temporarily`, `moved`, `wrong_category`, `duplicate`, `not_exists` |
 | visitavel / sensivel | `is_visitable` / `is_sensitive` | |
 

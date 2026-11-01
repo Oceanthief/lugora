@@ -104,8 +104,8 @@ export const mockPlaces: readonly MockPlace[] = [
 
 /** Quem está usando o app nesta demonstração. */
 export const mockProfile = {
-  name: "Alex Rocha",
-  username: "alexrocha",
+  name: "Victor Ramos",
+  username: "victorramos",
   /** Privada: só a própria pessoa vê (seção 9.3). */
   homeCityId: "jf",
 };

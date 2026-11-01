@@ -4,12 +4,16 @@
  *
  * - Lugares: 100 lugares reais de Juiz de Fora, importados de
  *   data/seed/lugares_jf_seed.csv para src/data/places.json pelo script
- *   `npm run seed:lugares`. Não edite o JSON à mão.
- * - Pessoas: fictícias. Visitas, feed e "Quero ir" começam vazios.
+ *   `npm run seed:lugares`.
+ * - Pessoas, quem segue quem e visitas: demonstração, gerada com semente fixa
+ *   em src/data/demo.json pelo script `npm run seed:demo`. O usuário logado é
+ *   o Victor Ramos. "Quero ir" começa vazio.
  *
- * Os dados fictícios anteriores estão em data/seed/mock-data_ficticio_backup.ts.
+ * Não edite os JSON à mão: rode os scripts. Os dados fictícios anteriores
+ * estão em data/seed/mock-data_ficticio_backup.ts.
  */
 
+import demoData from "../data/demo.json";
 import placesData from "../data/places.json";
 import type { PlaceCategory } from "./categories";
 
@@ -51,6 +55,8 @@ export type MockPlace = {
 
 export type MockVisit = {
   id: string;
+  /** Quem visitou (usuario_id, seção 8). */
+  userId: string;
   placeId: string;
   /** Só a data, sem hora: AAAA-MM-DD. */
   visitedOn: string;
@@ -64,9 +70,9 @@ export type MockUser = {
   id: string;
   name: string;
   username: string;
+  /** Privada: só a própria pessoa vê (seção 9.3). */
+  homeCityId: string;
 };
-
-export type FeedVisit = MockVisit & { userId: string };
 
 export type WantToGoItem = {
   id: string;
@@ -90,26 +96,45 @@ export const mockPlaces: readonly MockPlace[] = placesData.map(
   }),
 );
 
-/** Quem está usando o app nesta demonstração. */
-export const mockProfile = {
-  name: "Alex Rocha",
-  username: "alexrocha",
-  /** Privada: só a própria pessoa vê (seção 9.3). */
-  homeCityId: "jf",
-};
+/** Todas as pessoas da demonstração, incluindo quem está usando o app. */
+export const mockUsers: readonly MockUser[] = demoData.users;
+
+/** Quem está usando o app nesta demonstração (o Victor). */
+export const mockProfile: MockUser = (() => {
+  const user = mockUsers.find((u) => u.id === demoData.currentUserId);
+  if (!user) throw new Error(`Usuário logado ${demoData.currentUserId} não está em demo.json.`);
+  return user;
+})();
+
+/** As visitas de todas as pessoas. */
+export const mockAllVisits: readonly MockVisit[] = demoData.visits.map(
+  (visit): MockVisit => ({
+    ...visit,
+    // O teste de mock-data confere que toda ocasião do JSON existe no app.
+    occasions: visit.occasions as Occasion[],
+  }),
+);
 
 /** As visitas de quem está usando o app. */
-export const mockVisits: readonly MockVisit[] = [];
+export const mockVisits: readonly MockVisit[] = mockAllVisits.filter(
+  (visit) => visit.userId === mockProfile.id,
+);
+
+const followedIds = new Set(
+  demoData.follows
+    .filter((follow) => follow.followerId === mockProfile.id)
+    .map((follow) => follow.followeeId),
+);
 
 /** Pessoas que quem está usando o app segue. */
-export const mockFollowing: readonly MockUser[] = [
-  { id: "u1", name: "Bia Andrade", username: "biaandrade" },
-  { id: "u2", name: "Caio Mendes", username: "caiomendes" },
-  { id: "u3", name: "Duda Freitas", username: "dudafreitas" },
-];
+export const mockFollowing: readonly MockUser[] = mockUsers.filter((user) =>
+  followedIds.has(user.id),
+);
 
-/** Visitas de quem é seguido. */
-export const mockFeedVisits: readonly FeedVisit[] = [];
+/** Visitas de quem é seguido: é o que entra no Feed. */
+export const mockFeedVisits: readonly MockVisit[] = mockAllVisits.filter(
+  (visit) => followedIds.has(visit.userId),
+);
 
 /** A lista "Quero ir" de quem está usando o app (privada por padrão). */
 export const mockWantToGo: readonly WantToGoItem[] = [];
@@ -148,7 +173,7 @@ export function getVisitedPlaces(
 }
 
 export type FeedItem = {
-  visit: FeedVisit;
+  visit: MockVisit;
   user: MockUser;
   place: MockPlace;
   city: MockCity;
@@ -160,11 +185,11 @@ export type FeedItem = {
  * isso vem com o banco, na Fatia 9.
  */
 export function getFeed(
-  visits: readonly FeedVisit[] = mockFeedVisits,
+  visits: readonly MockVisit[] = mockFeedVisits,
 ): FeedItem[] {
   return visits
     .flatMap((visit) => {
-      const user = mockFollowing.find((u) => u.id === visit.userId);
+      const user = mockUsers.find((u) => u.id === visit.userId);
       const place = mockPlaces.find((p) => p.id === visit.placeId);
       const city = place && getCity(place.cityId);
       return user && place && city ? [{ visit, user, place, city }] : [];
