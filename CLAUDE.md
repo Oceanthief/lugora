@@ -51,7 +51,7 @@ Atualize esta seção sempre que um comando mudar.
 - App: `cd web` e `npm run dev`, depois abrir http://localhost:3000. Use sempre `npm run dev`/`npm run build`, não `next dev` direto: eles copiam antes o worker do MapLibre para `public/` (ADR 0006); sem ele, o mapa fica em branco.
 - Qualidade (em `web/`): `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`
 - Lugares (em `web/`): `npm run seed:lugares` importa `data/seed/lugares_jf_seed.csv` para `web/src/data/places.json` (idempotente). Não edite o JSON à mão.
-- Demonstração (em `web/`): `npm run seed:demo` gera usuários, quem segue quem e ~200 visitas em `web/src/data/demo.json`, com semente fixa (42). Rode de novo se mudar os lugares; um teste avisa se o arquivo ficar desatualizado.
+- Demonstração (em `web/`): `npm run seed:demo` gera usuários, quem segue quem, ~200 visitas e o "Quero ir" do Victor em `web/src/data/demo.json`, com semente fixa (42). Rode de novo se mudar os lugares; um teste avisa se o arquivo ficar desatualizado.
 - Banco local (a partir da Fatia 2, na raiz): `npx supabase start`, `npx supabase db reset`, `npx supabase test db`. Studio em http://127.0.0.1:54323
 - Pipeline (em `pipelines/overture/`): `python relatorio_jf.py`
 

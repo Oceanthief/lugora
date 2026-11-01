@@ -145,9 +145,11 @@ describe("getWantToGo", () => {
     expect(dates).toEqual([...dates].sort().reverse());
   });
 
-  it("só tem lugares que ainda não foram visitados", () => {
+  it("é a lista do Victor, só com lugares que ele ainda não visitou", () => {
     const visited = new Set(mockVisits.map((visit) => visit.placeId));
-    for (const { place } of getWantToGo()) {
+    expect(getWantToGo().length).toBeGreaterThan(0);
+    for (const { item, place } of getWantToGo()) {
+      expect(item.userId).toBe(mockProfile.id);
       expect(visited.has(place.id), place.id).toBe(false);
     }
   });

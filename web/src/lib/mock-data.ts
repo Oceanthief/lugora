@@ -7,7 +7,7 @@
  *   `npm run seed:lugares`.
  * - Pessoas, quem segue quem e visitas: demonstração, gerada com semente fixa
  *   em src/data/demo.json pelo script `npm run seed:demo`. O usuário logado é
- *   o Victor Ramos. "Quero ir" começa vazio.
+ *   o Victor Ramos, que tem 6 lugares no "Quero ir".
  *
  * Não edite os JSON à mão: rode os scripts. Os dados fictícios anteriores
  * estão em data/seed/mock-data_ficticio_backup.ts.
@@ -76,6 +76,8 @@ export type MockUser = {
 
 export type WantToGoItem = {
   id: string;
+  /** Dono da lista (usuario_id, seção 8). */
+  userId: string;
   placeId: string;
   /** "Onde eu vi" (seção 7.14). */
   sourceUrl?: string;
@@ -137,7 +139,9 @@ export const mockFeedVisits: readonly MockVisit[] = mockAllVisits.filter(
 );
 
 /** A lista "Quero ir" de quem está usando o app (privada por padrão). */
-export const mockWantToGo: readonly WantToGoItem[] = [];
+export const mockWantToGo: readonly WantToGoItem[] = demoData.wantToGo.filter(
+  (item) => item.userId === mockProfile.id,
+);
 
 export function getCity(cityId: string): MockCity | undefined {
   return mockCities.find((city) => city.id === cityId);

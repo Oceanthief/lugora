@@ -226,5 +226,13 @@
     {"id":"v198","userId":"u6","placeId":"5d0d0927-ff9d-49b2-8f4f-594b55d04cb1","visitedOn":"2026-10-28","rating":4,"occasions":["with_friends"]},
     {"id":"v199","userId":"u6","placeId":"8e8462af-14ba-422f-9006-b0ea344f871a","visitedOn":"2026-10-28","rating":3.5,"occasions":["with_friends"]},
     {"id":"v200","userId":"u9","placeId":"72b31c1b-7bf9-4053-b9fa-38bed851e6f8","visitedOn":"2026-10-28","rating":3,"occasions":["with_friends"]}
+  ],
+  "wantToGo": [
+    {"id":"w1","userId":"u0","placeId":"5b2baea6-7cde-416e-9a35-38ef30a8d4f3","addedOn":"2026-09-05","sourceUrl":"https://www.instagram.com/p/lugora-demo-6/"},
+    {"id":"w2","userId":"u0","placeId":"80fe1925-d051-4fc8-982b-c106134d010b","addedOn":"2026-09-16"},
+    {"id":"w3","userId":"u0","placeId":"5b8be58b-6686-4567-a0a8-9749c8c2a589","addedOn":"2026-09-19","sourceUrl":"https://www.tiktok.com/@lugora.demo/video/4"},
+    {"id":"w4","userId":"u0","placeId":"e083ad41-3bff-4720-89cc-347e8ed7199b","addedOn":"2026-10-03","sourceUrl":"https://www.google.com/maps/search/?api=1&query=Caf%C3%A9%20Mulino%20-%20Unidade%20Centro%2C%20Juiz%20de%20Fora"},
+    {"id":"w5","userId":"u0","placeId":"371d3c2f-02a9-4917-b0bd-fe7ede78caac","addedOn":"2026-10-07","sourceUrl":"https://www.tiktok.com/@lugora.demo/video/5"},
+    {"id":"w6","userId":"u0","placeId":"5d0e66fa-edde-4a5f-a3d9-c9754ca2fdcf","addedOn":"2026-10-23"}
   ]
 }

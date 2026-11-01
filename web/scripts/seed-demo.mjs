@@ -42,6 +42,15 @@ const VICTOR_VISITS = 18;
 /** Fração dos lugares que fica sem nenhuma visita. */
 const UNVISITED_SHARE = 0.15;
 
+/** "Quero ir" do Victor: só lugares que ele ainda não visitou. */
+const WANT_TO_GO_COUNT = 6;
+const WANT_TO_GO_FROM = "2026-09-01";
+const WANT_TO_GO_TO = "2026-10-28";
+/** Grupos que precisam aparecer na lista (um lugar de cada). */
+const WANT_TO_GO_REQUIRED = [["museum", "cultural_center"], ["brewery"], ["cafe"]];
+/** Sites do "onde eu vi". O campo guarda um link; o app mostra só o site. */
+export const SOURCE_HOSTS = ["www.instagram.com", "www.tiktok.com", "www.google.com"];
+
 /** Lugares que aparecem mais que a média (por nome, sem acento e minúsculo). */
 const POPULAR_NAMES = ["cine-theatro central", "mariano procopio", "parque halfeld", "morro do imperador"];
 
@@ -136,6 +145,53 @@ function randomDate(random) {
   const lastDay = month === 10 ? 28 : new Date(Date.UTC(2026, month, 0)).getUTCDate();
   const day = 1 + Math.floor(random() * lastDay);
   return `2026-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+function randomDayBetween(random, from, to) {
+  const start = Date.parse(`${from}T00:00:00Z`);
+  const days = (Date.parse(`${to}T00:00:00Z`) - start) / 86_400_000;
+  return new Date(start + Math.floor(random() * (days + 1)) * 86_400_000).toISOString().slice(0, 10);
+}
+
+/**
+ * Link de demonstração para o "onde eu vi". Instagram e TikTok apontam para
+ * endereços que não existem (lugora-demo); o do Google Maps é uma busca pelo
+ * nome do lugar, no formato oficial de link do Maps.
+ */
+function sourceUrlFor(host, place, n) {
+  if (host === "www.instagram.com") return `https://www.instagram.com/p/lugora-demo-${n}/`;
+  if (host === "www.tiktok.com") return `https://www.tiktok.com/@lugora.demo/video/${n}`;
+  return `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${place.name}, Juiz de Fora`)}`;
+}
+
+/** Itens do "Quero ir" do Victor: categorias variadas, só lugares não visitados. */
+function pickWantToGo(random, places, visits) {
+  const visitedByVictor = new Set(visits.filter((v) => v.userId === CURRENT_USER_ID).map((v) => v.placeId));
+  const candidates = places.filter((place) => !visitedByVictor.has(place.id));
+  const pickFrom = (options) => options[Math.floor(random() * options.length)];
+
+  const chosen = WANT_TO_GO_REQUIRED.map((group) => pickFrom(candidates.filter((place) => group.includes(place.category))));
+  while (chosen.length < WANT_TO_GO_COUNT) {
+    const used = new Set(chosen.map((place) => place.category));
+    const category = pickFrom([...new Set(candidates.map((place) => place.category))].filter((c) => !used.has(c)));
+    chosen.push(pickFrom(candidates.filter((place) => place.category === category)));
+  }
+
+  // 1 ou 2 itens sem "onde eu vi", como numa lista de verdade. Os outros
+  // sorteiam o site, com cada um dos 3 aparecendo pelo menos uma vez.
+  const withoutSource = new Set(shuffle(random, chosen.map((place) => place.id)).slice(0, 1 + Math.floor(random() * 2)));
+  const sourced = chosen.filter((place) => !withoutSource.has(place.id));
+  const extraHosts = Array.from({ length: Math.max(0, sourced.length - SOURCE_HOSTS.length) }, () => pickFrom(SOURCE_HOSTS));
+  const hosts = shuffle(random, [...SOURCE_HOSTS, ...extraHosts]);
+  const hostOf = new Map(sourced.map((place, i) => [place.id, hosts[i]]));
+  return chosen
+    .map((place, i) => {
+      const addedOn = randomDayBetween(random, WANT_TO_GO_FROM, WANT_TO_GO_TO);
+      const item = { userId: CURRENT_USER_ID, placeId: place.id, addedOn };
+      return withoutSource.has(place.id) ? item : { ...item, sourceUrl: sourceUrlFor(hostOf.get(place.id), place, i + 1) };
+    })
+    .sort((a, b) => a.addedOn.localeCompare(b.addedOn) || a.placeId.localeCompare(b.placeId))
+    .map((item, i) => ({ id: `w${i + 1}`, ...item }));
 }
 
 function pickOccasions(random, category) {
@@ -267,12 +323,18 @@ export function generateDemo(places, seed = SEED) {
       a.userId.localeCompare(b.userId, "en", { numeric: true }) ||
       a.placeId.localeCompare(b.placeId),
   );
+
+  // 6. "Quero ir" do Victor. Fica por último para não mudar os sorteios de
+  // cima: com a mesma semente, as visitas continuam exatamente as mesmas.
+  const wantToGo = pickWantToGo(random, places, visits);
+
   const demo = {
     seed,
     currentUserId: CURRENT_USER_ID,
     users: USERS.map((user) => ({ ...user, homeCityId: "jf" })),
     follows: FOLLOWED_BY_VICTOR.map((followeeId) => ({ followerId: CURRENT_USER_ID, followeeId })),
     visits: visits.map((visit, i) => ({ id: `v${String(i + 1).padStart(3, "0")}`, ...visit })),
+    wantToGo,
   };
   checkRules(demo, places, popularIds);
   return demo;
@@ -339,6 +401,28 @@ export function checkRules(demo, places, popularIds) {
   const highRatings = visits.filter((visit) => visit.rating >= 3.5).length;
   if (highRatings <= visits.length / 2) fail(`só ${highRatings} notas de 3,5 para cima.`);
   if (lowRatings > visits.length * 0.1) fail(`${lowRatings} notas abaixo de 3,0.`);
+
+  const wantToGo = demo.wantToGo;
+  const visitedByVictor = new Set(perUser.get(CURRENT_USER_ID).map((visit) => visit.placeId));
+  if (wantToGo.length !== WANT_TO_GO_COUNT) fail(`${wantToGo.length} itens no Quero ir.`);
+  if (new Set(wantToGo.map((item) => item.placeId)).size !== wantToGo.length) fail("lugar repetido no Quero ir.");
+  for (const item of wantToGo) {
+    if (item.userId !== CURRENT_USER_ID) fail(`item ${item.id} do Quero ir não é do Victor.`);
+    if (!placeById.has(item.placeId)) fail(`item ${item.id} do Quero ir aponta para lugar inexistente.`);
+    if (visitedByVictor.has(item.placeId)) fail(`${placeById.get(item.placeId).name} está no Quero ir, mas o Victor já visitou.`);
+    if (item.addedOn < WANT_TO_GO_FROM || item.addedOn > WANT_TO_GO_TO) fail(`data ${item.addedOn} no item ${item.id}.`);
+    if (item.sourceUrl !== undefined && !SOURCE_HOSTS.includes(new URL(item.sourceUrl).hostname)) {
+      fail(`"onde eu vi" de site não previsto no item ${item.id}.`);
+    }
+  }
+  const categories = new Set(wantToGo.map((item) => placeById.get(item.placeId).category));
+  for (const group of WANT_TO_GO_REQUIRED) {
+    if (!group.some((category) => categories.has(category))) fail(`Quero ir sem ${group.join(" ou ")}.`);
+  }
+  const withoutSource = wantToGo.filter((item) => item.sourceUrl === undefined).length;
+  if (withoutSource < 1 || withoutSource > 2) fail(`${withoutSource} itens do Quero ir sem "onde eu vi".`);
+  const hostsUsed = new Set(wantToGo.flatMap((item) => (item.sourceUrl ? [new URL(item.sourceUrl).hostname] : [])));
+  for (const host of SOURCE_HOSTS) if (!hostsUsed.has(host)) fail(`nenhum "onde eu vi" de ${host}.`);
 }
 
 /** Uma visita por linha, para o arquivo ficar fácil de ler e de comparar. */
@@ -350,7 +434,8 @@ function formatDemo(demo) {
     `  "currentUserId": ${JSON.stringify(demo.currentUserId)},`,
     `  "users": [\n${demo.users.map(line).join(",\n")}\n  ],`,
     `  "follows": [\n${demo.follows.map(line).join(",\n")}\n  ],`,
-    `  "visits": [\n${demo.visits.map(line).join(",\n")}\n  ]`,
+    `  "visits": [\n${demo.visits.map(line).join(",\n")}\n  ],`,
+    `  "wantToGo": [\n${demo.wantToGo.map(line).join(",\n")}\n  ]`,
     "}",
     "",
   ].join("\n");
@@ -379,6 +464,11 @@ function main() {
   console.log("\nNotas:");
   for (const [rating, list] of [...Map.groupBy(demo.visits, (visit) => visit.rating)].sort((a, b) => a[0] - b[0])) {
     console.log(`  ${rating.toFixed(1).replace(".", ",")}: ${list.length}`);
+  }
+  console.log("\nQuero ir do Victor:");
+  for (const item of demo.wantToGo) {
+    const place = placeById.get(item.placeId);
+    console.log(`  ${item.id}  ${item.addedOn}  ${place.name} [${place.category}]  ${item.sourceUrl ?? "(sem origem)"}`);
   }
 }
 

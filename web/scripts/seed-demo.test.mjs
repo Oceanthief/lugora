@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 
 import { describe, expect, it } from "vitest";
 
-import { checkRules, CURRENT_USER_ID, generateDemo } from "./seed-demo.mjs";
+import { checkRules, CURRENT_USER_ID, generateDemo, SOURCE_HOSTS } from "./seed-demo.mjs";
 
 const places = JSON.parse(readFileSync(new URL("../src/data/places.json", import.meta.url), "utf8"));
 const demo = generateDemo(places);
@@ -44,6 +44,30 @@ describe("generateDemo", () => {
       if (["bakery", "bookstore"].includes(placeById.get(visit.placeId).category)) {
         expect(visit.occasions, visit.id).not.toContain("romantic");
       }
+    }
+  });
+
+  it("dá ao Victor 6 itens no Quero ir, de lugares que ele não visitou", () => {
+    const visited = new Set(demo.visits.filter((v) => v.userId === CURRENT_USER_ID).map((v) => v.placeId));
+    expect(demo.wantToGo).toHaveLength(6);
+    for (const item of demo.wantToGo) {
+      expect(item.userId).toBe(CURRENT_USER_ID);
+      expect(visited.has(item.placeId), item.id).toBe(false);
+      expect(item.addedOn >= "2026-09-01" && item.addedOn <= "2026-10-28", item.id).toBe(true);
+    }
+    const categories = demo.wantToGo.map((item) => placeById.get(item.placeId).category);
+    expect(categories.some((c) => c === "museum" || c === "cultural_center")).toBe(true);
+    expect(categories).toContain("brewery");
+    expect(categories).toContain("cafe");
+  });
+
+  it("guarda o 'onde eu vi' como link de Instagram, TikTok ou Google Maps, com 1 ou 2 sem origem", () => {
+    const links = demo.wantToGo.flatMap((item) => (item.sourceUrl ? [new URL(item.sourceUrl)] : []));
+    expect(demo.wantToGo.length - links.length).toBeGreaterThanOrEqual(1);
+    expect(demo.wantToGo.length - links.length).toBeLessThanOrEqual(2);
+    expect(new Set(links.map((url) => url.hostname))).toEqual(new Set(SOURCE_HOSTS));
+    for (const url of links) {
+      if (url.hostname === "www.google.com") expect(url.pathname).toMatch(/^\/maps\//);
     }
   });
 
