@@ -83,6 +83,27 @@ O documento de visão usa nomes em português. O código e o banco usam inglês 
 | seguiu_usuario | `user_followed` |
 | convite_enviado / convite_aceito | `invite_sent` / `invite_accepted` |
 
+## Categorias de lugar
+
+Lista única em `web/src/lib/categories.ts`; ícones em `web/src/lib/category-icons.ts`. O grupo segue a D3 (seção 7.2).
+
+| Interface | Código | Grupo (D3) |
+| --- | --- | --- |
+| Café | `cafe` | Comer e beber |
+| Bar | `bar` | Comer e beber |
+| Restaurante | `restaurant` | Comer e beber |
+| Padaria | `bakery` | Comer e beber |
+| Sorveteria | `ice_cream` | Comer e beber |
+| Pizzaria | `pizzeria` | Comer e beber |
+| Hamburgueria | `burger` | Comer e beber |
+| Cervejaria | `brewery` | Comer e beber |
+| Doceria | `dessert_shop` | Comer e beber |
+| Livraria | `bookstore` | Passeio e compras |
+| Museu | `museum` | Cultura |
+| Centro cultural | `cultural_center` | Cultura |
+| Cinema | `cinema` | Cultura |
+| Parque | `park` | Ar livre |
+
 ## Rotas do app (português, porque são interface)
 
 `/mapa` · `/feed` · `/registrar` · `/quero-ir` · `/perfil` · `/perfil/[username]` · `/lugar/[id]` · `/configuracoes` · `/entrar` · `/cadastro` · `/sobre` · `/estilos` (temporária, Fatia 1)

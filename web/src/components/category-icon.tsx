@@ -1,5 +1,5 @@
+import type { PlaceCategory } from "@/lib/categories";
 import { categoryIconPaths } from "@/lib/category-icons";
-import type { PlaceCategory } from "@/lib/mock-data";
 
 /**
  * Ícone da categoria num círculo, o mesmo desenho dos pontos do mapa.

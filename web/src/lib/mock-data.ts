@@ -7,13 +7,7 @@
  * Supabase.
  */
 
-export type PlaceCategory =
-  | "cafe"
-  | "bar"
-  | "restaurant"
-  | "bakery"
-  | "bookstore"
-  | "ice_cream";
+import type { PlaceCategory } from "./categories";
 
 /** Lista fixa de ocasiões (seção 7.8). No banco, vira a tabela `tags`. */
 export const occasions = [
