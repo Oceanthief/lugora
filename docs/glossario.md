@@ -45,6 +45,9 @@ O documento de visão usa nomes em português. O código e o banco usam inglês 
 | confianca | `confidence` | 0 a 1 |
 | fontes | `sources` | |
 | id_externo / ids_externos | `gers_id` / `merged_gers_ids` | GERS do Overture |
+| endereco | `address` | |
+| cep | `postal_code` | fora da tabela da seção 8; incluído por decisão do Victor (importação de JF, 2026-11) |
+| estado_regiao (cidade) | `state` | UF no Brasil |
 | status (lugar) | `status` | `active`, `pending`, `closed`, `merged` |
 | mesclado_em_id | `merged_into_id` | |
 | verificado / verificado_por | `is_verified` / `verified_by` | `gps`, `second_visit`, `trusted_user`, `import` |

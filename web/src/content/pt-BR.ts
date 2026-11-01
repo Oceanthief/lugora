@@ -45,6 +45,9 @@ export const strings = {
   map: {
     title: "Mapa",
     placesList: "Lugares no mapa",
+    emptyTitle: "Seu mapa ainda está vazio",
+    emptyText: "Cada lugar que você registrar aparece aqui.",
+    emptyAction: "Registrar a primeira visita",
     markerLabel: (name: string, category: string, rating: string) =>
       `${name}, ${category}, nota ${rating}`,
     visitedOn: (date: string) => `Visitado em ${date}`,
@@ -85,10 +88,12 @@ export const strings = {
     title: "Feed",
     subtitle: "Visitas de quem você segue, da mais recente para a mais antiga.",
     visited: "visitou",
+    empty: "Ainda não há visitas de quem você segue.",
   },
   wantToGo: {
     title: "Quero ir",
     subtitle: "Sua lista é privada: só você vê.",
+    empty: "Sua lista está vazia. Guarde aqui os lugares que você quer conhecer.",
     seenOn: (site: string) => `Onde eu vi: ${site}`,
     addedOn: (date: string) => `Adicionado em ${date}`,
   },

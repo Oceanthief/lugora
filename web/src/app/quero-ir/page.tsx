@@ -17,6 +17,11 @@ export default function WantToGoPage() {
       <h1 className="text-2xl font-semibold">{text.title}</h1>
       <p className="mt-1 text-zinc-600 dark:text-zinc-400">{text.subtitle}</p>
 
+      {entries.length === 0 ? (
+        <p className="mt-6 rounded-xl bg-zinc-100 p-4 text-zinc-700 dark:bg-zinc-900 dark:text-zinc-300">
+          {text.empty}
+        </p>
+      ) : (
       <ul className="mt-6 flex flex-col gap-3">
         {entries.map(({ item, place, city }) => (
           <li
@@ -34,6 +39,7 @@ export default function WantToGoPage() {
           </li>
         ))}
       </ul>
+      )}
     </section>
   );
 }

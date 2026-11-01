@@ -1,12 +1,16 @@
 /**
- * Dados fictícios da Fatia 0. Pessoas, lugares e visitas são inventados; só
- * as cidades e os bairros são reais.
+ * Dados do app enquanto não existe banco (Fatia 2 em diante): as telas
+ * importam daqui, e depois passam a ler do Supabase.
  *
- * Este arquivo é o único ponto de dados do app até o banco chegar
- * (Fatia 2 em diante): as telas importam daqui, e depois passam a ler do
- * Supabase.
+ * - Lugares: 100 lugares reais de Juiz de Fora, importados de
+ *   data/seed/lugares_jf_seed.csv para src/data/places.json pelo script
+ *   `npm run seed:lugares`. Não edite o JSON à mão.
+ * - Pessoas: fictícias. Visitas, feed e "Quero ir" começam vazios.
+ *
+ * Os dados fictícios anteriores estão em data/seed/mock-data_ficticio_backup.ts.
  */
 
+import placesData from "../data/places.json";
 import type { PlaceCategory } from "./categories";
 
 /** Lista fixa de ocasiões (seção 7.8). No banco, vira a tabela `tags`. */
@@ -23,6 +27,8 @@ export type Occasion = (typeof occasions)[number];
 export type MockCity = {
   id: string;
   name: string;
+  /** UF no Brasil (estado_regiao, seção 8). */
+  state?: string;
   /** Código do país (ISO 3166-1), como "BR". */
   countryCode: string;
   /** [longitude, latitude], nessa ordem (como o GeoJSON e o MapLibre). */
@@ -31,11 +37,16 @@ export type MockCity = {
 
 export type MockPlace = {
   id: string;
+  /** Id do Overture (GERS), para atualizar a base sem duplicar (D1 e D4). */
+  gersId?: string;
   name: string;
   category: PlaceCategory;
   cityId: string;
   /** [longitude, latitude], nessa ordem (como o GeoJSON e o MapLibre). */
   location: [lng: number, lat: number];
+  address?: string;
+  /** CEP, como "36010-041". */
+  postalCode?: string;
 };
 
 export type MockVisit = {
@@ -66,41 +77,18 @@ export type WantToGoItem = {
 };
 
 export const mockCities: readonly MockCity[] = [
-  { id: "jf", name: "Juiz de Fora", countryCode: "BR", center: [-43.35, -21.76] },
-  { id: "rio", name: "Rio de Janeiro", countryCode: "BR", center: [-43.2, -22.95] },
-  { id: "lisboa", name: "Lisboa", countryCode: "PT", center: [-9.14, 38.72] },
+  { id: "jf", name: "Juiz de Fora", state: "MG", countryCode: "BR", center: [-43.35, -21.76] },
 ];
 
-export const mockPlaces: readonly MockPlace[] = [
-  // Juiz de Fora: Centro
-  { id: "p1", name: "Café Meia-Lua", category: "cafe", cityId: "jf", location: [-43.3483, -21.7637] },
-  // São Mateus
-  { id: "p2", name: "Bar da Ladeira", category: "bar", cityId: "jf", location: [-43.3586, -21.7717] },
-  // Granbery
-  { id: "p3", name: "Padaria Pão Quente", category: "bakery", cityId: "jf", location: [-43.3423, -21.7705] },
-  // Cascatinha
-  { id: "p4", name: "Cantina da Serra", category: "restaurant", cityId: "jf", location: [-43.359, -21.7809] },
-  // Poço Rico
-  { id: "p5", name: "Livraria Entrelinhas", category: "bookstore", cityId: "jf", location: [-43.338, -21.761] },
-  // Jardim Santa Helena
-  { id: "p6", name: "Sorveteria Ipê Amarelo", category: "ice_cream", cityId: "jf", location: [-43.3479, -21.7566] },
-  // Mariano Procópio
-  { id: "p7", name: "Boteco da Estação", category: "bar", cityId: "jf", location: [-43.3586, -21.7478] },
-  // Bom Pastor
-  { id: "p8", name: "Restaurante Varanda Verde", category: "restaurant", cityId: "jf", location: [-43.3491, -21.7753] },
-  // Rio de Janeiro: Copacabana
-  { id: "p9", name: "Quiosque Maré Alta", category: "bar", cityId: "rio", location: [-43.1822, -22.9711] },
-  // Lisboa: Alfama
-  { id: "p10", name: "Tasca do Miradouro", category: "restaurant", cityId: "lisboa", location: [-9.13, 38.7115] },
-  // Lisboa: Bairro Alto
-  { id: "p11", name: "Pastelaria Sete Colinas", category: "bakery", cityId: "lisboa", location: [-9.1445, 38.713] },
-  // Juiz de Fora: Bairu (ainda não visitado)
-  { id: "p12", name: "Empório Recanto", category: "cafe", cityId: "jf", location: [-43.3535, -21.7395] },
-  // Juiz de Fora: Santa Luzia (ainda não visitado)
-  { id: "p13", name: "Bistrô Alto da Serra", category: "restaurant", cityId: "jf", location: [-43.3449, -21.7867] },
-  // Lisboa: Chiado (ainda não visitado)
-  { id: "p14", name: "Livraria Rua Torta", category: "bookstore", cityId: "lisboa", location: [-9.1415, 38.7105] },
-];
+/** Os lugares importados do CSV (veja o comentário do topo). */
+export const mockPlaces: readonly MockPlace[] = placesData.map(
+  (place): MockPlace => ({
+    ...place,
+    // O teste de mock-data confere que toda categoria do JSON existe no app.
+    category: place.category as PlaceCategory,
+    location: [place.location[0], place.location[1]],
+  }),
+);
 
 /** Quem está usando o app nesta demonstração. */
 export const mockProfile = {
@@ -111,22 +99,7 @@ export const mockProfile = {
 };
 
 /** As visitas de quem está usando o app. */
-export const mockVisits: readonly MockVisit[] = [
-  { id: "v1", placeId: "p1", visitedOn: "2026-09-12", rating: 4, occasions: ["work_study"] },
-  { id: "v2", placeId: "p2", visitedOn: "2026-09-20", rating: 4.5, occasions: ["with_friends"] },
-  { id: "v3", placeId: "p3", visitedOn: "2026-10-01", rating: 3.5, occasions: [] },
-  { id: "v4", placeId: "p4", visitedOn: "2026-10-05", rating: 5, occasions: ["romantic"] },
-  { id: "v5", placeId: "p5", visitedOn: "2026-10-09", rating: 4.5, occasions: ["solo"] },
-  { id: "v6", placeId: "p6", visitedOn: "2026-10-14", rating: 3, occasions: ["with_family"] },
-  { id: "v7", placeId: "p7", visitedOn: "2026-10-18", rating: 4, occasions: ["with_friends"] },
-  { id: "v8", placeId: "p8", visitedOn: "2026-10-22", rating: 2.5, occasions: ["with_family"] },
-  // Segunda visita ao Café Meia-Lua: no mapa, continua sendo 1 lugar.
-  { id: "v9", placeId: "p1", visitedOn: "2026-10-25", rating: 4.5, occasions: ["solo", "work_study"] },
-  // Viagens
-  { id: "v10", placeId: "p9", visitedOn: "2026-07-18", rating: 4.5, occasions: ["with_friends"] },
-  { id: "v11", placeId: "p10", visitedOn: "2026-08-03", rating: 5, occasions: ["romantic"] },
-  { id: "v12", placeId: "p11", visitedOn: "2026-08-05", rating: 4, occasions: ["solo"] },
-];
+export const mockVisits: readonly MockVisit[] = [];
 
 /** Pessoas que quem está usando o app segue. */
 export const mockFollowing: readonly MockUser[] = [
@@ -135,21 +108,11 @@ export const mockFollowing: readonly MockUser[] = [
   { id: "u3", name: "Duda Freitas", username: "dudafreitas" },
 ];
 
-/** Visitas de quem é seguido, fora de ordem de propósito. */
-export const mockFeedVisits: readonly FeedVisit[] = [
-  { id: "f1", userId: "u1", placeId: "p4", visitedOn: "2026-10-26", rating: 4.5, occasions: ["romantic"] },
-  { id: "f2", userId: "u2", placeId: "p2", visitedOn: "2026-10-24", rating: 4, occasions: ["with_friends"] },
-  { id: "f3", userId: "u3", placeId: "p10", visitedOn: "2026-10-27", rating: 5, occasions: ["with_family", "romantic"] },
-  { id: "f4", userId: "u1", placeId: "p5", visitedOn: "2026-10-20", rating: 3.5, occasions: ["solo", "work_study"] },
-  { id: "f5", userId: "u2", placeId: "p6", visitedOn: "2026-10-27", rating: 4, occasions: [] },
-];
+/** Visitas de quem é seguido. */
+export const mockFeedVisits: readonly FeedVisit[] = [];
 
 /** A lista "Quero ir" de quem está usando o app (privada por padrão). */
-export const mockWantToGo: readonly WantToGoItem[] = [
-  { id: "w1", placeId: "p12", sourceUrl: "https://www.instagram.com/p/lugora-exemplo/", addedOn: "2026-10-21" },
-  { id: "w2", placeId: "p14", sourceUrl: "https://www.tiktok.com/@lugora.exemplo/video/1", addedOn: "2026-10-15" },
-  { id: "w3", placeId: "p13", addedOn: "2026-09-30" },
-];
+export const mockWantToGo: readonly WantToGoItem[] = [];
 
 export function getCity(cityId: string): MockCity | undefined {
   return mockCities.find((city) => city.id === cityId);

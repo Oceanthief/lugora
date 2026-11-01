@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { placeCategories } from "./categories";
 import {
   getCity,
   getFeed,
@@ -21,6 +22,29 @@ describe("dados fictícios", () => {
       const [lng, lat] = place.location;
       expect(Math.abs(lng - city!.center[0]), place.id).toBeLessThan(0.15);
       expect(Math.abs(lat - city!.center[1]), place.id).toBeLessThan(0.15);
+    }
+  });
+
+  it("põe todos os lugares dentro de Juiz de Fora", () => {
+    for (const { name, location } of mockPlaces) {
+      const [lng, lat] = location;
+      expect(lat, name).toBeGreaterThanOrEqual(-21.84);
+      expect(lat, name).toBeLessThanOrEqual(-21.68);
+      expect(lng, name).toBeGreaterThanOrEqual(-43.44);
+      expect(lng, name).toBeLessThanOrEqual(-43.3);
+    }
+  });
+
+  it("não repete lugar nem id do Overture", () => {
+    const ids = mockPlaces.map((place) => place.id);
+    const gersIds = mockPlaces.flatMap((place) => (place.gersId ? [place.gersId] : []));
+    expect(new Set(ids).size).toBe(ids.length);
+    expect(new Set(gersIds).size).toBe(gersIds.length);
+  });
+
+  it("usa só categorias que existem no app", () => {
+    for (const { name, category } of mockPlaces) {
+      expect(placeCategories, name).toContain(category);
     }
   });
 
@@ -75,9 +99,10 @@ describe("getFeed", () => {
   });
 
   it("desempata visitas do mesmo dia sempre na mesma ordem", () => {
+    const [a, b] = mockPlaces;
     const visits: FeedVisit[] = [
-      { id: "f2", userId: "u1", placeId: "p1", visitedOn: "2026-10-27", rating: 4, occasions: [] },
-      { id: "f1", userId: "u2", placeId: "p2", visitedOn: "2026-10-27", rating: 3, occasions: [] },
+      { id: "f2", userId: "u1", placeId: a.id, visitedOn: "2026-10-27", rating: 4, occasions: [] },
+      { id: "f1", userId: "u2", placeId: b.id, visitedOn: "2026-10-27", rating: 3, occasions: [] },
     ];
     expect(getFeed(visits).map((item) => item.visit.id)).toEqual(["f1", "f2"]);
   });
