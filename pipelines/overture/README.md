@@ -67,8 +67,24 @@ python relatorio_jf.py --release AAAA-MM-DD.0
 - **Métricas precisam ser validadas.** A primeira versão da métrica de recência contava a data que o próprio Overture carimba em todo registro a cada versão, e mostrava "100% atualizado". A correção considera só a data da fonte original.
 - **Esquemas de dados abertos mudam.** Entre versões, `categories` virou `basic_category` e `taxonomy`. O script confere as colunas antes de montar a consulta.
 
+## Países e cidades (`importar_divisoes.py`)
+
+Carrega no banco os países e os municípios do Brasil, com os limites do Overture e os nomes oficiais do IBGE ([ADR 0008](../../docs/decisoes/0008-paises-e-cidades-overture-ibge.md)).
+
+```bash
+pip install -r requirements.txt
+cp .env.example .env                  # endereço do banco local; o .env fica fora do git
+python importar_divisoes.py           # usa a cópia local, se houver
+python importar_divisoes.py --atualizar
+```
+
+- **Precisa** do banco local no ar (`npx supabase start`, na raiz).
+- **Idempotente:** rodar de novo a mesma release mostra "0 novos, 0 alterados" e não apaga nada.
+- **Depois de um `npx supabase db reset`,** rode de novo: o reset apaga a carga e deixa só o que está no seed.
+- **Resultado na release 2026-10-21.0:** 5.571 municípios, 219 países e territórios (97 MB + 188 MB no banco), Juiz de Fora com 1.436,8 km². Com a cópia local, a execução leva de 2 a 3 minutos; na primeira vez, soma-se o download.
+
 ## Privacidade e atribuição
 
 - **Sem contatos:** o script não copia e-mails nem telefones.
 - **Base bruta fora do repositório:** ela contém nomes de profissionais autônomos, então só o script e os números agregados são publicados.
-- **Licenças e créditos:** dados de lugares © Overture Maps Foundation, com licenças por fonte (Meta e outras: CDLA Permissive 2.0; Foursquare: Apache 2.0; AllThePlaces: CC0). Limites © OpenStreetMap contributors (ODbL).
+- **Licenças e créditos:** dados de lugares © Overture Maps Foundation, com licenças por fonte (Meta e outras: CDLA Permissive 2.0; Foursquare: Apache 2.0; AllThePlaces: CC0). Limites © OpenStreetMap contributors (ODbL). Lista de municípios: IBGE.
