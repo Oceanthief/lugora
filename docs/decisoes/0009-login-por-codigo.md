@@ -1,6 +1,6 @@
 # 0009. Login por código de 6 dígitos enviado por e-mail
 
-- **Status:** proposta
+- **Status:** aceita (Fatia 2)
 - **Data:** 2026-11-03
 
 ## Contexto
