@@ -116,7 +116,7 @@ Lista única em `web/src/lib/categories.ts`; ícones em `web/src/lib/category-ic
 
 ## Rotas do app (português, porque são interface)
 
-`/mapa` · `/feed` · `/registrar` · `/quero-ir` · `/perfil` · `/perfil/[username]` · `/lugar/[id]` · `/configuracoes` · `/entrar` · `/cadastro` · `/sobre` · `/estilos` (temporária, Fatia 1)
+`/mapa` · `/feed` · `/registrar` · `/quero-ir` · `/perfil` · `/perfil/[username]` · `/lugar/[id]` · `/configuracoes` · `/entrar` · `/cadastro` · `/privacidade` · `/sobre` · `/estilos` (temporária, Fatia 1)
 
 ## Termos da interface
 
