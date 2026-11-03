@@ -8,7 +8,8 @@ import { use, useLayoutEffect, useRef, useState, type FormEvent } from "react";
 
 import { strings } from "@/content/pt-BR";
 import { formatRating, toISODate } from "@/lib/format";
-import { occasions, type MockPlace, type Occasion } from "@/lib/mock-data";
+import type { MockPlace } from "@/lib/mock-data";
+import { occasions, type Occasion } from "@/lib/occasions";
 import {
   MAX_OCCASIONS,
   RATING_OPTIONS,

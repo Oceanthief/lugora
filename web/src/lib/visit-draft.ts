@@ -1,4 +1,4 @@
-import type { Occasion } from "./mock-data";
+import type { Occasion } from "./occasions";
 
 /** Ocasiões por visita (seção 7.8). */
 export const MAX_OCCASIONS = 3;
