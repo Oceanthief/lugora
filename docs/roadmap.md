@@ -100,9 +100,9 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 - [x] Colocar em `docs/design/referencias/` de 3 a 6 prints de apps que você gosta, cada um com uma linha dizendo o quê (o Claude Code lê imagens).
 - [x] Instalar o plugin `frontend-design` (ver o guia de início).
 - [x] Gerar as três direções na rota `/estilos`.
-- [ ] Escolher uma e transformá-la em tokens (cores claro/escuro, tipografia, espaçamento, raios) no tema do Tailwind.
-- [ ] Paleta sequencial do mapa em 4 níveis, com variação de luminosidade e segura para daltônicos.
-- [ ] Registrar a escolha em `docs/design/identidade.md` e aplicar os tokens nas telas da Fatia 0.
+- [x] Escolher uma e transformá-la em tokens (cores claro/escuro, tipografia, espaçamento, raios) no tema do Tailwind. Escolhida: C. Luz de poste (ADR 0007).
+- [x] Paleta sequencial do mapa em 4 níveis, com variação de luminosidade e segura para daltônicos.
+- [ ] Registrar a escolha em `docs/design/identidade.md` e aplicar os tokens nas telas da Fatia 0. (Registro feito; falta aplicar nas telas.)
 - [ ] Remover a rota `/estilos`.
 
 **Aceite:**
