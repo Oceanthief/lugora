@@ -14,9 +14,9 @@ import {
   mockUsers,
   mockVisits,
   mockWantToGo,
-  occasions,
 } from "./mock-data";
 import type { MockPlace, MockVisit } from "./mock-data";
+import { occasions } from "./occasions";
 
 describe("dados do app", () => {
   it("põe cada lugar perto do centro da sua cidade", () => {
@@ -81,6 +81,11 @@ describe("dados do app", () => {
 describe("usuário logado e quem ele segue", () => {
   it("é o Victor Ramos, que mora em Juiz de Fora", () => {
     expect(mockProfile).toMatchObject({ name: "Victor Ramos", username: "victorramos", homeCityId: "jf" });
+  });
+
+  it("não entrega a cidade de residência de mais ninguém (seção 9.3)", () => {
+    for (const user of mockUsers) expect(user, user.id).not.toHaveProperty("homeCityId");
+    for (const item of getFeed()) expect(item.user, item.visit.id).not.toHaveProperty("homeCityId");
   });
 
   it("só mostra no perfil e no mapa as visitas do próprio Victor", () => {

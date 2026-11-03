@@ -26,6 +26,10 @@ pipelines/**/dados/
 pipelines/**/relatorio/
 *.parquet
 
+# Prints de referência de design: são de outros apps, ficam só na sua máquina
+docs/design/referencias/*
+!docs/design/referencias/README.md
+
 # Python
 __pycache__/
 *.pyc

@@ -21,7 +21,7 @@ As duas se encontram no **portão do beta**, depois da Fatia 10.
 | Fatia | Nome | O que você vê no fim | Tam. | Depende de | Status |
 | --- | --- | --- | --- | --- | --- |
 | 0 | Esqueleto no localhost | App com navegação, telas de exemplo e mapa de JF | M | — | concluída |
-| 1 | Direção visual | Três estilos lado a lado em `/estilos`; você escolhe um | P | 0 | a fazer |
+| 1 | Direção visual | Três estilos lado a lado em `/estilos`; você escolhe um | P | 0 | concluída |
 | 2 | Banco local e contas | Entrar, fazer o cadastro e ver o próprio perfil | G | 0 | a fazer |
 | 3 | Base de lugares de JF e busca | Buscar "poleiro" e ver as duas unidades, sem duplicatas | M | 2 | a fazer |
 | 4 | Registro rápido e mapa | Registrar uma visita e ver o ponto no mapa | G | 3 | a fazer |
@@ -87,7 +87,7 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 
 ### Fatia 1: Direção visual
 
-**Status:** a fazer · **Tamanho:** P
+**Status:** concluída · **Tamanho:** P
 
 **Objetivo:** escolher a identidade visual antes de construir as telas de verdade, comparando opções reais no navegador em vez de imaginar.
 
@@ -97,13 +97,13 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 
 **Tarefas:**
 
-- [ ] Colocar em `docs/design/referencias/` de 3 a 6 prints de apps que você gosta, cada um com uma linha dizendo o quê (o Claude Code lê imagens).
-- [ ] Instalar o plugin `frontend-design` (ver o guia de início).
-- [ ] Gerar as três direções na rota `/estilos`.
-- [ ] Escolher uma e transformá-la em tokens (cores claro/escuro, tipografia, espaçamento, raios) no tema do Tailwind.
-- [ ] Paleta sequencial do mapa em 4 níveis, com variação de luminosidade e segura para daltônicos.
-- [ ] Registrar a escolha em `docs/design/identidade.md` e aplicar os tokens nas telas da Fatia 0.
-- [ ] Remover a rota `/estilos`.
+- [x] Colocar em `docs/design/referencias/` de 3 a 6 prints de apps que você gosta, cada um com uma linha dizendo o quê (o Claude Code lê imagens).
+- [x] Instalar o plugin `frontend-design` (ver o guia de início).
+- [x] Gerar as três direções na rota `/estilos`.
+- [x] Escolher uma e transformá-la em tokens (cores claro/escuro, tipografia, espaçamento, raios) no tema do Tailwind. Escolhida: C. Luz de poste (ADR 0007).
+- [x] Paleta sequencial do mapa em 4 níveis, com variação de luminosidade e segura para daltônicos.
+- [x] Registrar a escolha em `docs/design/identidade.md` e aplicar os tokens nas telas da Fatia 0.
+- [x] Remover a rota `/estilos`.
 
 **Aceite:**
 

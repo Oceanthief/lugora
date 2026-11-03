@@ -42,6 +42,10 @@ export const strings = {
     work_study: "Trabalhar/estudar",
   },
   rating: (rating: string) => `Nota ${rating}`,
+  /** Lido antes da nota em pílula, só por leitores de tela. */
+  ratingLabel: "Nota",
+  /** "Cervejaria em Juiz de Fora": categoria e cidade sem separadores. */
+  placeIn: (category: string, city: string) => `${category} em ${city}`,
   map: {
     title: "Mapa",
     placesList: "Lugares no mapa",
@@ -99,8 +103,7 @@ export const strings = {
   },
   profile: {
     title: "Perfil",
-    homeCity: (city: string) => `Mora em ${city}`,
-    onlyYou: "só você vê",
+    homeCity: (city: string) => `Mora em ${city} (só você vê)`,
     statsLabel: "Seus números",
     countries: "Países",
     cities: "Cidades",

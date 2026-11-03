@@ -8,7 +8,8 @@ import { use, useLayoutEffect, useRef, useState, type FormEvent } from "react";
 
 import { strings } from "@/content/pt-BR";
 import { formatRating, toISODate } from "@/lib/format";
-import { occasions, type MockPlace, type Occasion } from "@/lib/mock-data";
+import type { MockPlace } from "@/lib/mock-data";
+import { occasions, type Occasion } from "@/lib/occasions";
 import {
   MAX_OCCASIONS,
   RATING_OPTIONS,
@@ -20,11 +21,18 @@ import {
 
 const text = strings.register;
 
-const fieldClass =
-  "mt-2 block min-h-11 w-full rounded-lg border border-zinc-300 bg-white px-3 text-base text-zinc-950 aria-invalid:border-red-700 dark:border-zinc-700 dark:bg-zinc-900 dark:text-white";
+const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
-const chipClass =
-  "flex min-h-11 cursor-pointer items-center justify-center rounded-full border border-zinc-300 px-4 text-sm font-medium has-checked:border-zinc-950 has-checked:bg-zinc-950 has-checked:text-white has-disabled:cursor-not-allowed has-disabled:opacity-40 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-zinc-950 dark:border-zinc-700 dark:has-checked:border-white dark:has-checked:bg-white dark:has-checked:text-zinc-950";
+const fieldClass = `mt-2 block min-h-12 w-full rounded-control border border-line bg-surface px-4 text-base text-ink aria-invalid:border-danger ${focusRing}`;
+
+const chipBase =
+  "flex min-h-11 cursor-pointer items-center justify-center rounded-control border border-line bg-surface px-4 text-sm font-medium text-ink has-checked:border-accent has-disabled:cursor-not-allowed has-disabled:opacity-40 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent";
+
+/** A nota escolhida acende em âmbar: é a sua avaliação. */
+const ratingChipClass = `${chipBase} has-checked:bg-accent has-checked:text-on-accent`;
+
+/** A ocasião escolhida fica em âmbar suave, com contorno âmbar para não depender só da cor. */
+const occasionChipClass = `${chipBase} has-checked:bg-glow has-checked:text-on-glow`;
 
 export function VisitForm({ places }: { places: readonly MockPlace[] }) {
   // A data de hoje tem que ser a do aparelho, não a do dia em que o site foi
@@ -86,7 +94,7 @@ export function VisitForm({ places }: { places: readonly MockPlace[] }) {
           <option value="">{text.placePlaceholder}</option>
           {places.map((place) => (
             <option key={place.id} value={place.id}>
-              {place.name} · {strings.categories[place.category]}
+              {place.name} ({strings.categories[place.category]})
             </option>
           ))}
         </select>
@@ -114,7 +122,7 @@ export function VisitForm({ places }: { places: readonly MockPlace[] }) {
         <legend className="font-medium">{text.rating}</legend>
         <div className="mt-2 grid grid-cols-5 gap-2">
           {RATING_OPTIONS.map((value) => (
-            <label key={value} className={chipClass}>
+            <label key={value} className={ratingChipClass}>
               <input
                 type="radio"
                 name="rating"
@@ -133,7 +141,7 @@ export function VisitForm({ places }: { places: readonly MockPlace[] }) {
       <fieldset aria-describedby={errors.occasions ? "occasions-error" : undefined}>
         <legend className="font-medium">
           {text.occasions}{" "}
-          <span className="font-normal text-zinc-600 dark:text-zinc-400">
+          <span className="font-normal text-ink-muted">
             ({text.occasionsHint(MAX_OCCASIONS)})
           </span>
         </legend>
@@ -141,7 +149,7 @@ export function VisitForm({ places }: { places: readonly MockPlace[] }) {
           {occasions.map((occasion) => {
             const checked = selected.includes(occasion);
             return (
-              <label key={occasion} className={chipClass}>
+              <label key={occasion} className={occasionChipClass}>
                 <input
                   type="checkbox"
                   checked={checked}
@@ -160,7 +168,7 @@ export function VisitForm({ places }: { places: readonly MockPlace[] }) {
 
       <button
         type="submit"
-        className="min-h-12 rounded-full bg-zinc-950 px-6 font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-950 dark:bg-white dark:text-zinc-950"
+        className={`min-h-12 rounded-control bg-accent px-6 font-semibold text-on-accent ${focusRing}`}
       >
         {text.submit}
       </button>
@@ -176,7 +184,7 @@ export function VisitForm({ places }: { places: readonly MockPlace[] }) {
 function FieldError({ id, error }: { id: string; error?: VisitDraftError }) {
   if (!error) return null;
   return (
-    <p id={id} className="mt-2 text-sm text-red-700 dark:text-red-400">
+    <p id={id} className="mt-2 text-sm text-danger">
       {text.errors[error]}
     </p>
   );

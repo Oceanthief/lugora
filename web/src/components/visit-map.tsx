@@ -6,15 +6,15 @@
 import "maplibre-gl/dist/maplibre-gl.css";
 
 import type { Map as MapLibreMap } from "maplibre-gl";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 
 import { strings } from "@/content/pt-BR";
 import { categoryIconPaths } from "@/lib/category-icons";
 import { formatRating, formatVisitDate } from "@/lib/format";
+import { mapColors } from "@/lib/design-tokens";
 import {
   boundsOf,
   JUIZ_DE_FORA,
-  MAP_POINT_COLORS,
   MAP_STYLE_URL,
   MAP_WORKER_URL,
   type MapCamera,
@@ -59,7 +59,8 @@ export function VisitMap({ places }: { places: readonly VisitedPlace[] }) {
         ...(bounds && {
           bounds,
           fitBoundsOptions: {
-            padding: { top: 64, right: 40, bottom: 80, left: 40 },
+            // Embaixo, a margem também cobre a barra que flutua sobre o mapa.
+            padding: { top: 64, right: 40, bottom: 128, left: 40 },
             maxZoom: 15,
           },
         }),
@@ -104,12 +105,17 @@ export function VisitMap({ places }: { places: readonly VisitedPlace[] }) {
     };
   }, [places]);
 
-  // A margem embaixo afasta a atribuição do botão Registrar, que sobe 20 px
-  // acima da barra inferior. O botão de fechar o balão ganha 44 px de toque.
+  // O texto do próprio mapa (atribuição) usa a cor fixa do mapa, que é sempre
+  // claro: no tema escuro, o texto claro do app sumiria sobre ele.
+  // A margem embaixo tira a atribuição de trás da barra flutuante. O balão
+  // segue o tema do app (cartão, texto e contorno dos tokens), sem a ponta, e
+  // o botão de fechar ganha 44 px de toque. O "!" é necessário no balão: o CSS
+  // do MapLibre fica fora das camadas do Tailwind e venceria as classes.
   return (
     <div
       ref={containerRef}
-      className="h-full w-full [&_.maplibregl-ctrl-bottom-right]:mb-5 [&_.maplibregl-popup-close-button]:size-11 [&_.maplibregl-popup-close-button]:text-2xl"
+      style={{ "--map-ink": mapColors.labelText } as CSSProperties}
+      className="h-full w-full text-[var(--map-ink)] [&_.maplibregl-ctrl-bottom-right]:mb-[calc(5.5rem+env(safe-area-inset-bottom))] [&_.maplibregl-popup-close-button]:size-11 [&_.maplibregl-popup-close-button]:text-2xl [&_.maplibregl-popup-close-button]:text-ink [&_.maplibregl-popup-content]:rounded-card! [&_.maplibregl-popup-content]:border! [&_.maplibregl-popup-content]:border-line! [&_.maplibregl-popup-content]:bg-surface! [&_.maplibregl-popup-content]:p-4! [&_.maplibregl-popup-content]:text-ink! [&_.maplibregl-popup-content]:shadow-none! [&_.maplibregl-popup-tip]:hidden"
     />
   );
 }
@@ -150,9 +156,9 @@ function addPlaceLayers(map: MapLibreMap, places: readonly VisitedPlace[]) {
       source: SOURCE_ID,
       paint: {
         "circle-radius": 11,
-        "circle-color": MAP_POINT_COLORS.fill,
+        "circle-color": mapColors.pointFill,
         "circle-stroke-width": 2,
-        "circle-stroke-color": MAP_POINT_COLORS.stroke,
+        "circle-stroke-color": mapColors.pointStroke,
       },
     },
     firstLabelLayer,
@@ -184,8 +190,8 @@ function addPlaceLayers(map: MapLibreMap, places: readonly VisitedPlace[]) {
         "text-offset": [0, 1.1],
       },
       paint: {
-        "text-color": MAP_POINT_COLORS.text,
-        "text-halo-color": MAP_POINT_COLORS.textHalo,
+        "text-color": mapColors.labelText,
+        "text-halo-color": mapColors.labelHalo,
         "text-halo-width": 1.5,
       },
     },
@@ -204,7 +210,7 @@ function drawIcon(paths: readonly string[]): ImageData {
   if (!context) return new ImageData(size, size);
 
   context.scale(size / 24, size / 24);
-  context.strokeStyle = MAP_POINT_COLORS.icon;
+  context.strokeStyle = mapColors.pointIcon;
   context.lineWidth = 2.5;
   context.lineCap = "round";
   context.lineJoin = "round";
@@ -216,8 +222,10 @@ function drawIcon(paths: readonly string[]): ImageData {
 /** Botão invisível de 44 px sobre o ponto; o contorno aparece no foco. */
 function markerElement(place: VisitedPlace): HTMLElement {
   const element = document.createElement("div");
+  // O mapa base é sempre claro, então o contorno usa a cor fixa do mapa.
+  element.style.setProperty("--map-focus", mapColors.focus);
   element.className =
-    "size-11 cursor-pointer rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-zinc-950";
+    "size-11 cursor-pointer rounded-full focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--map-focus)]";
   // O MapLibre só põe este papel no marcador padrão; aqui é por nossa conta.
   element.setAttribute("role", "button");
   element.setAttribute(
@@ -238,19 +246,25 @@ function markerElement(place: VisitedPlace): HTMLElement {
 function popupContent(place: VisitedPlace): HTMLElement {
   const root = document.createElement("div");
   // pr-10 deixa espaço para o botão de fechar, que ocupa 44 px no canto.
-  root.className = "pr-10 text-sm text-zinc-900";
+  root.className = "pr-10 font-sans text-sm";
 
   const name = document.createElement("p");
-  name.className = "font-semibold";
+  name.className = "text-base font-semibold leading-tight";
   name.textContent = place.name;
 
-  const details = document.createElement("p");
-  details.textContent = `${strings.categories[place.category]} · ${strings.rating(formatRating(place.rating))}`;
+  const category = document.createElement("p");
+  category.className = "text-ink-muted";
+  category.textContent = strings.categories[place.category];
+
+  // Cada informação na sua linha, sem separadores (identidade.md).
+  const rating = document.createElement("p");
+  rating.className = "mt-2 font-semibold text-accent";
+  rating.textContent = strings.rating(formatRating(place.rating));
 
   const date = document.createElement("p");
-  date.className = "text-zinc-600";
+  date.className = "text-ink-muted";
   date.textContent = strings.map.visitedOn(formatVisitDate(place.visitedOn));
 
-  root.append(name, details, date);
+  root.append(name, category, rating, date);
   return root;
 }

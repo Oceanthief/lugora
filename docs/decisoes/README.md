@@ -12,3 +12,4 @@ Para criar um novo, use a skill `/adr <título>` no Claude Code, ou copie `0000-
 | [0004](0004-base-de-lugares-overture.md) | Base de lugares: Overture Maps | aceita |
 | [0005](0005-privacidade-nos-agregados.md) | Privacidade nos números e mapas públicos | aceita |
 | [0006](0006-mapa-no-app.md) | Mapa: como o MapLibre entra no app | proposta |
+| [0007](0007-tokens-de-design.md) | Tokens de design: fonte única em TypeScript | proposta |

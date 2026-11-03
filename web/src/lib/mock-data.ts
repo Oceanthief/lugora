@@ -11,22 +11,20 @@
  *
  * Não edite os JSON à mão: rode os scripts. Os dados fictícios anteriores
  * estão em data/seed/mock-data_ficticio_backup.ts.
+ *
+ * Só o servidor lê este arquivo. O demo.json faz o papel do banco: tem as
+ * visitas e a cidade de residência de todo mundo. Se um Client Component
+ * importasse daqui, tudo isso iria para o navegador. O "server-only" faz o
+ * build falhar nesse caso. Client Components podem usar `import type`, que
+ * some na compilação.
  */
+
+import "server-only";
 
 import demoData from "../data/demo.json";
 import placesData from "../data/places.json";
 import type { PlaceCategory } from "./categories";
-
-/** Lista fixa de ocasiões (seção 7.8). No banco, vira a tabela `tags`. */
-export const occasions = [
-  "romantic",
-  "with_friends",
-  "with_family",
-  "solo",
-  "work_study",
-] as const;
-
-export type Occasion = (typeof occasions)[number];
+import type { Occasion } from "./occasions";
 
 export type MockCity = {
   id: string;
@@ -66,10 +64,15 @@ export type MockVisit = {
   occasions: readonly Occasion[];
 };
 
+/** O que qualquer pessoa pode ver de alguém (no banco, `profiles`). */
 export type MockUser = {
   id: string;
   name: string;
   username: string;
+};
+
+/** Quem está usando o app, com o que só ele vê (no banco, `profiles_private`). */
+export type MockProfile = MockUser & {
   /** Privada: só a própria pessoa vê (seção 9.3). */
   homeCityId: string;
 };
@@ -98,14 +101,20 @@ export const mockPlaces: readonly MockPlace[] = placesData.map(
   }),
 );
 
-/** Todas as pessoas da demonstração, incluindo quem está usando o app. */
-export const mockUsers: readonly MockUser[] = demoData.users;
+/**
+ * Todas as pessoas da demonstração, incluindo quem está usando o app, sem a
+ * cidade de residência: ela só sai daqui em `mockProfile`.
+ */
+export const mockUsers: readonly MockUser[] = demoData.users.map(
+  ({ id, name, username }) => ({ id, name, username }),
+);
 
 /** Quem está usando o app nesta demonstração (o Victor). */
-export const mockProfile: MockUser = (() => {
-  const user = mockUsers.find((u) => u.id === demoData.currentUserId);
+export const mockProfile: MockProfile = (() => {
+  const user = demoData.users.find((u) => u.id === demoData.currentUserId);
   if (!user) throw new Error(`Usuário logado ${demoData.currentUserId} não está em demo.json.`);
-  return user;
+  const { id, name, username, homeCityId } = user;
+  return { id, name, username, homeCityId };
 })();
 
 /** As visitas de todas as pessoas. */

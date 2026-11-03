@@ -1,20 +1,11 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 
 import { BottomNav } from "@/components/bottom-nav";
 import { strings } from "@/content/pt-BR";
+import { colors, tokensCss } from "@/lib/design-tokens";
 
+import { urbanist } from "./fonts";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: {
@@ -38,19 +29,24 @@ export const viewport: Viewport = {
   viewportFit: "cover",
   // Cor da barra de status, igual ao fundo do app em cada tema.
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
-    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+    { media: "(prefers-color-scheme: light)", color: colors.light.canvas },
+    { media: "(prefers-color-scheme: dark)", color: colors.dark.canvas },
   ],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="pt-BR"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
-      <body className="flex h-dvh flex-col">
-        <main className="min-h-0 flex-1 overflow-y-auto">{children}</main>
+    <html lang="pt-BR" className={`${urbanist.variable} h-full bg-canvas antialiased`}>
+      <head>
+        {/* Cores dos tokens (claro, escuro e data-theme), de design-tokens.ts. */}
+        <style>{tokensCss()}</style>
+      </head>
+      <body className="relative h-dvh bg-canvas font-sans text-ink">
+        {/* A barra inferior flutua por cima do conteúdo; a margem de baixo
+            impede que ela cubra o fim da tela. */}
+        <main className="relative h-full overflow-y-auto pb-[calc(6.5rem+env(safe-area-inset-bottom))]">
+          {children}
+        </main>
         <BottomNav />
       </body>
     </html>
