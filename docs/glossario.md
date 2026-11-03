@@ -45,6 +45,9 @@ O documento de visão usa nomes em português. O código e o banco usam inglês 
 | confianca | `confidence` | 0 a 1 |
 | fontes | `sources` | |
 | id_externo / ids_externos | `gers_id` / `merged_gers_ids` | GERS do Overture |
+| endereco | `address` | |
+| cep | `postal_code` | fora da tabela da seção 8; incluído por decisão do Victor (importação de JF, 2026-11) |
+| estado_regiao (cidade) | `state` | UF no Brasil |
 | status (lugar) | `status` | `active`, `pending`, `closed`, `merged` |
 | mesclado_em_id | `merged_into_id` | |
 | verificado / verificado_por | `is_verified` / `verified_by` | `gps`, `second_visit`, `trusted_user`, `import` |
@@ -63,6 +66,7 @@ O documento de visão usa nomes em português. O código e o banco usam inglês 
 | tipo (lista) | `kind` | `want_to_go`, `curated` |
 | link_origem | `source_url` | "onde eu vi" |
 | seguidor_id / seguido_id | `follower_id` / `followee_id` | |
+| usuario_id | `user_id` | dono da visita, da lista etc. |
 | tipo (sinalização) | `kind` | `closed_permanently`, `closed_temporarily`, `moved`, `wrong_category`, `duplicate`, `not_exists` |
 | visitavel / sensivel | `is_visitable` / `is_sensitive` | |
 
@@ -82,6 +86,27 @@ O documento de visão usa nomes em português. O código e o banco usam inglês 
 | galeria_visualizada / foto_denunciada | `gallery_viewed` / `photo_reported` |
 | seguiu_usuario | `user_followed` |
 | convite_enviado / convite_aceito | `invite_sent` / `invite_accepted` |
+
+## Categorias de lugar
+
+Lista única em `web/src/lib/categories.ts`; ícones em `web/src/lib/category-icons.ts`. O grupo segue a D3 (seção 7.2).
+
+| Interface | Código | Grupo (D3) |
+| --- | --- | --- |
+| Café | `cafe` | Comer e beber |
+| Bar | `bar` | Comer e beber |
+| Restaurante | `restaurant` | Comer e beber |
+| Padaria | `bakery` | Comer e beber |
+| Sorveteria | `ice_cream` | Comer e beber |
+| Pizzaria | `pizzeria` | Comer e beber |
+| Hamburgueria | `burger` | Comer e beber |
+| Cervejaria | `brewery` | Comer e beber |
+| Doceria | `dessert_shop` | Comer e beber |
+| Livraria | `bookstore` | Passeio e compras |
+| Museu | `museum` | Cultura |
+| Centro cultural | `cultural_center` | Cultura |
+| Cinema | `cinema` | Cultura |
+| Parque | `park` | Ar livre |
 
 ## Rotas do app (português, porque são interface)
 

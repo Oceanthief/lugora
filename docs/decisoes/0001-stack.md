@@ -1,6 +1,6 @@
 # 0001. Stack: PWA em Next.js, Supabase e MapLibre
 
-- **Status:** proposta (aceitar ou mudar antes da Fatia 0)
+- **Status:** aceita (Fatia 0)
 - **Data:** 2026-10-23
 
 ## Contexto
@@ -22,5 +22,6 @@ Opção 1. O MapLibre GL JS com os mapas do OpenFreeMap completa a stack: códig
 - A lógica de dados fica em SQL (migrações, RLS, funções), o ponto forte do Victor. A interface em TypeScript será aprendida aos poucos, com a skill `explicar`.
 - O banco local exige Docker Desktop (Fatia 2).
 - Os planos gratuitos (Supabase, Vercel) atendem o beta. O Supabase gratuito pausa projetos após 7 dias sem uso.
+- O OpenFreeMap é gratuito e sem chave, mas não oferece compromisso de disponibilidade. A URL do estilo do mapa fica numa constante única no app, para que trocar de provedor de tiles seja uma alteração de uma linha.
 - Se o PWA não bastar no iPhone (compartilhamento a partir de outros apps, notificações), dá para empacotar como app nativo depois, com Capacitor, sem reescrever.
 - Revisar se o objetivo do portfólio mudar para destacar backend em Python.

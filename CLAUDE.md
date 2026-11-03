@@ -41,14 +41,17 @@ Base: `docs/visao/09-privacidade-seguranca-e-lgpd.md`.
 - `web/`: app Next.js (App Router, TypeScript, Tailwind), mobile-first. Criado na Fatia 0.
 - `supabase/`: migrações SQL, seed com dados fictícios, testes pgTAP em `supabase/tests/`. Criado na Fatia 2.
 - `pipelines/overture/`: Python + DuckDB. Diagnóstico e importação da base de lugares.
+- `data/seed/`: CSV dos 100 lugares reais de JF usados pelo app até o banco chegar, e o backup dos dados fictícios.
 - `docs/`: visão, roadmap, decisões, glossário, design.
 
 ## Comandos
 
 Atualize esta seção sempre que um comando mudar.
 
-- App: `cd web` e `npm run dev`, depois abrir http://localhost:3000
+- App: `cd web` e `npm run dev`, depois abrir http://localhost:3000. Use sempre `npm run dev`/`npm run build`, não `next dev` direto: eles copiam antes o worker do MapLibre para `public/` (ADR 0006); sem ele, o mapa fica em branco.
 - Qualidade (em `web/`): `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`
+- Lugares (em `web/`): `npm run seed:lugares` importa `data/seed/lugares_jf_seed.csv` para `web/src/data/places.json` (idempotente). Não edite o JSON à mão.
+- Demonstração (em `web/`): `npm run seed:demo` gera usuários, quem segue quem, ~200 visitas e o "Quero ir" do Victor em `web/src/data/demo.json`, com semente fixa (42). Rode de novo se mudar os lugares; um teste avisa se o arquivo ficar desatualizado.
 - Banco local (a partir da Fatia 2, na raiz): `npx supabase start`, `npx supabase db reset`, `npx supabase test db`. Studio em http://127.0.0.1:54323
 - Pipeline (em `pipelines/overture/`): `python relatorio_jf.py`
 
@@ -56,6 +59,7 @@ Atualize esta seção sempre que um comando mudar.
 
 - Windows, com PowerShell ou Git Bash. O repositório fica fora do OneDrive.
 - No celular, o GPS exige HTTPS: use o deploy de preview. Em `http://IP-do-PC:3000` o navegador bloqueia a localização.
+- Celular na mesma Wi-Fi: `npm run dev` e abrir `http://IP-do-PC:3000`, com o IP do adaptador Wi-Fi (`ipconfig`, geralmente `192.168.…`). O endereço "Network" que o Next mostra pode ser de outro adaptador de rede (VPN, módulo de segurança), que não serve. Pela Wi-Fi o app abre, mas só instala com HTTPS (preview da Vercel).
 
 ## Idioma
 

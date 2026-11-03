@@ -20,7 +20,7 @@ As duas se encontram no **portão do beta**, depois da Fatia 10.
 
 | Fatia | Nome | O que você vê no fim | Tam. | Depende de | Status |
 | --- | --- | --- | --- | --- | --- |
-| 0 | Esqueleto no localhost | App com navegação, telas de exemplo e mapa de JF | M | — | a fazer |
+| 0 | Esqueleto no localhost | App com navegação, telas de exemplo e mapa de JF | M | — | concluída |
 | 1 | Direção visual | Três estilos lado a lado em `/estilos`; você escolhe um | P | 0 | a fazer |
 | 2 | Banco local e contas | Entrar, fazer o cadastro e ver o próprio perfil | G | 0 | a fazer |
 | 3 | Base de lugares de JF e busca | Buscar "poleiro" e ver as duas unidades, sem duplicatas | M | 2 | a fazer |
@@ -50,7 +50,7 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 
 ### Fatia 0: Esqueleto no localhost
 
-**Status:** a fazer · **Tamanho:** M
+**Status:** concluída · **Tamanho:** M
 
 **Objetivo:** ter o app rodando no localhost com a "casca" do Lugora (navegação, telas com dados de exemplo e o mapa), sem banco de dados. Rápido de construir, para você começar a reagir ao produto.
 
@@ -60,17 +60,17 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 
 **Tarefas:**
 
-- [ ] Aceitar (ou ajustar) os ADRs 0001 a 0003.
-- [ ] Criar `web/` com `create-next-app`: TypeScript, Tailwind, App Router, ESLint, pasta `src/`, npm, sem iniciar outro repositório git.
-- [ ] Scripts no `package.json`: `dev`, `build`, `lint`, `typecheck` (`tsc --noEmit`) e `test` (Vitest).
-- [ ] Layout mobile-first com a barra inferior e as rotas `/mapa`, `/feed`, `/registrar`, `/quero-ir` e `/perfil`.
-- [ ] Dados fictícios num único arquivo (`web/src/lib/mock-data.ts`), para serem trocados pelo banco depois.
-- [ ] Mapa com MapLibre GL JS e OpenFreeMap, centrado em Juiz de Fora, com atribuição visível e pontos fictícios.
-- [ ] Textos da interface em `web/src/content/pt-BR.ts`.
-- [ ] Manifesto PWA (nome Lugora, ícone provisório), para o app poder ser instalado no celular.
-- [ ] Um teste Vitest de exemplo: formatar a nota 4.5 como "4,5".
-- [ ] CI verde no GitHub (`.github/workflows/ci.yml`, job "web").
-- [ ] Ver no celular: `npm run dev` e abrir o endereço "Network" que o Next mostra, com o celular na mesma rede Wi-Fi. Se o Next avisar sobre origem cruzada, configurar `allowedDevOrigins`.
+- [x] Aceitar (ou ajustar) os ADRs 0001 a 0003.
+- [x] Criar `web/` com `create-next-app`: TypeScript, Tailwind, App Router, ESLint, pasta `src/`, npm, sem iniciar outro repositório git.
+- [x] Scripts no `package.json`: `dev`, `build`, `lint`, `typecheck` (`tsc --noEmit`) e `test` (Vitest).
+- [x] Layout mobile-first com a barra inferior e as rotas `/mapa`, `/feed`, `/registrar`, `/quero-ir` e `/perfil`.
+- [x] Dados fictícios num único arquivo (`web/src/lib/mock-data.ts`), para serem trocados pelo banco depois.
+- [x] Mapa com MapLibre GL JS e OpenFreeMap, centrado em Juiz de Fora, com atribuição visível e pontos fictícios.
+- [x] Textos da interface em `web/src/content/pt-BR.ts`.
+- [x] Manifesto PWA (nome Lugora, ícone provisório), para o app poder ser instalado no celular.
+- [x] Um teste Vitest de exemplo: formatar a nota 4.5 como "4,5".
+- [x] CI verde no GitHub (`.github/workflows/ci.yml`, job "web").
+- [x] Ver no celular: `npm run dev` e abrir `http://IP-do-PC:3000`, com o celular na mesma rede Wi-Fi (o IP certo está explicado no `CLAUDE.md`). Se o Next avisar sobre origem cruzada, configurar `allowedDevOrigins`.
 - [ ] (Recomendado) Conectar o repositório à Vercel com Root Directory = `web`. Cada PR ganha um link de preview em HTTPS.
 
 **Aceite:**
