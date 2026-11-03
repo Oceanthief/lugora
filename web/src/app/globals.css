@@ -8,8 +8,42 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+/*
+ * Tokens do Lugora (direção C, "Luz de poste"). Os valores vêm de
+ * src/lib/design-tokens.ts e o layout os injeta como variáveis --lugora-*;
+ * aqui eles viram classes do Tailwind (bg-canvas, text-ink, border-line...).
+ * "inline" faz cada classe ler a variável no próprio elemento, e assim um
+ * trecho da página pode forçar um tema com data-theme="dark".
+ * Documentação: docs/design/identidade.md.
+ */
+@theme inline {
+  --color-canvas: var(--lugora-canvas);
+  --color-surface: var(--lugora-surface);
+  --color-ink: var(--lugora-ink);
+  --color-ink-muted: var(--lugora-ink-muted);
+  --color-accent: var(--lugora-accent);
+  --color-on-accent: var(--lugora-on-accent);
+  --color-glow: var(--lugora-glow);
+  --color-on-glow: var(--lugora-on-glow);
+  --color-line: var(--lugora-line);
+  --color-danger: var(--lugora-danger);
+  --color-level-1: var(--lugora-level-1);
+  --color-level-2: var(--lugora-level-2);
+  --color-level-3: var(--lugora-level-3);
+  --color-level-4: var(--lugora-level-4);
+
+  --font-sans: var(--font-urbanist), ui-sans-serif, system-ui, sans-serif;
+
+  /* A luz âmbar em volta do que está "aceso" (lugar visitado, botão central). */
+  --shadow-glow: 0 0 24px -4px var(--lugora-accent);
+}
+
+@theme {
+  --radius-card: 1.5rem;
+  --radius-control: calc(infinity * 1px);
 }
 
 @media (prefers-color-scheme: dark) {

@@ -1,15 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono } from "next/font/google";
 
 import { BottomNav } from "@/components/bottom-nav";
 import { strings } from "@/content/pt-BR";
+import { tokensCss } from "@/lib/design-tokens";
 
+import { urbanist } from "./fonts";
 import "./globals.css";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -47,8 +44,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="pt-BR"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${urbanist.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        {/* Cores dos tokens (claro, escuro e data-theme), de design-tokens.ts. */}
+        <style>{tokensCss()}</style>
+      </head>
       <body className="flex h-dvh flex-col">
         <main className="min-h-0 flex-1 overflow-y-auto">{children}</main>
         <BottomNav />
