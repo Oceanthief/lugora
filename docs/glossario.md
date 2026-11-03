@@ -40,7 +40,7 @@ O documento de visão usa nomes em português. O código e o banco usam inglês 
 | finalidade / versao_politica / aceito | `purpose` / `policy_version` / `granted` | `essential`, `precise_location`, `emails`, `analytics` |
 | nome (usuário) | `name` | 1 a 80 caracteres |
 | username | `username` | o @: 3 a 30 caracteres, com minúsculas, números e `_` |
-| codigo_iso | `iso_code` | duas letras maiúsculas (`BR`) |
+| codigo_iso | `iso_code` | duas letras maiúsculas (`BR`); territórios em disputa usam `X?` do Overture (ADR 0008) |
 | geometria (país, cidade) | `boundary` | `geography(MultiPolygon, 4326)` |
 | fonte (cidade) | `source` | `overture` |
 | chave / valor / descricao (parâmetro) | `key` / `value` / `description` | `value` em `jsonb` |

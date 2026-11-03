@@ -22,6 +22,7 @@ Se não der para escrever a hipótese de uma ideia, ela ainda não está madura 
 | --- | --- | --- |
 | 1 | Registro offline em viagem | Aguardando a Fase 0 |
 | 2 | Importar listas salvas do Google Maps | Aguardando a Fase 0 |
+| 3 | Territórios e áreas em disputa no mapa de países | Aguardando a Fatia 6 |
 
 ## Ideias
 
@@ -46,6 +47,17 @@ Se não der para escrever a hipótese de uma ideia, ela ainda não está madura 
   - Antes de qualquer código: testar o formato da exportação com 2 ou 3 participantes.
 - **Custo e riscos:** o formato da exportação pode mudar sem aviso. Cada item precisa ser casado com a base de lugares (regra D4). Usa só dados que a própria pessoa exportou, sem a API do Google.
 - **Status:** aguardando a Fase 0.
+
+### 3. Territórios e áreas em disputa no mapa de países
+
+- **Data:** 03/11/2026
+- **Ideia:** decidir como aparecem os territórios que o Overture não trata como país de código ISO. Hong Kong, Macau, Groenlândia, Porto Rico e Saara Ocidental não têm linha própria em `countries`. Outros 21 territórios em disputa têm linha própria, com código `X?` (Kosovo, Gaza, Cisjordânia, Colinas de Golã) e, em alguns casos, nome em chinês, árabe ou hebraico. Opções: importar o tipo `dependency`, agrupar áreas em disputa, traduzir nomes.
+- **Hipótese:** quem viaja a um desses lugares espera vê-lo com nome compreensível no próprio mapa. Se ele aparecer dentro de outro país, ou com um nome que a pessoa não consegue ler, ela confia menos no mapa.
+- **Como validar:**
+  - Na Fatia 6: conferir como cada caso aparece ao marcar uma cidade e pintar o país.
+  - Fase 1: contar marcações nesses territórios e pedidos de correção.
+- **Custo e riscos:** o custo de importar é baixo; o risco é político. Fronteiras e nomes em disputa pedem uma regra neutra e explícita, para o app não tomar lado sem querer. Não afeta o cadastro, que só usa cidades do Brasil (ADR 0008).
+- **Status:** aguardando a Fatia 6.
 
 ## Como adicionar uma ideia
 

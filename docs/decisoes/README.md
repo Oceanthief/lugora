@@ -13,3 +13,4 @@ Para criar um novo, use a skill `/adr <título>` no Claude Code, ou copie `0000-
 | [0005](0005-privacidade-nos-agregados.md) | Privacidade nos números e mapas públicos | aceita |
 | [0006](0006-mapa-no-app.md) | Mapa: como o MapLibre entra no app | proposta |
 | [0007](0007-tokens-de-design.md) | Tokens de design: fonte única em TypeScript | proposta |
+| [0008](0008-paises-e-cidades-overture-ibge.md) | Países e cidades: polígonos do Overture, lista oficial do IBGE | proposta |

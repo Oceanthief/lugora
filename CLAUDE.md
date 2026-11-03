@@ -54,7 +54,7 @@ Atualize esta seção sempre que um comando mudar.
 - Lugares (em `web/`): `npm run seed:lugares` importa `data/seed/lugares_jf_seed.csv` para `web/src/data/places.json` (idempotente). Não edite o JSON à mão.
 - Demonstração (em `web/`): `npm run seed:demo` gera usuários, quem segue quem, ~200 visitas e o "Quero ir" do Victor em `web/src/data/demo.json`, com semente fixa (42). Rode de novo se mudar os lugares; um teste avisa se o arquivo ficar desatualizado.
 - Banco local (na raiz, com o Docker Desktop aberto; na primeira vez, `npm install`): `npx supabase start`, `npx supabase db reset`, `npx supabase test db`. Para liberar memória: `npx supabase stop`. Studio em http://127.0.0.1:54323
-- Pipeline (em `pipelines/overture/`): `python relatorio_jf.py`
+- Pipeline (em `pipelines/overture/`): `python relatorio_jf.py` (diagnóstico de JF) e `python importar_divisoes.py` (países e cidades do Brasil; rode de novo depois de um `db reset`, porque o reset apaga a carga). Testes: `python -m pytest pipelines/overture/tests`, na raiz.
 
 ## Ambiente
 

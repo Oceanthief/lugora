@@ -134,7 +134,7 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 - [x] `npx supabase init` na raiz e `npx supabase start`.
 - [x] Migrações de `profiles`, `profiles_private`, `consents`, `countries`, `cities` e `app_parameters`, com PostGIS. As outras tabelas entram nas fatias que precisam delas.
 - [x] A cidade de residência e as configurações ficam em `profiles_private`, que só o dono lê. Motivo: o RLS protege linhas, não colunas; se `home_city_id` ficasse em `profiles`, quem pode ver o perfil veria a cidade.
-- [ ] Pipeline de carga dos limites do Overture (tema divisions): todos os países e as cidades do Brasil, em `pipelines/overture/`.
+- [x] Pipeline de carga dos limites do Overture (tema divisions): todos os países e as cidades do Brasil, em `pipelines/overture/` (ADR 0008).
 - [ ] Login por e-mail. Login com Google é opcional aqui: ele exige criar credenciais no Google Cloud Console, então, se travar, deixe para a Fatia 10.
 - [ ] Cadastro: confirmação de 18+, consentimentos por finalidade (seção 9.1), nome, @ e cidade onde mora (privada).
 - [x] RLS em todas as tabelas, com testes pgTAP: o usuário lê e edita o próprio perfil e não lê a cidade de residência de outra pessoa.

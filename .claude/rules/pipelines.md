@@ -5,7 +5,7 @@ paths:
 
 # Regras dos pipelines (pipelines/)
 
-- **Python 3.10+ com DuckDB 1.3+.** Lambdas no SQL do DuckDB usam a sintaxe nova: `list_transform(lista, lambda x: x.campo)`. A forma `x -> x.campo` foi descontinuada e quebra a execução.
+- **Python 3.10+ com DuckDB 2.0+.** Lambdas no SQL do DuckDB usam a sintaxe nova: `list_transform(lista, lambda x: x.campo)`. A forma `x -> x.campo` foi descontinuada e quebra a execução. Funções sensíveis à ordem dos eixos, como `ST_Area_Spheroid`, exigem `SET geometry_always_xy = true`.
 - **O esquema do Overture muda entre versões.** Antes de montar consultas, confira as colunas com `DESCRIBE`. Em 2026, `categories` foi substituído por `basic_category` e `taxonomy`.
 - **Minimização (LGPD):** nunca copie e-mails nem telefones da base. Guarde só se existem (`has_phone`).
 - **Execuções idempotentes:** rodar duas vezes a mesma versão dá o mesmo resultado, sem duplicar nem apagar nada.
