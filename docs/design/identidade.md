@@ -1,6 +1,6 @@
 # Identidade visual do Lugora
 
-**Direção escolhida:** C. Luz de poste (Fatia 1, novembro de 2026). As outras direções avaliadas ficam no histórico do git (`web/src/app/estilos/`).
+**Direção escolhida:** C. Luz de poste (Fatia 1, novembro de 2026). A página de comparação `/estilos`, com as outras direções avaliadas (A, B e a mistura D), saiu do app e fica no histórico do git (`web/src/app/estilos/`).
 
 **A ideia:** a cidade depois das seis. Fundo azul-noite no tema escuro, a luz âmbar dos postes em tudo o que você já viveu e controles em pílula que flutuam sobre o mapa.
 
@@ -111,6 +111,23 @@ Evite rótulos em caixa alta e realce de uma palavra só num título.
   - `rounded-control` (pílula): botões, ocasiões, abas e a barra inferior;
   - `rounded-2xl` (16 px): o quadrado do ícone de categoria.
 - **Sombra:** `shadow-glow`, a luz âmbar, só no que está "aceso". Não há outras sombras.
+
+## Componentes
+
+| Peça | Como é | Onde |
+| --- | --- | --- |
+| **Barra inferior** | Pílula `bg-surface` com contorno `line`, flutuando sobre o conteúdo. A aba ativa mostra ícone e nome em `bg-glow`; as outras, só o ícone (o nome fica para leitores de tela). O Registrar é o círculo `bg-accent` com `shadow-glow`: a única luz da tela. | `bottom-nav.tsx` |
+| **Cartão** | `rounded-card bg-surface p-4`, sem contorno nem sombra. | Feed, Quero ir, Perfil |
+| **Nota** | Pílula `bg-accent text-on-accent`; leitores de tela ouvem "Nota 4,5". | `rating-pill.tsx` |
+| **Ícone de categoria** | Quadrado `rounded-2xl bg-glow text-accent`, sem brilho. | `category-icon.tsx` |
+| **Botão principal** | Pílula `bg-accent text-on-accent`, pelo menos 48 px de altura. | Registrar, mapa vazio |
+| **Ocasião e nota no formulário** | Pílulas com contorno `line`. Escolhida: a nota acende em `bg-accent`, a ocasião em `bg-glow`, e as duas ganham contorno `accent`, para não depender só da cor. | `visit-form.tsx` |
+| **Balão do mapa** | Segue o tema do app: `rounded-card bg-surface text-ink`, contorno `line`, sem ponta. | `visit-map.tsx` |
+| **Foco do teclado** | Contorno de 2 px em `accent`; nos pontos do mapa, em `mapColors.focus`. | Todos os controles |
+
+A barra flutua, então toda tela reserva espaço embaixo (o `main` do layout já faz isso). O mapa é a exceção: ele ocupa a tela inteira, por baixo da barra.
+
+**Texto do próprio mapa** (como a atribuição): usa a cor fixa `mapColors.labelText`, porque o mapa base é sempre claro. No tema escuro, o texto claro do app sumiria sobre ele.
 
 ## Exemplo
 
