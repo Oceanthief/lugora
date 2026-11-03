@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { connection } from "next/server";
 
 import { sessionCookieOptions, supabaseEnv } from "./config";
+import type { Database } from "./database.types";
 
 /**
  * Cliente do Supabase com a sessão de quem fez o pedido: é ela que faz o RLS
@@ -17,7 +18,7 @@ export async function createClient() {
   const cookieStore = await cookies();
   const { url, publishableKey } = supabaseEnv();
 
-  return createServerClient(url, publishableKey, {
+  return createServerClient<Database>(url, publishableKey, {
     cookieOptions: sessionCookieOptions,
     cookies: {
       getAll: () => cookieStore.getAll(),
