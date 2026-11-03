@@ -131,14 +131,14 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 
 **Tarefas:**
 
-- [ ] `npx supabase init` na raiz e `npx supabase start`.
-- [ ] Migrações de `profiles`, `profiles_private`, `consents`, `countries`, `cities` e `app_parameters`, com PostGIS. As outras tabelas entram nas fatias que precisam delas.
-- [ ] A cidade de residência e as configurações ficam em `profiles_private`, que só o dono lê. Motivo: o RLS protege linhas, não colunas; se `home_city_id` ficasse em `profiles`, quem pode ver o perfil veria a cidade.
+- [x] `npx supabase init` na raiz e `npx supabase start`.
+- [x] Migrações de `profiles`, `profiles_private`, `consents`, `countries`, `cities` e `app_parameters`, com PostGIS. As outras tabelas entram nas fatias que precisam delas.
+- [x] A cidade de residência e as configurações ficam em `profiles_private`, que só o dono lê. Motivo: o RLS protege linhas, não colunas; se `home_city_id` ficasse em `profiles`, quem pode ver o perfil veria a cidade.
 - [ ] Pipeline de carga dos limites do Overture (tema divisions): todos os países e as cidades do Brasil, em `pipelines/overture/`.
 - [ ] Login por e-mail. Login com Google é opcional aqui: ele exige criar credenciais no Google Cloud Console, então, se travar, deixe para a Fatia 10.
 - [ ] Cadastro: confirmação de 18+, consentimentos por finalidade (seção 9.1), nome, @ e cidade onde mora (privada).
-- [ ] RLS em todas as tabelas, com testes pgTAP: o usuário lê e edita o próprio perfil e não lê a cidade de residência de outra pessoa.
-- [ ] `supabase/seed.sql` com 3 usuários fictícios.
+- [x] RLS em todas as tabelas, com testes pgTAP: o usuário lê e edita o próprio perfil e não lê a cidade de residência de outra pessoa.
+- [x] `supabase/seed.sql` com 3 usuários: Victor Ramos (nome do autor, autorizado por ele), Duda Freitas e Gabriel Santos (fictícios), todos com e-mail `@example.com`.
 - [ ] CI: job "database" rodando `supabase test db`.
 - [ ] (Recomendado) Criar um projeto Supabase de homologação na nuvem, aplicar as migrações e ligá-lo ao preview da Vercel. Ele passa a ser obrigatório na Fatia 4, para testar o GPS no celular.
 
