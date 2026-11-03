@@ -1,6 +1,6 @@
 # 0008. Países e cidades: polígonos do Overture, lista oficial do IBGE
 
-- **Status:** proposta
+- **Status:** aceita (Fatia 2)
 - **Data:** 2026-11-03
 
 ## Contexto
