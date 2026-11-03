@@ -32,14 +32,25 @@ docs/        visão do produto, roadmap, decisões técnicas, glossário
 
 ## Como rodar
 
-Disponível a partir da Fatia 0. Veja o [guia de início](docs/guia-de-inicio.md).
+Veja o [guia de início](docs/guia-de-inicio.md) para instalar as ferramentas. Depois, com o Docker Desktop aberto:
+
+```bash
+npm install                 # na raiz: a CLI do Supabase
+npx supabase start          # o banco local, com o seed
+cd web
+npm install
+npm run env:local           # cria o .env.local
+npm run dev
+```
+
+Abra http://localhost:3000. O login é por código de 6 dígitos, e os e-mails de teste chegam em http://127.0.0.1:54324. Para a busca achar todas as cidades, carregue-as com o [pipeline](pipelines/overture/README.md); sem ele, só existe Juiz de Fora.
 
 ## Dados de demonstração
 
-Enquanto o banco não chega, o app roda com dados de demonstração:
+O login, o cadastro e o perfil já usam o banco. As telas de mapa, feed, registro e "Quero ir" ainda rodam com dados de demonstração:
 
 - **Lugares reais:** 100 lugares de Juiz de Fora, da base aberta do [Overture Maps](https://overturemaps.org/). Foram escolhidos pelo script de curadoria `selecionar_lugares.py` (filtro de qualidade, categorias, exclusão de grandes redes e duplicatas) e tiveram os nomes revisados à mão. O resultado está em [`data/seed/lugares_jf_seed.csv`](data/seed/README.md).
-- **O resto é fictício:** usuários, quem segue quem, visitas, notas, tags e a lista "Quero ir" são gerados por script. O usuário logado leva o nome do autor (Victor Ramos), mas as visitas dele também são de demonstração. **As notas não são avaliações reais desses estabelecimentos.**
+- **O resto é fictício:** usuários, quem segue quem, visitas, notas, tags e a lista "Quero ir" são gerados por script. Nessas telas, o usuário principal leva o nome do autor (Victor Ramos), mas as visitas dele também são de demonstração. **As notas não são avaliações reais desses estabelecimentos.**
 
 Para recriar os dados (em `web/`):
 

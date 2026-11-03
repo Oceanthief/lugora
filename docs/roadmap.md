@@ -136,11 +136,11 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 - [x] A cidade de residência e as configurações ficam em `profiles_private`, que só o dono lê. Motivo: o RLS protege linhas, não colunas; se `home_city_id` ficasse em `profiles`, quem pode ver o perfil veria a cidade.
 - [x] Pipeline de carga dos limites do Overture (tema divisions): todos os países e as cidades do Brasil, em `pipelines/overture/` (ADR 0008).
 - [x] Login por e-mail, com código de 6 dígitos (ADR 0009). Login com Google fica para a Fatia 10, porque exige criar credenciais no Google Cloud Console.
-- [ ] Cadastro: confirmação de 18+, consentimentos por finalidade (seção 9.1), nome, @ e cidade onde mora (privada).
+- [x] Cadastro: confirmação de 18+, consentimentos por finalidade (seção 9.1), nome, @ e cidade onde mora (privada). A política de privacidade é um rascunho em `/privacidade`, a revisar antes de abrir ao público.
 - [x] RLS em todas as tabelas, com testes pgTAP: o usuário lê e edita o próprio perfil e não lê a cidade de residência de outra pessoa.
 - [x] `supabase/seed.sql` com 3 usuários: Victor Ramos (nome do autor, autorizado por ele), Duda Freitas e Gabriel Santos (fictícios), todos com e-mail `@example.com`.
 - [ ] CI: job "database" rodando `supabase test db`.
-- [ ] (Recomendado) Criar um projeto Supabase de homologação na nuvem, aplicar as migrações e ligá-lo ao preview da Vercel. Ele passa a ser obrigatório na Fatia 4, para testar o GPS no celular.
+- Criar um projeto Supabase de homologação na nuvem, aplicar as migrações e ligá-lo ao preview da Vercel ficou para a Fatia 4, por decisão do Victor: é lá que ele passa a ser obrigatório, para testar o GPS no celular.
 
 **Aceite:**
 
