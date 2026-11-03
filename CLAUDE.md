@@ -9,7 +9,7 @@ App web instalável (PWA) para registrar lugares visitados, em viagem ou na pró
 - **Decisões técnicas:** `docs/decisoes/` (ADRs).
 - **Nomes no código e no banco:** `docs/glossario.md`.
 - **Ideias que ainda não entram:** `docs/ideias-para-depois.md`.
-- **Identidade visual** (a partir da Fatia 1): `docs/design/identidade.md`. As cores ficam só em `web/src/lib/design-tokens.ts` (ADR 0007).
+- **Identidade visual** (a partir da Fatia 1): `docs/design/identidade.md`. As cores ficam só em `web/src/lib/design-tokens.ts` (ADR 0007); nas telas, use as classes dos tokens (`bg-surface`, `text-ink-muted`). Um teste falha com cor fixa ou `dark:` fora desse arquivo.
 
 ## Como trabalhar
 

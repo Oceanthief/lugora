@@ -21,7 +21,7 @@ As duas se encontram no **portão do beta**, depois da Fatia 10.
 | Fatia | Nome | O que você vê no fim | Tam. | Depende de | Status |
 | --- | --- | --- | --- | --- | --- |
 | 0 | Esqueleto no localhost | App com navegação, telas de exemplo e mapa de JF | M | — | concluída |
-| 1 | Direção visual | Três estilos lado a lado em `/estilos`; você escolhe um | P | 0 | em andamento |
+| 1 | Direção visual | Três estilos lado a lado em `/estilos`; você escolhe um | P | 0 | concluída |
 | 2 | Banco local e contas | Entrar, fazer o cadastro e ver o próprio perfil | G | 0 | a fazer |
 | 3 | Base de lugares de JF e busca | Buscar "poleiro" e ver as duas unidades, sem duplicatas | M | 2 | a fazer |
 | 4 | Registro rápido e mapa | Registrar uma visita e ver o ponto no mapa | G | 3 | a fazer |
@@ -87,7 +87,7 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 
 ### Fatia 1: Direção visual
 
-**Status:** em andamento · **Tamanho:** P
+**Status:** concluída · **Tamanho:** P
 
 **Objetivo:** escolher a identidade visual antes de construir as telas de verdade, comparando opções reais no navegador em vez de imaginar.
 
