@@ -17,6 +17,8 @@ Tom pedido: urbano, leve, sem muita informação disputando a atenção.
 
 Ainda falta um print do que **não** se quer.
 
+Os prints são de outros apps e ficam só na sua máquina: o `.gitignore` deixa de fora tudo desta pasta, menos este README.
+
 Dicas:
 
 - Misture tipos: um app de mapa, um app de avaliações, um app de registro pessoal (filmes, treinos, livros).
