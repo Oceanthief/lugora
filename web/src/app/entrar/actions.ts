@@ -11,6 +11,7 @@ import {
   verifyErrorFrom,
   type LoginState,
 } from "@/lib/login";
+import { hasProfile } from "@/lib/supabase/profile";
 import { createClient } from "@/lib/supabase/server";
 
 /** Recebe os três botões da tela de entrada: enviar, reenviar e conferir o código. */
@@ -41,10 +42,11 @@ async function verifyCode(email: string, rawCode: string): Promise<LoginState> {
   if (!isValidCode(code)) return { step: "code", email, error: "invalidCode" };
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.verifyOtp({ email, token: code, type: "email" });
-  if (error) return { step: "code", email, error: verifyErrorFrom(error.code) };
+  const { data, error } = await supabase.auth.verifyOtp({ email, token: code, type: "email" });
+  if (error || !data.user) return { step: "code", email, error: verifyErrorFrom(error?.code) };
 
-  redirect("/perfil");
+  // Quem ainda não tem perfil termina o cadastro antes de seguir.
+  redirect((await hasProfile(data.user.id)) ? "/perfil" : "/cadastro");
 }
 
 export async function signOut(): Promise<void> {
