@@ -5,6 +5,7 @@ import { contrastRatio, MIN_TEXT_CONTRAST } from "@/lib/contrast";
 import { directions, textPairs, type Direction, type ThemeColors } from "./directions";
 import { directionFonts, type DirectionFonts } from "./fonts";
 import { ThemePreview } from "./previews";
+import { TokensPreview } from "./tokens-preview";
 
 // Página temporária da Fatia 1: sai do app quando uma direção for escolhida.
 export const metadata: Metadata = { title: "Estilos" };
@@ -15,14 +16,15 @@ const themes = [
 ] as const;
 
 export default function StylesPage() {
-  const [mix, ...originals] = directions;
+  const chosen = directions.find((direction) => direction.id === "c")!;
+  const others = directions.filter((direction) => direction.id !== "c");
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-6">
       <h1 className="text-2xl font-semibold">Direções visuais do Lugora</h1>
       <p className="mt-1 max-w-prose text-zinc-600 dark:text-zinc-400">
-        A mistura escolhida vem primeiro; as três direções originais ficam embaixo, para comparar. Todas usam a
-        mesma visita de exemplo.
+        A escolhida foi a C, Luz de poste. Primeiro vêm os tokens em que ela virou; depois, a proposta original e as
+        outras direções avaliadas, para comparar.
       </p>
       <nav aria-label="Direções" className="mt-4 flex flex-wrap gap-2">
         {directions.map((direction) => (
@@ -36,13 +38,17 @@ export default function StylesPage() {
         ))}
       </nav>
 
-      <div className="mt-8 max-w-3xl">
-        <DirectionSection direction={mix} fonts={directionFonts[mix.id]} featured />
+      <div className="mt-8">
+        <TokensPreview />
       </div>
 
-      <h2 className="mt-14 text-xl font-semibold">As três direções originais</h2>
+      <div className="mt-14 max-w-3xl">
+        <DirectionSection direction={chosen} fonts={directionFonts[chosen.id]} featured />
+      </div>
+
+      <h2 className="mt-14 text-xl font-semibold">Outras direções avaliadas</h2>
       <div className="mt-6 grid gap-12 lg:grid-cols-3 lg:gap-8">
-        {originals.map((direction) => (
+        {others.map((direction) => (
           <DirectionSection key={direction.id} direction={direction} fonts={directionFonts[direction.id]} />
         ))}
       </div>

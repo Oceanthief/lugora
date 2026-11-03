@@ -55,7 +55,7 @@ export const directions: readonly Direction[] = [
   {
     id: "d",
     name: "Placa no caderno",
-    mixOf: "Mistura de A e B, escolhida para a Entrega 2",
+    mixOf: "Mistura de A e B, avaliada na Entrega 2",
     idea: "O nome do lugar continua como placa de rua azul, mas sobre uma página branca e leve, com a nota em número grande e o verde da mata marcando o que você já viveu.",
     forWhom: "Quem anda pela cidade e também quer guardar a memória dos lugares, sem tela cheia de informação.",
     risk: "Duas cores de destaque pedem uma regra clara: azul para ações, verde para o que você já visitou.",
@@ -185,12 +185,12 @@ export const directions: readonly Direction[] = [
       surface: "#FFFFFF",
       text: "#19212E",
       muted: "#4E5767",
-      accent: "#B4570B",
+      accent: "#AC530A",
       onAccent: "#FFFFFF",
       soft: "#FBE7C8",
       onSoft: "#19212E",
       border: "#DCE0E7",
-      levels: ["#F8E1B5", "#EFB75C", "#C8771E", "#7A4310"],
+      levels: ["#F8E1B5", "#E8A647", "#C8771E", "#7A4310"],
     },
     dark: {
       canvas: "#131A25",
