@@ -12,6 +12,9 @@ const nextConfig: NextConfig = {
   // redes de casa mesmo quando o roteador troca o IP do PC.
   allowedDevOrigins: ["192.168.*.*"],
   turbopack: {
+    // A raiz do repositório tem um package.json só para a CLI do Supabase. Sem
+    // isto, o Next toma aquela pasta como raiz do app.
+    root: __dirname,
     rules: {
       "*.css": {
         loaders: ["@tailwindcss/turbopack"],
