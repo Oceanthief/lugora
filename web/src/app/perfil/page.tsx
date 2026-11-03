@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
+import { Suspense } from "react";
 
+import { signOut } from "@/app/entrar/actions";
 import { strings } from "@/content/pt-BR";
 import { formatCountryName } from "@/lib/format";
 import {
@@ -10,12 +13,29 @@ import {
   mockVisits,
 } from "@/lib/mock-data";
 import { computeProfileStats, describeTravel, type TravelSummary } from "@/lib/stats";
+import { getCurrentUser } from "@/lib/supabase/session";
 
 const text = strings.profile;
+
+const focusRing = "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
 
 export const metadata: Metadata = { title: text.title };
 
 export default function ProfilePage() {
+  return (
+    <section className="mx-auto max-w-md px-4 py-6">
+      {/* A sessão vem dos cookies do pedido; por isso esta parte fica no Suspense. */}
+      <Suspense fallback={<p className="text-ink-muted">{text.loading}</p>}>
+        <ProfileContent />
+      </Suspense>
+    </section>
+  );
+}
+
+async function ProfileContent() {
+  const user = await getCurrentUser();
+  if (!user) return <SignedOut />;
+
   const stats = computeProfileStats({
     visits: mockVisits,
     places: mockPlaces,
@@ -37,7 +57,20 @@ export default function ProfilePage() {
   ];
 
   return (
-    <section className="mx-auto max-w-md px-4 py-6">
+    <>
+      <div className="mb-6 rounded-card bg-surface p-4">
+        <p className="font-medium break-words">{text.signedInAs(user.email)}</p>
+        <p className="mt-1 text-sm text-ink-muted">{text.demoNotice}</p>
+        <form action={signOut} className="mt-3">
+          <button
+            type="submit"
+            className={`min-h-11 rounded-control border border-line px-4 text-sm font-semibold ${focusRing}`}
+          >
+            {text.signOut}
+          </button>
+        </form>
+      </div>
+
       <div className="flex items-center gap-4">
         <span
           aria-hidden="true"
@@ -71,7 +104,22 @@ export default function ProfilePage() {
         <h2 className="font-semibold">{text.travelerTitle}</h2>
         <p className="mt-1">{travelText(describeTravel(stats), homeCity?.name)}</p>
       </div>
-    </section>
+    </>
+  );
+}
+
+function SignedOut() {
+  return (
+    <div className="flex flex-col items-start gap-4">
+      <h1 className="text-2xl font-semibold">{text.signedOutTitle}</h1>
+      <p className="text-ink-muted">{text.signedOutText}</p>
+      <Link
+        href="/entrar"
+        className={`flex min-h-12 items-center rounded-control bg-accent px-6 font-semibold text-on-accent ${focusRing}`}
+      >
+        {text.signIn}
+      </Link>
+    </div>
   );
 }
 
