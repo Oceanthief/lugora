@@ -72,6 +72,8 @@ export const mapColors = {
   pointIcon: "#FFFFFF",
   labelText: colors.light.ink,
   labelHalo: "#FFFFFF",
+  /** Contorno do ponto em foco pelo teclado, legível sobre o mapa claro. */
+  focus: colors.light.ink,
 };
 
 /** Prefixo das variáveis CSS geradas a partir dos tokens. */

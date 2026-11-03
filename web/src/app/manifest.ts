@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 
 import { strings } from "@/content/pt-BR";
+import { colors } from "@/lib/design-tokens";
 
 /**
  * Manifesto do PWA: o que o celular precisa para instalar o Lugora na tela
@@ -18,8 +19,9 @@ export default function manifest(): MetadataRoute.Manifest {
     scope: "/",
     // Abre em tela cheia, sem a barra de endereço do navegador.
     display: "standalone",
-    background_color: "#ffffff",
-    theme_color: "#ffffff",
+    // O manifesto não tem versão escura; o tema escuro vem do viewport.
+    background_color: colors.light.canvas,
+    theme_color: colors.light.canvas,
     // Ícones provisórios até a Fatia 1. O "maskable" tem margem para o
     // Android recortar no formato que quiser (círculo, gota etc.).
     icons: [

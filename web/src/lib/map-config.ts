@@ -35,15 +35,3 @@ export function boundsOf(
     [Math.max(...lngs), Math.max(...lats)],
   ];
 }
-
-/**
- * Cores dos pontos visitados. Neutras e provisórias: viram tokens na Fatia 1.
- * O MapLibre pinta no canvas, então não dá para usar as classes do Tailwind.
- */
-export const MAP_POINT_COLORS = {
-  fill: "#18181b",
-  stroke: "#ffffff",
-  icon: "#ffffff",
-  text: "#18181b",
-  textHalo: "#ffffff",
-};

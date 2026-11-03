@@ -2,14 +2,15 @@ import type { PlaceCategory } from "@/lib/categories";
 import { categoryIconPaths } from "@/lib/category-icons";
 
 /**
- * Ícone da categoria num círculo, o mesmo desenho dos pontos do mapa.
+ * Ícone da categoria num quadrado âmbar suave, o mesmo desenho dos pontos do
+ * mapa. Sem brilho: numa lista, só o botão Registrar fica "aceso".
  * Decorativo (`aria-hidden`): o nome da categoria aparece em texto ao lado.
  */
 export function CategoryIcon({ category }: { category: PlaceCategory }) {
   return (
     <span
       aria-hidden="true"
-      className="flex size-10 shrink-0 items-center justify-center rounded-full bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-950"
+      className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-glow text-accent"
     >
       <svg
         viewBox="0 0 24 24"
