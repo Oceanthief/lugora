@@ -231,11 +231,14 @@ enable_confirmations = false
 # If enabled, users will need to reauthenticate or have logged in recently to change their password.
 secure_password_change = false
 # Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
-max_frequency = "1s"
+# Um minuto, como na nuvem, para o "enviar outro código" se comportar igual nos dois lugares.
+max_frequency = "60s"
 # Number of characters used in the email OTP.
 otp_length = 6
 # Number of seconds before the email OTP expires (defaults to 1 hour).
-otp_expiry = 3600
+# 10 minutos (ADR 0009). Se mudar, atualize também CODE_VALID_MINUTES em web/src/lib/login.ts
+# e o texto de supabase/templates/codigo-de-acesso.html.
+otp_expiry = 600
 
 # Use a production-ready SMTP server
 # [auth.email.smtp]
@@ -247,10 +250,15 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
-# Uncomment to customize email template
-# [auth.email.template.invite]
-# subject = "You have been invited"
-# content_path = "./supabase/templates/invite.html"
+# O login é por código de 6 dígitos, não por link (ADR 0009). O Supabase usa o template
+# magic_link para quem já tem conta e o confirmation para contas novas.
+[auth.email.template.magic_link]
+subject = "Seu código de acesso ao Lugora"
+content_path = "./supabase/templates/codigo-de-acesso.html"
+
+[auth.email.template.confirmation]
+subject = "Seu código de acesso ao Lugora"
+content_path = "./supabase/templates/codigo-de-acesso.html"
 
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
