@@ -10,10 +10,12 @@ const newsreader = Newsreader({ subsets: ["latin"], display: "swap" });
 const hankenGrotesk = Hanken_Grotesk({ subsets: ["latin"], display: "swap" });
 const urbanist = Urbanist({ subsets: ["latin"], display: "swap" });
 
-export type DirectionFonts = { display: string; body: string };
+/** Fonte dos títulos, do texto corrido e do número da nota. */
+export type DirectionFonts = { display: string; body: string; numeral: string };
 
 export const directionFonts: Record<Direction["id"], DirectionFonts> = {
-  a: { display: overpass.style.fontFamily, body: overpass.style.fontFamily },
-  b: { display: newsreader.style.fontFamily, body: hankenGrotesk.style.fontFamily },
-  c: { display: urbanist.style.fontFamily, body: urbanist.style.fontFamily },
+  a: { display: overpass.style.fontFamily, body: overpass.style.fontFamily, numeral: overpass.style.fontFamily },
+  b: { display: newsreader.style.fontFamily, body: hankenGrotesk.style.fontFamily, numeral: newsreader.style.fontFamily },
+  c: { display: urbanist.style.fontFamily, body: urbanist.style.fontFamily, numeral: urbanist.style.fontFamily },
+  d: { display: overpass.style.fontFamily, body: overpass.style.fontFamily, numeral: newsreader.style.fontFamily },
 };

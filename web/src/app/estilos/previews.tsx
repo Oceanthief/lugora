@@ -93,6 +93,32 @@ function Chip({ children, selected }: { children: string; selected?: boolean }) 
 
 function VisitCard({ direction, fonts }: PreviewProps) {
   const display = { fontFamily: fonts.display };
+  const numeral = { fontFamily: fonts.numeral };
+
+  if (direction.id === "d") {
+    // Mistura: a anotação de caderno da B, com o nome do lugar como a placa da A.
+    return (
+      <article className="rounded-[var(--radius-card)] bg-[var(--surface)] p-5">
+        <p className="text-sm text-[var(--muted)]">{sample.date}</p>
+        <div className="mt-2 flex items-start justify-between gap-3">
+          <div className="min-w-0">
+            <div className="inline-block rounded-lg bg-[var(--accent)] px-3 py-2 text-[var(--on-accent)] shadow-[inset_0_0_0_3px_var(--accent),inset_0_0_0_4.5px_var(--on-accent)]">
+              <h3 style={display} className="text-lg font-bold leading-tight">
+                {sample.name}
+              </h3>
+            </div>
+            <p className="mt-2 text-sm text-[var(--muted)]">{sampleCategory}</p>
+          </div>
+          <p style={numeral} className="text-5xl leading-none">
+            {sample.rating}
+          </p>
+        </div>
+        <div className="mt-4">
+          <Chip selected>{sample.occasion}</Chip>
+        </div>
+      </article>
+    );
+  }
 
   if (direction.id === "a") {
     // O nome do lugar como uma placa de rua: azul, com o filete branco por dentro.
@@ -129,7 +155,7 @@ function VisitCard({ direction, fonts }: PreviewProps) {
           <h3 style={display} className="text-2xl leading-tight">
             {sample.name}
           </h3>
-          <p style={display} className="text-5xl leading-none text-[var(--accent)]">
+          <p style={numeral} className="text-5xl leading-none text-[var(--accent)]">
             {sample.rating}
           </p>
         </div>
@@ -194,7 +220,8 @@ function Legend({ direction, colors }: { direction: Direction; colors: ThemeColo
       <ol className="mt-2 grid grid-cols-4 gap-1.5">
         {colors.levels.map((color, i) => (
           <li key={color} className="flex flex-col gap-1">
-            <span className={`h-3 ${shape}`} style={{ backgroundColor: color }} />
+            {/* O contorno mantém visível a faixa mais clara, quase da cor do fundo. */}
+            <span className={`h-3 border border-[var(--border)] ${shape}`} style={{ backgroundColor: color }} />
             <span className="text-xs text-[var(--muted)]">{levelLabels[i]}</span>
           </li>
         ))}
@@ -235,12 +262,17 @@ function Nav({ direction }: { direction: Direction }) {
     );
   }
 
-  if (direction.nav === "minimal") {
+  if (direction.nav === "minimal" || direction.nav === "mixed") {
     return (
       <ul className="flex items-end justify-around px-2 pb-3 pt-1">
         {navItems.map((item) => (
           <li key={item.href} className="flex flex-col items-center gap-1 text-xs">
-            {item.highlight ? (
+            {item.highlight && direction.nav === "mixed" ? (
+              // Na mistura, o Registrar é uma placa azul sólida, como na A.
+              <span className="flex size-11 items-center justify-center rounded-lg bg-[var(--accent)] text-[var(--on-accent)] shadow-[inset_0_0_0_2px_var(--accent),inset_0_0_0_3.5px_var(--on-accent)]">
+                <NavIconSvg icon={item.icon} />
+              </span>
+            ) : item.highlight ? (
               <span className="flex size-11 items-center justify-center rounded-full border-2 border-[var(--accent)] text-[var(--accent)]">
                 <NavIconSvg icon={item.icon} />
               </span>

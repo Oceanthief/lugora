@@ -15,11 +15,14 @@ const themes = [
 ] as const;
 
 export default function StylesPage() {
+  const [mix, ...originals] = directions;
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-6">
-      <h1 className="text-2xl font-semibold">Três direções para o Lugora</h1>
+      <h1 className="text-2xl font-semibold">Direções visuais do Lugora</h1>
       <p className="mt-1 max-w-prose text-zinc-600 dark:text-zinc-400">
-        Compare as três e escolha uma, ou peça uma mistura. Todas usam a mesma visita de exemplo.
+        A mistura escolhida vem primeiro; as três direções originais ficam embaixo, para comparar. Todas usam a
+        mesma visita de exemplo.
       </p>
       <nav aria-label="Direções" className="mt-4 flex flex-wrap gap-2">
         {directions.map((direction) => (
@@ -33,8 +36,13 @@ export default function StylesPage() {
         ))}
       </nav>
 
-      <div className="mt-8 grid gap-12 lg:grid-cols-3 lg:gap-8">
-        {directions.map((direction) => (
+      <div className="mt-8 max-w-3xl">
+        <DirectionSection direction={mix} fonts={directionFonts[mix.id]} featured />
+      </div>
+
+      <h2 className="mt-14 text-xl font-semibold">As três direções originais</h2>
+      <div className="mt-6 grid gap-12 lg:grid-cols-3 lg:gap-8">
+        {originals.map((direction) => (
           <DirectionSection key={direction.id} direction={direction} fonts={directionFonts[direction.id]} />
         ))}
       </div>
@@ -42,12 +50,23 @@ export default function StylesPage() {
   );
 }
 
-function DirectionSection({ direction, fonts }: { direction: Direction; fonts: DirectionFonts }) {
+function DirectionSection({
+  direction,
+  fonts,
+  featured = false,
+}: {
+  direction: Direction;
+  fonts: DirectionFonts;
+  featured?: boolean;
+}) {
   return (
     <section id={direction.id} aria-labelledby={`${direction.id}-title`} className="scroll-mt-4">
       <h2 id={`${direction.id}-title`} style={{ fontFamily: fonts.display }} className="text-3xl font-semibold">
         {direction.id.toUpperCase()}. {direction.name}
       </h2>
+      {direction.mixOf ? (
+        <p className="mt-1 text-sm font-medium text-zinc-700 dark:text-zinc-300">{direction.mixOf}</p>
+      ) : null}
       <dl className="mt-3 flex flex-col gap-2 text-sm">
         {[
           ["A ideia", direction.idea],
@@ -77,7 +96,7 @@ function DirectionSection({ direction, fonts }: { direction: Direction; fonts: D
         ))}
       </div>
 
-      <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-1">
+      <div className={`mt-5 grid gap-4 sm:grid-cols-2 ${featured ? "" : "lg:grid-cols-1"}`}>
         {themes.map(({ key, label }) => (
           <ThemePreview key={key} label={label} direction={direction} colors={direction[key]} fonts={fonts} />
         ))}

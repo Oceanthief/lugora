@@ -32,8 +32,10 @@ export type ThemeColors = {
 };
 
 export type Direction = {
-  id: "a" | "b" | "c";
+  id: "a" | "b" | "c" | "d";
   name: string;
+  /** Quando a direção é uma mistura de outras, de quais. */
+  mixOf?: string;
   idea: string;
   forWhom: string;
   risk: string;
@@ -44,12 +46,51 @@ export type Direction = {
   /** Raio dos cartões e dos controles. */
   radius: { card: string; control: string };
   /** Estilo da barra inferior. */
-  nav: "bar" | "minimal" | "floating";
+  nav: "bar" | "minimal" | "floating" | "mixed";
   light: ThemeColors;
   dark: ThemeColors;
 };
 
 export const directions: readonly Direction[] = [
+  {
+    id: "d",
+    name: "Placa no caderno",
+    mixOf: "Mistura de A e B, escolhida para a Entrega 2",
+    idea: "O nome do lugar continua como placa de rua azul, mas sobre uma página branca e leve, com a nota em número grande e o verde da mata marcando o que você já viveu.",
+    forWhom: "Quem anda pela cidade e também quer guardar a memória dos lugares, sem tela cheia de informação.",
+    risk: "Duas cores de destaque pedem uma regra clara: azul para ações, verde para o que você já visitou.",
+    typefaces: "Overpass em todos os textos; Newsreader (serifada) só no número da nota",
+    colorNames: {
+      light: ["Papel", "Concreto", "Azul-noite", "Azul placa", "Broto"],
+      dark: ["Azul-noite", "Asfalto", "Branco placa", "Azul claro", "Musgo"],
+    },
+    radius: { card: "16px", control: "999px" },
+    nav: "mixed",
+    light: {
+      canvas: "#FFFFFF",
+      surface: "#F2F5F8",
+      text: "#13203A",
+      muted: "#4A5874",
+      accent: "#1E4FA3",
+      onAccent: "#FFFFFF",
+      soft: "#D8EADF",
+      onSoft: "#13203A",
+      border: "#DCE3EA",
+      levels: ["#D5EADB", "#9DCBAC", "#579B73", "#2E6A4E"],
+    },
+    dark: {
+      canvas: "#0E1A2F",
+      surface: "#172741",
+      text: "#EEF2F8",
+      muted: "#AAB7CC",
+      accent: "#7FA7EF",
+      onAccent: "#0E1A2F",
+      soft: "#24392D",
+      onSoft: "#E7EEE9",
+      border: "#2A3B58",
+      levels: ["#1F3A2B", "#2F6B4E", "#5EAE81", "#A8DDBB"],
+    },
+  },
   {
     id: "a",
     name: "Placa de rua",
