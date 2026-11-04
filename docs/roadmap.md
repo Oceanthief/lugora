@@ -23,7 +23,7 @@ As duas se encontram no **portão do beta**, depois da Fatia 10.
 | 0 | Esqueleto no localhost | App com navegação, telas de exemplo e mapa de JF | M | — | concluída |
 | 1 | Direção visual | Três estilos lado a lado em `/estilos`; você escolhe um | P | 0 | concluída |
 | 2 | Banco local e contas | Entrar, fazer o cadastro e ver o próprio perfil | G | 0 | concluída |
-| 3 | Base de lugares de JF e busca | Buscar "poleiro" e ver as duas unidades, sem duplicatas | M | 2 | a fazer |
+| 3 | Base de lugares de JF e busca | Buscar "poleiro" e ver as duas unidades, sem duplicatas | M | 2 | em andamento |
 | 4 | Registro rápido e mapa | Registrar uma visita e ver o ponto no mapa | G | 3 | a fazer |
 | 5 | Lugares novos e sinalizações | Criar um lugar e sinalizar "fechou" | M | 4 | a fazer |
 | 6 | Cidades já visitadas e abas do mapa | Marcar Paris e ver a França pintada | M | 4 | a fazer |
@@ -156,7 +156,7 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 
 ### Fatia 3: Base de lugares de JF e busca
 
-**Status:** a fazer · **Tamanho:** M
+**Status:** em andamento · **Tamanho:** M
 
 **Objetivo:** carregar os 19.459 lugares de Juiz de Fora com as regras D1 a D4 e ter uma busca boa.
 
