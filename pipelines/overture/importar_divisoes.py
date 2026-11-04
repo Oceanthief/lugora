@@ -286,10 +286,18 @@ def add_boundary_column(con: duckdb.DuckDBPyConnection, table: str) -> None:
     )
 
 
+def attach_database(con: duckdb.DuckDBPyConnection, db_url: str) -> None:
+    try:
+        con.execute(f"ATTACH '{db_url}' AS pg (TYPE postgres);")
+    except duckdb.Error:
+        # A mensagem original traz a URL inteira, com a senha. Ela não pode ir para o terminal.
+        raise SystemExit("Não consegui conectar ao banco. Confira LUGORA_DB_URL e se o banco está no ar.") from None
+
+
 def write_to_postgres(
     con: duckdb.DuckDBPyConnection, db_url: str, selection: Selection, snapshot_dir: Path
 ) -> dict[str, tuple]:
-    con.execute(f"ATTACH '{db_url}' AS pg (TYPE postgres);")
+    attach_database(con, db_url)
     try:
         # As tabelas de passagem ficam fora do public e somem no final, mesmo se der erro.
         run_remote(con, f"drop schema if exists {STAGING_SCHEMA} cascade")
@@ -369,6 +377,7 @@ def print_report(con: duckdb.DuckDBPyConnection, selection: Selection, changes: 
 
 def main() -> None:
     sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--release", default=DEFAULT_RELEASE)
     parser.add_argument("--atualizar", action="store_true", help="baixa de novo, mesmo com cópia local")

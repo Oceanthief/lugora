@@ -3,10 +3,12 @@
 import gzip
 import json
 
+import duckdb
 import pytest
 
 from importar_divisoes import (
     Locality,
+    attach_database,
     decode_response,
     normalize_name,
     parse_ibge,
@@ -118,3 +120,16 @@ def test_parse_ibge_reads_name_and_state():
 def test_parse_ibge_rejects_a_truncated_list():
     with pytest.raises(ValueError, match="só 1 municípios"):
         parse_ibge(json.dumps([{"municipio-nome": "Cidade", "UF-sigla": "MG"}]))
+
+
+def test_connection_error_does_not_print_the_password():
+    class FailingConnection:
+        def execute(self, _sql):
+            raise duckdb.IOException('Unable to connect to Postgres at "postgresql://postgres:segredo@host/db"')
+
+    with pytest.raises(SystemExit) as error:
+        attach_database(FailingConnection(), "postgresql://postgres:segredo@host/db")
+
+    assert "segredo" not in str(error.value)
+    # "from None": o traceback também não pode mostrar o erro original.
+    assert error.value.__suppress_context__ is True

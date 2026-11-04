@@ -84,6 +84,12 @@ describe("configuração do banco local", () => {
     expect(emailSetting("otp_expiry")).toBe(CODE_VALID_MINUTES * 60);
   });
 
+  it("exige provar que o e-mail é seu antes de dar a sessão", () => {
+    // Desligado, alguém cria a conta com o e-mail de outra pessoa e continua dentro dela.
+    const section = config.split("[auth.email]")[1].split("\n[")[0];
+    expect(section).toMatch(/^enable_confirmations = true$/m);
+  });
+
   it("manda o código no e-mail, sem link de login", () => {
     expect(template).toContain("{{ .Token }}");
     expect(template).toContain(`${CODE_VALID_MINUTES} minutos`);

@@ -59,6 +59,7 @@ export type CitySearchResult = { cities: CityOption[]; failed: boolean };
 
 export async function searchCities(query: string): Promise<CitySearchResult> {
   if (query.trim().length < CITY_SEARCH_MIN_LENGTH) return { cities: [], failed: false };
+  if (!(await getCurrentUser())) return { cities: [], failed: true };
 
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("search_cities", { p_query: query });
