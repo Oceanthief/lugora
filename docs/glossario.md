@@ -48,7 +48,8 @@ O documento de visão usa nomes em português. O código e o banco usam inglês 
 | categoria_overture | `overture_category` | |
 | categoria_lugora | `category` | veja "Categorias de lugar"; `residential` vem da limpeza pelo nome (D3) |
 | grupo (categoria) | `category_group` | `food_and_drink`, `culture`, `outdoors`, `sports`, `leisure_shopping`, `lodging`, `religion`, `health` |
-| nome normalizado | `search_name` | sem acentos, em minúsculas e sem pontuação; gerado a partir de `name` |
+| outros nomes | `other_names` | nomes de registros mesclados, só para a busca; fora da tabela da seção 8 (D1) |
+| nome normalizado | `search_name` | sem acentos, em minúsculas e sem pontuação; gerado a partir de `name` e `other_names` |
 | executada_em | `ran_at` | em `overture_imports` |
 | adicionados / removidos / alterados / reconciliados / sinalizados | `added` / `removed` / `changed` / `reconciled` / `flagged` | em `overture_imports` |
 | mesclados / em revisão / não visitáveis | `merged` / `in_review` / `not_visitable` | em `overture_imports`; fora da tabela da seção 8, para a prova de cada importação |

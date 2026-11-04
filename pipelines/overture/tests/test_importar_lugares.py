@@ -5,6 +5,7 @@ import pytest
 
 from importar_lugares import (
     DIFFERENT_PLACES,
+    EXISTS_IN_CITY,
     NOT_IN_CITY,
     SAME_PLACE,
     CategoryRule,
@@ -309,6 +310,7 @@ QUEUE = (
         ("São lojas diferentes", DIFFERENT_PLACES),
         ("Não tem praia em Juiz de Fora", NOT_IN_CITY),
         ("Não existe", NOT_IN_CITY),
+        ("Existe", EXISTS_IN_CITY),
         ("", None),
         ("   ", None),
     ],
@@ -401,6 +403,34 @@ def test_pair_marked_as_different_stays_separate_and_leaves_the_queue(con):
     assert review_pairs(con, places) != []
     assert review_pairs(con, places, decisions) == []
     assert len(deduplicate(places, decisions)) == 2
+
+
+def test_absorbed_name_stays_available_for_the_search():
+    # Caso real: quem digita "Posto Rumo Certo" precisa achar o "POSTO TOP CENTRO" (D1).
+    places = clean(
+        raw("a", "Posto Rumo Certo", confidence=0.3),
+        raw("b", "POSTO TOP CENTRO", confidence=0.9),
+    )
+
+    result = deduplicate(places, [Decision("a", "b", SAME_PLACE)])
+
+    assert result[0].raw.name == "POSTO TOP CENTRO"
+    assert result[0].other_names == ("Posto Rumo Certo",)
+
+
+def test_identical_name_does_not_become_another_name():
+    result = deduplicate(clean(raw("a", "Viva Gula", confidence=0.4), raw("b", "VIVA GULA!", confidence=0.3)))
+
+    assert result[0].other_names == ()
+
+
+def test_place_confirmed_as_real_stays_in_the_search_and_leaves_the_queue():
+    # Caso real: "Praia do Norte JF" são quadras de areia em Benfica, com a categoria errada no Overture.
+    places = clean(raw("n", "Praia do Norte JF - Quadras de Areia em Benfica", category="beach"))
+    decisions = [Decision("n", "", EXISTS_IN_CITY)]
+
+    assert impossible_category_items(places, decisions) == []
+    assert not_in_city_ids(decisions) == set()
 
 
 def test_decision_about_a_record_that_left_the_base_is_ignored():

@@ -105,13 +105,14 @@ python importar_lugares.py --atualizar  # baixa de novo
 
 Nomes parecidos e praias em cidade sem litoral vão para `relatorio/fila_revisao_lugares.csv`, fora do git. Nada ali é mesclado sozinho.
 
-1. Abra o arquivo e escreva, na coluna `REVISÃO`, "São a mesma coisa", "São lojas diferentes" ou "Não existe" ("Não tem..." também vale).
+1. Abra o arquivo e escreva, na coluna `REVISÃO`, "São a mesma coisa", "São lojas diferentes", "Existe" ou "Não existe" ("Não tem..." também vale).
 2. Rode `python importar_lugares.py`.
 
 | Decisão | O que acontece |
 | --- | --- |
-| Mesma coisa | Os dois viram um lugar só, e o GERS do outro fica em `merged_gers_ids` |
+| Mesma coisa | Os dois viram um lugar só. O GERS do outro fica em `merged_gers_ids`, e o nome dele, em `other_names`, para a busca continuar achando |
 | Diferentes | Continuam separados e saem da fila |
+| Existe | O lugar continua na busca e sai da fila |
 | Não existe | O lugar sai da busca (`status = 'closed'`), sem ser apagado |
 
 - **As decisões não se perdem:** antes de regravar a fila, o script as copia para `decisoes_revisao.csv`, que fica no git e só tem identificadores. Assim, elas sobrevivem a um `db reset`.

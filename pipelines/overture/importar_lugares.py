@@ -42,6 +42,7 @@ DECISIONS_FILE = Path(__file__).resolve().parent / "decisoes_revisao.csv"
 SAME_PLACE = "mesma_coisa"
 DIFFERENT_PLACES = "diferentes"
 NOT_IN_CITY = "nao_existe"
+EXISTS_IN_CITY = "existe"
 
 MERGE_DISTANCE_M = 50
 # A D4 cita a faixa de 0,90 a 0,97, mas o exemplo dela ("Nave Estúdio" × "NAVE Studio") dá 0,983, e
@@ -89,6 +90,7 @@ class Place:
     is_visitable: bool
     is_sensitive: bool
     merged_gers_ids: tuple[str, ...] = ()
+    other_names: tuple[str, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -130,6 +132,8 @@ def decision_from_text(text: str) -> str | None:
         return DIFFERENT_PLACES
     if "nao tem" in normalized or "nao existe" in normalized:
         return NOT_IN_CITY
+    if "existe" in normalized:
+        return EXISTS_IN_CITY
     raise ValueError(text)
 
 
@@ -142,7 +146,7 @@ def parse_queue_decisions(text: str) -> list[Decision]:
         except ValueError as error:
             raise SystemExit(
                 f"Linha {line} da fila de revisão: não entendi {error}. "
-                'Use "São a mesma coisa", "São lojas diferentes" ou "Não existe".'
+                'Use "São a mesma coisa", "São lojas diferentes", "Existe" ou "Não existe".'
             ) from None
         if decision:
             decisions.append(Decision(row["gers_a"], row["gers_b"] or "", decision))
@@ -234,6 +238,13 @@ def choose_main(cluster: list[Place]) -> Place:
 def merge_cluster(cluster: list[Place]) -> Place:
     main = choose_main(cluster)
     others = sorted(p.raw.gers_id for p in cluster if p is not main)
+    # O nome que não ficou continua valendo para a busca: quem digita o nome certo sempre encontra (D1).
+    main_name = normalize_name(main.raw.name)
+    other_names = {
+        normalize_name(p.raw.name): p.raw.name
+        for p in sorted(cluster, key=lambda p: p.raw.gers_id)
+        if normalize_name(p.raw.name) != main_name
+    }
     return replace(
         main,
         raw=replace(
@@ -243,6 +254,7 @@ def merge_cluster(cluster: list[Place]) -> Place:
         ),
         is_sensitive=any(p.is_sensitive for p in cluster),
         merged_gers_ids=tuple(others),
+        other_names=tuple(sorted(other_names.values())),
     )
 
 
@@ -368,10 +380,10 @@ CHANGES = f"""
       count(*) filter (
         where p.id is not null
           and (p.name, p.location::text, p.address, p.postal_code, p.overture_category, p.category,
-               p.is_visitable, p.is_sensitive, p.confidence, p.sources, p.merged_gers_ids)
+               p.is_visitable, p.is_sensitive, p.confidence, p.sources, p.merged_gers_ids, p.other_names)
           is distinct from
               (s.name, s.location::text, s.address, s.postal_code, s.overture_category, s.category,
-               s.is_visitable, s.is_sensitive, s.confidence, string_to_array(s.sources, ' + '), string_to_array(s.merged_gers_ids, ','))
+               s.is_visitable, s.is_sensitive, s.confidence, string_to_array(s.sources, ' + '), string_to_array(s.merged_gers_ids, ','), s.other_names)
       ) as changed,
       count(*) as total
     from {STAGING_SCHEMA}.places as s
@@ -383,11 +395,11 @@ CHANGES = f"""
 UPSERT = f"""
     insert into public.places (
       gers_id, name, location, address, postal_code, city_id, overture_category, category,
-      is_visitable, is_sensitive, confidence, sources, merged_gers_ids
+      is_visitable, is_sensitive, confidence, sources, merged_gers_ids, other_names
     )
     select
       s.gers_id, s.name, s.location, s.address, s.postal_code, city.id, s.overture_category, s.category,
-      s.is_visitable, s.is_sensitive, s.confidence, string_to_array(s.sources, ' + '), string_to_array(s.merged_gers_ids, ',')
+      s.is_visitable, s.is_sensitive, s.confidence, string_to_array(s.sources, ' + '), string_to_array(s.merged_gers_ids, ','), s.other_names
     from {STAGING_SCHEMA}.places as s
     cross join (select id from public.cities where gers_id = '{JUIZ_DE_FORA_GERS_ID}') as city
     on conflict (gers_id) do update
@@ -395,14 +407,16 @@ UPSERT = f"""
           postal_code = excluded.postal_code, overture_category = excluded.overture_category,
           category = excluded.category, is_visitable = excluded.is_visitable,
           is_sensitive = excluded.is_sensitive, confidence = excluded.confidence,
-          sources = excluded.sources, merged_gers_ids = excluded.merged_gers_ids
+          sources = excluded.sources, merged_gers_ids = excluded.merged_gers_ids, other_names = excluded.other_names
       where (public.places.name, public.places.location::text, public.places.address, public.places.postal_code,
              public.places.overture_category, public.places.category, public.places.is_visitable,
-             public.places.is_sensitive, public.places.confidence, public.places.sources, public.places.merged_gers_ids)
+             public.places.is_sensitive, public.places.confidence, public.places.sources, public.places.merged_gers_ids,
+             public.places.other_names)
         is distinct from
             (excluded.name, excluded.location::text, excluded.address, excluded.postal_code,
              excluded.overture_category, excluded.category, excluded.is_visitable,
-             excluded.is_sensitive, excluded.confidence, excluded.sources, excluded.merged_gers_ids)
+             excluded.is_sensitive, excluded.confidence, excluded.sources, excluded.merged_gers_ids,
+             excluded.other_names)
 """
 
 
@@ -432,16 +446,16 @@ def write_places(con: duckdb.DuckDBPyConnection, places: list[Place], not_in_cit
             CREATE TEMP TABLE outgoing (
               gers_id VARCHAR, name VARCHAR, latitude DOUBLE, longitude DOUBLE, address VARCHAR, postal_code VARCHAR,
               overture_category VARCHAR, category VARCHAR, is_visitable BOOLEAN, is_sensitive BOOLEAN,
-              confidence DOUBLE, sources VARCHAR, merged_gers_ids VARCHAR
+              confidence DOUBLE, sources VARCHAR, merged_gers_ids VARCHAR, other_names VARCHAR
             )
         """)
         con.executemany(
-            "INSERT INTO outgoing VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO outgoing VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
                 (
                     p.raw.gers_id, p.raw.name, p.raw.latitude, p.raw.longitude, p.raw.address, p.raw.postal_code,
                     p.raw.overture_category, p.category, p.is_visitable, p.is_sensitive, p.raw.confidence,
-                    " + ".join(p.raw.sources), ",".join(p.merged_gers_ids),
+                    " + ".join(p.raw.sources), ",".join(p.merged_gers_ids), " | ".join(p.other_names) or None,
                 )
                 for p in places
             ],

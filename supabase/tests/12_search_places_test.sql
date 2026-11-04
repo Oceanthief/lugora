@@ -1,6 +1,6 @@
 -- Critérios de aceite da Fatia 3, com os nomes reais do diagnóstico de Juiz de Fora.
 begin;
-select plan(24);
+select plan(26);
 
 -- Tudo some no rollback do fim: assim, o teste não depende de a base já estar carregada.
 delete from public.places;
@@ -37,6 +37,10 @@ from (values
 insert into public.places (name, location, city_id, is_visitable, gers_id)
 select 'Limite ' || n, 'SRID=4326;POINT(0 0)', '99999999-0000-4000-8000-000000000001', true, 'limite-' || n
 from generate_series(1, 12) as n;
+
+-- Dois registros que a revisão manual disse serem o mesmo lugar.
+insert into public.places (name, other_names, location, city_id, is_visitable, gers_id) values
+  ('POSTO TOP CENTRO', 'Posto Rumo Certo', 'SRID=4326;POINT(-43.35 -21.76)', '99999999-0000-4000-8000-000000000001', true, 'posto');
 
 set local role authenticated;
 set local request.jwt.claims = '{"sub":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","role":"authenticated"}';
@@ -126,6 +130,18 @@ select is_empty($$ select id from public.search_places('lugar') where name in ('
 select is((select count(*)::int from public.search_places('limite')), 10, 'devolve no máximo 10 lugares');
 select is_empty($$ select id from public.search_places('a') $$, 'uma letra só não busca');
 select is_empty($$ select id from public.search_places('%%') $$, '% não funciona como curinga');
+
+-- Quem digita o nome certo sempre encontra o lugar (D1)
+select results_eq(
+  $$ select name from public.search_places('posto rumo certo') $$,
+  $$ values ('POSTO TOP CENTRO') $$,
+  'o nome de um registro mesclado ainda acha o lugar, e a tela mostra o nome principal'
+);
+select results_eq(
+  $$ select name from public.search_places('posto top centro') $$,
+  $$ values ('POSTO TOP CENTRO') $$,
+  'o nome principal continua achando o lugar'
+);
 
 -- A categoria corrigida vale mais que a do Overture (D3)
 select is((select category from public.search_places('cafe corrigido')), 'bakery', 'a correção do usuário tem prioridade');
