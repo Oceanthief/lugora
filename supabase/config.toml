@@ -262,6 +262,16 @@ content_path = "./supabase/templates/codigo-de-acesso.html"
 subject = "Seu código de acesso ao Lugora"
 content_path = "./supabase/templates/codigo-de-acesso.html"
 
+# O app não oferece estes dois fluxos, mas a API do Supabase Auth, sim. Sem template próprio,
+# eles mandam um link em inglês, que um leitor de e-mail pode abrir sozinho.
+[auth.email.template.recovery]
+subject = "Seu código de acesso ao Lugora"
+content_path = "./supabase/templates/codigo-de-acesso.html"
+
+[auth.email.template.email_change]
+subject = "Confirme a troca de e-mail no Lugora"
+content_path = "./supabase/templates/troca-de-email.html"
+
 # Uncomment to customize notification email template
 # [auth.email.notification.password_changed]
 # enabled = true

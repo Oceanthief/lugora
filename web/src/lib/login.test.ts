@@ -95,4 +95,14 @@ describe("configuração do banco local", () => {
     expect(template).toContain(`${CODE_VALID_MINUTES} minutos`);
     expect(template).not.toContain("ConfirmationURL");
   });
+
+  it("manda só código também nos fluxos que o app não oferece, mas a API sim", () => {
+    const emailChange = readFileSync(new URL("supabase/templates/troca-de-email.html", repo), "utf8");
+    expect(emailChange).toContain("{{ .Token }}");
+    expect(emailChange).not.toContain("ConfirmationURL");
+
+    for (const flow of ["magic_link", "confirmation", "recovery", "email_change"]) {
+      expect(config).toContain(`[auth.email.template.${flow}]`);
+    }
+  });
 });

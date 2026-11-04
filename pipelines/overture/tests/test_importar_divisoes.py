@@ -12,6 +12,7 @@ from importar_divisoes import (
     decode_response,
     normalize_name,
     parse_ibge,
+    redact_credentials,
     select_municipalities,
     state_from_region,
 )
@@ -133,3 +134,15 @@ def test_connection_error_does_not_print_the_password():
     assert "segredo" not in str(error.value)
     # "from None": o traceback também não pode mostrar o erro original.
     assert error.value.__suppress_context__ is True
+
+
+def test_error_during_the_load_hides_the_password():
+    message = 'IO Error: Unable to connect to Postgres at "postgresql://postgres:segredo@host:5432/db": timeout'
+
+    assert redact_credentials(message) == 'IO Error: Unable to connect to Postgres at "postgresql://***@host:5432/db": timeout'
+
+
+def test_error_without_url_stays_readable():
+    message = "Catalog Error: Table with name cities does not exist!"
+
+    assert redact_credentials(message) == message

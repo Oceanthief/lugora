@@ -286,6 +286,11 @@ def add_boundary_column(con: duckdb.DuckDBPyConnection, table: str) -> None:
     )
 
 
+def redact_credentials(message: str) -> str:
+    """Tira usuário e senha de qualquer URL de banco que apareça numa mensagem de erro."""
+    return re.sub(r"://[^@\s\"']+@", "://***@", message)
+
+
 def attach_database(con: duckdb.DuckDBPyConnection, db_url: str) -> None:
     try:
         con.execute(f"ATTACH '{db_url}' AS pg (TYPE postgres);")
@@ -401,8 +406,12 @@ def main() -> None:
     selection = select_municipalities(read_localities(con, snapshot_dir), municipalities)
     print(f"Municípios do IBGE: {len(municipalities)} · com polígono: {len(selection.cities)}")
 
-    changes = write_to_postgres(con, db_url, selection, snapshot_dir)
-    print_report(con, selection, changes, started)
+    try:
+        changes = write_to_postgres(con, db_url, selection, snapshot_dir)
+        print_report(con, selection, changes, started)
+    except duckdb.Error as error:
+        # Se a conexão cair no meio da carga, a mensagem original traz a URL com a senha.
+        raise SystemExit(f"A gravação no banco falhou: {redact_credentials(str(error))}") from None
 
 
 if __name__ == "__main__":
