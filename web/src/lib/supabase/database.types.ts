@@ -105,7 +105,7 @@ isOneToOne: false
                   }
                   ComputedFields: never
                   Insert: {
-                    "age_confirmed_at": string,"created_at"?: string,"home_city_id": string,"show_home_city"?: boolean,"updated_at"?: string,"user_id": string
+                    "age_confirmed_at"?: string,"created_at"?: string,"home_city_id": string,"show_home_city"?: boolean,"updated_at"?: string,"user_id": string
                   }
                   Update: {
                     "age_confirmed_at"?: string,"created_at"?: string,"home_city_id"?: string,"show_home_city"?: boolean,"updated_at"?: string,"user_id"?: string

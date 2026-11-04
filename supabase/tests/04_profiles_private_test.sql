@@ -1,6 +1,6 @@
 -- Critério de aceite da Fatia 2: A pede o perfil de B e home_city_id não vem.
 begin;
-select plan(13);
+select plan(15);
 
 insert into auth.users (id, email) values
   ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'a@example.com'),
@@ -52,8 +52,8 @@ select throws_ok(
   '42501', null, 'A não altera a data da confirmação de 18+'
 );
 select throws_ok(
-  $$ insert into public.profiles_private (user_id, home_city_id, age_confirmed_at) values ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', '99999999-0000-4000-8000-00000000000a', now()) $$,
-  '42501', null, 'A não cria dados privados em nome de outra pessoa'
+  $$ insert into public.profiles_private (user_id, home_city_id) values ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', '99999999-0000-4000-8000-00000000000a') $$,
+  '42501', 'new row violates row-level security policy for table "profiles_private"', 'A não cria dados privados em nome de outra pessoa'
 );
 select is_empty(
   $$ delete from public.profiles_private where user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' returning user_id $$,
@@ -70,9 +70,17 @@ reset role;
 set local role authenticated;
 set local request.jwt.claims = '{"sub":"cccccccc-cccc-4ccc-8ccc-cccccccccccc","role":"authenticated"}';
 
+select throws_ok(
+  $$ insert into public.profiles_private (user_id, home_city_id, age_confirmed_at) values ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', '99999999-0000-4000-8000-00000000000a', '2099-01-01') $$,
+  '42501', 'permission denied for table profiles_private', 'C não escolhe a própria data de 18+'
+);
 select lives_ok(
-  $$ insert into public.profiles_private (user_id, home_city_id, age_confirmed_at) values ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', '99999999-0000-4000-8000-00000000000a', now()) $$,
+  $$ insert into public.profiles_private (user_id, home_city_id) values ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', '99999999-0000-4000-8000-00000000000a') $$,
   'C cria os próprios dados privados'
+);
+select ok(
+  (select age_confirmed_at <= now() from public.profiles_private where user_id = 'cccccccc-cccc-4ccc-8ccc-cccccccccccc'),
+  'a data do 18+ vem do banco'
 );
 
 reset role;

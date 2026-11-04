@@ -1,14 +1,18 @@
 begin;
-select plan(12);
+select plan(14);
 
 insert into auth.users (id, email) values
   ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'a@example.com'),
   ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 'b@example.com');
 
-insert into public.consents (user_id, purpose, policy_version, granted) values
-  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'essential', 'teste', true),
-  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'analytics', 'teste', true),
-  ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 'essential', 'teste', true);
+-- A versão atual da política, a única que dá para registrar pela API.
+insert into public.consents (user_id, purpose, policy_version, granted)
+select who, purpose, (select value #>> '{}' from public.app_parameters where key = 'privacy_policy_version'), true
+from (values
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'::uuid, 'essential'),
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'::uuid, 'analytics'),
+  ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb'::uuid, 'essential')
+) as fixture (who, purpose);
 
 -- Pessoa A logada
 set local role authenticated;
@@ -24,15 +28,32 @@ select is_empty(
   'A não lê os consentimentos de B'
 );
 select lives_ok(
-  $$ insert into public.consents (user_id, purpose, policy_version, granted) values ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'emails', 'teste', false) $$,
+  $$ insert into public.consents (user_id, purpose, policy_version, granted)
+     select 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'emails', value #>> '{}', false
+     from public.app_parameters where key = 'privacy_policy_version' $$,
   'A registra um consentimento próprio'
 );
 select throws_ok(
-  $$ insert into public.consents (user_id, purpose, policy_version, granted) values ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 'emails', 'teste', true) $$,
+  $$ insert into public.consents (user_id, purpose, policy_version, granted)
+     select 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 'emails', value #>> '{}', true
+     from public.app_parameters where key = 'privacy_policy_version' $$,
   '42501', null, 'A não registra consentimento em nome de B'
 );
 select throws_ok(
-  $$ insert into public.consents (user_id, purpose, policy_version, granted) values ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'analytics', 'teste', false) $$,
+  $$ insert into public.consents (user_id, purpose, policy_version, granted)
+     values ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'precise_location', 'inventada', true) $$,
+  '42501', 'new row violates row-level security policy for table "consents"', 'A não registra uma versão inventada da política'
+);
+select throws_ok(
+  $$ insert into public.consents (user_id, purpose, policy_version, granted, created_at)
+     select 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'precise_location', value #>> '{}', true, '2000-01-01'
+     from public.app_parameters where key = 'privacy_policy_version' $$,
+  '42501', 'permission denied for table consents', 'A não escolhe a data do consentimento'
+);
+select throws_ok(
+  $$ insert into public.consents (user_id, purpose, policy_version, granted)
+     select 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'analytics', value #>> '{}', false
+     from public.app_parameters where key = 'privacy_policy_version' $$,
   '23505', null, 'só existe um registro por finalidade e versão'
 );
 select results_eq(
