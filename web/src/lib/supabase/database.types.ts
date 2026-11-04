@@ -186,6 +186,11 @@ isOneToOne: false
 { Args: { "p_query": string }; Returns: {
               "id": string,"name": string,"state": string
             }[]
+                           },
+"search_places":
+{ Args: { "p_latitude"?: number,"p_longitude"?: number,"p_query": string }; Returns: {
+              "address": string,"category": string,"distance_meters": number,"id": string,"is_visitable": boolean,"name": string
+            }[]
                            }
           }
           Enums: {
