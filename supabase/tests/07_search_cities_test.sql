@@ -1,6 +1,6 @@
 -- Os nomes com "Zzteste" não existem de verdade, então o teste não depende do seed nem do pipeline.
 begin;
-select plan(12);
+select plan(15);
 
 insert into auth.users (id, email) values
   ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'a@example.com');
@@ -64,6 +64,27 @@ select is(
   pg_catalog.pg_get_function_result('public.search_cities(text)'::regprocedure),
   'TABLE(id uuid, name text, state text)',
   'devolve só id, nome e UF, sem o polígono'
+);
+
+-- Um texto enorme não pode prender o banco (seção 9.4). Sem o limite, 1 MB passa de 8 s.
+set local statement_timeout = '5s';
+select lives_ok($$ select id from public.search_cities(repeat('abc de ', 150000)) $$, 'um texto de 1 MB não prende o banco');
+set local statement_timeout = 0;
+
+select is_empty($$ select id from public.search_cities('zzteste' || repeat('x', 20)) $$, 'o texto inteiro conta, até o limite');
+
+reset role;
+
+-- O limite vem de app_parameters, não do código.
+update public.app_parameters set value = '7' where key = 'search_max_length';
+
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","role":"authenticated"}';
+
+select is(
+  (select count(*)::int from public.search_cities('zzteste' || repeat('x', 20))),
+  6,
+  'o que passa do limite é ignorado'
 );
 
 reset role;

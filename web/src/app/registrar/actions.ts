@@ -9,7 +9,8 @@ export type PlaceSearchResult = { places: PlaceResult[]; failed: boolean };
 
 /**
  * A posição vai no corpo do pedido, nunca na URL, e só serve para calcular a
- * distância: nada guarda onde a pessoa estava (seção 9.1).
+ * distância: nada guarda onde a pessoa estava (seção 9.1). A função do banco
+ * confere o consentimento e ignora a posição de quem não deu.
  */
 export async function searchPlaces(query: string, position: Position | null): Promise<PlaceSearchResult> {
   if (query.trim().length < PLACE_SEARCH_MIN_LENGTH) return { places: [], failed: false };

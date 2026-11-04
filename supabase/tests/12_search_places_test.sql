@@ -1,12 +1,22 @@
 -- Critérios de aceite da Fatia 3, com os nomes reais do diagnóstico de Juiz de Fora.
 begin;
-select plan(26);
+select plan(35);
 
 -- Tudo some no rollback do fim: assim, o teste não depende de a base já estar carregada.
 delete from public.places;
 
 insert into auth.users (id, email) values
-  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'a@example.com');
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'a@example.com'),
+  ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 'b@example.com'),
+  ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', 'c@example.com'),
+  ('dddddddd-dddd-4ddd-8ddd-dddddddddddd', 'd@example.com');
+
+-- A distância depende do consentimento: A deu; B nunca respondeu; C disse não; D deu e retirou depois.
+insert into public.consents (user_id, purpose, policy_version, granted, created_at) values
+  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'precise_location', 'teste-1', true, now()),
+  ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', 'precise_location', 'teste-1', false, now()),
+  ('dddddddd-dddd-4ddd-8ddd-dddddddddddd', 'precise_location', 'teste-1', true, now() - interval '2 days'),
+  ('dddddddd-dddd-4ddd-8ddd-dddddddddddd', 'precise_location', 'teste-2', false, now() - interval '1 day');
 
 insert into public.countries (id, name, iso_code, boundary) values
   ('99999999-0000-4000-8000-000000000000', 'Terra de Teste', 'ZZ', 'SRID=4326;MULTIPOLYGON(((0 0,0 1,1 1,1 0,0 0)))');
@@ -110,6 +120,24 @@ select is(
   'uma posição impossível é ignorada, sem erro'
 );
 
+-- O consentimento vale no banco, mesmo para quem chama a função direto (seção 9.1)
+set local request.jwt.claims = '{"sub":"bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb","role":"authenticated"}';
+select is((select count(*)::int from public.search_places('poleiro', -21.77204, -43.3523) where distance_meters is not null), 0, 'quem nunca respondeu não recebe distância, mesmo mandando a posição');
+select is((select count(*)::int from public.search_places('poleiro', -21.77204, -43.3523)), 2, 'e continua buscando');
+
+set local request.jwt.claims = '{"sub":"cccccccc-cccc-4ccc-8ccc-cccccccccccc","role":"authenticated"}';
+select is((select count(*)::int from public.search_places('poleiro', -21.77204, -43.3523) where distance_meters is not null), 0, 'quem disse não, também não');
+
+set local request.jwt.claims = '{"sub":"dddddddd-dddd-4ddd-8ddd-dddddddddddd","role":"authenticated"}';
+select is((select count(*)::int from public.search_places('poleiro', -21.77204, -43.3523) where distance_meters is not null), 0, 'vale a resposta mais recente: quem retirou não recebe distância');
+
+-- A retirada pelo caminho que a tela da Fatia 8 vai usar
+set local request.jwt.claims = '{"sub":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","role":"authenticated"}';
+select is((select count(*)::int from public.search_places('poleiro', -21.77204, -43.3523) where distance_meters is not null), 2, 'quem consentiu recebe distância');
+update public.consents set granted = false where user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' and purpose = 'precise_location';
+select is((select count(*)::int from public.search_places('poleiro', -21.77204, -43.3523) where distance_meters is not null), 0, 'ao retirar o consentimento, a distância some na hora');
+update public.consents set granted = true where user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' and purpose = 'precise_location';
+
 -- Encontrar pelo que a pessoa digita
 select is((select count(*)::int from public.search_places('POLEIRO')), 2, 'ignora maiúsculas');
 select results_eq(
@@ -146,9 +174,35 @@ select results_eq(
 -- A categoria corrigida vale mais que a do Overture (D3)
 select is((select category from public.search_places('cafe corrigido')), 'bakery', 'a correção do usuário tem prioridade');
 
+-- Um texto enorme não pode prender o banco (seção 9.4). Sem o limite, 1 MB passa de 8 s.
+set local statement_timeout = '5s';
+select lives_ok($$ select id from public.search_places(repeat('abc de ', 150000)) $$, 'um texto de 1 MB não prende o banco');
+set local statement_timeout = 0;
+
+select is_empty(
+  $$ select id from public.search_places('poleiro' || 'abcdefghijklmnopqrstuvwxyz') $$,
+  'o texto inteiro conta, até o limite'
+);
+
 reset role;
 
--- Os limites vêm de app_parameters, não do código
+-- O limite do texto vem de app_parameters, não do código
+update public.app_parameters set value = '7' where key = 'search_max_length';
+
+set local role authenticated;
+set local request.jwt.claims = '{"sub":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","role":"authenticated"}';
+
+select is(
+  (select count(*)::int from public.search_places('poleiro' || 'abcdefghijklmnopqrstuvwxyz')),
+  2,
+  'o que passa do limite é ignorado'
+);
+
+reset role;
+
+update public.app_parameters set value = '150' where key = 'search_max_length';
+
+-- Os limites de semelhança também vêm de app_parameters
 update public.app_parameters set value = '0.5' where key = 'place_search_strong_similarity';
 
 set local role authenticated;
