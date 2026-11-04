@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import io
 import json
 import math
 import os
@@ -33,6 +34,14 @@ from relatorio_jf import ARQ_LUGARES, ARQ_META, RELEASE_PADRAO, SAIDA, baixar
 
 JUIZ_DE_FORA_GERS_ID = "8b275bf4-2525-4616-b815-f6c777ab419a"  # o mesmo do seed e do importar_divisoes.py
 REVIEW_FILE = SAIDA / "fila_revisao_lugares.csv"
+REVIEW_COLUMN = "REVISÃO"
+
+# As decisões da revisão manual. Fica no git, só com identificadores: a base tem nomes de
+# profissionais autônomos e não é publicada, mas as decisões precisam sobreviver a um db reset.
+DECISIONS_FILE = Path(__file__).resolve().parent / "decisoes_revisao.csv"
+SAME_PLACE = "mesma_coisa"
+DIFFERENT_PLACES = "diferentes"
+NOT_IN_CITY = "nao_existe"
 
 MERGE_DISTANCE_M = 50
 # A D4 cita a faixa de 0,90 a 0,97, mas o exemplo dela ("Nave Estúdio" × "NAVE Studio") dá 0,983, e
@@ -91,6 +100,84 @@ class ReviewItem:
     name_b: str = ""
     distance_m: float | None = None
     similarity: float | None = None
+
+
+@dataclass(frozen=True)
+class Decision:
+    gers_id_a: str
+    gers_id_b: str
+    decision: str
+
+    @property
+    def key(self) -> tuple[str, str]:
+        return pair_key(self.gers_id_a, self.gers_id_b)
+
+
+def pair_key(gers_id_a: str, gers_id_b: str) -> tuple[str, str]:
+    """A ordem do par não importa. Um lugar sozinho, como uma praia, tem o segundo campo vazio."""
+    return (gers_id_a, gers_id_b) if not gers_id_b or gers_id_a <= gers_id_b else (gers_id_b, gers_id_a)
+
+
+# ─── Revisão manual ──────────────────────────────────────────────────────────
+def decision_from_text(text: str) -> str | None:
+    """Traduz o que a pessoa escreveu na coluna de revisão. Texto em branco é decisão pendente."""
+    normalized = normalize_name(text)
+    if not normalized:
+        return None
+    if "mesma coisa" in normalized or "mesmo lugar" in normalized:
+        return SAME_PLACE
+    if "diferente" in normalized:
+        return DIFFERENT_PLACES
+    if "nao tem" in normalized or "nao existe" in normalized:
+        return NOT_IN_CITY
+    raise ValueError(text)
+
+
+def parse_queue_decisions(text: str) -> list[Decision]:
+    """Lê as decisões escritas na fila de revisão. Uma resposta que não entendo para tudo."""
+    decisions = []
+    for line, row in enumerate(csv.DictReader(io.StringIO(text), delimiter=";"), start=2):
+        try:
+            decision = decision_from_text(row.get(REVIEW_COLUMN) or "")
+        except ValueError as error:
+            raise SystemExit(
+                f"Linha {line} da fila de revisão: não entendi {error}. "
+                'Use "São a mesma coisa", "São lojas diferentes" ou "Não existe".'
+            ) from None
+        if decision:
+            decisions.append(Decision(row["gers_a"], row["gers_b"] or "", decision))
+    return decisions
+
+
+def read_spreadsheet_text(path: Path) -> str:
+    """O Excel pode salvar em outra codificação, e o arquivo precisa continuar legível."""
+    if not path.exists():
+        return ""
+    content = path.read_bytes()
+    try:
+        return content.decode("utf-8-sig")
+    except UnicodeDecodeError:
+        return content.decode("cp1252")
+
+
+def read_decisions(path: Path) -> list[Decision]:
+    if not path.exists():
+        return []
+    with path.open(newline="", encoding="utf-8") as file:
+        return [Decision(row["gers_a"], row["gers_b"], row["decisao"]) for row in csv.DictReader(file, delimiter=";")]
+
+
+def write_decisions(path: Path, decisions: list[Decision]) -> None:
+    with path.open("w", newline="", encoding="utf-8") as file:
+        writer = csv.writer(file, delimiter=";", lineterminator="\n")
+        writer.writerow(["gers_a", "gers_b", "decisao"])
+        for decision in sorted(decisions, key=lambda item: item.key):
+            writer.writerow([*decision.key, decision.decision])
+
+
+def merge_decisions(saved: list[Decision], new: list[Decision]) -> list[Decision]:
+    """A decisão mais nova sobre o mesmo par vale."""
+    return list({decision.key: decision for decision in [*saved, *new]}.values())
 
 
 # ─── Limpeza (D3 e D5) ───────────────────────────────────────────────────────
@@ -159,8 +246,11 @@ def merge_cluster(cluster: list[Place]) -> Place:
     )
 
 
-def deduplicate(places: list[Place]) -> list[Place]:
-    """Só nome normalizado idêntico a até 50 m mescla sozinho. Filial a mais de 50 m fica separada."""
+def deduplicate(places: list[Place], decisions: tuple[Decision, ...] | list[Decision] = ()) -> list[Place]:
+    """Só nome normalizado idêntico a até 50 m mescla sozinho. Filial a mais de 50 m fica separada.
+
+    Fora isso, só mescla o par que uma pessoa revisou e disse ser a mesma coisa.
+    """
     parent = list(range(len(places)))
 
     def find(i: int) -> int:
@@ -173,6 +263,11 @@ def deduplicate(places: list[Place]) -> list[Place]:
     for i, j, _ in nearby_pairs(places, MERGE_DISTANCE_M):
         if names[i] and names[i] == names[j]:
             parent[find(i)] = find(j)
+
+    index_by_gers = {p.raw.gers_id: index for index, p in enumerate(places)}
+    for decision in decisions:
+        if decision.decision == SAME_PLACE and decision.gers_id_a in index_by_gers and decision.gers_id_b in index_by_gers:
+            parent[find(index_by_gers[decision.gers_id_a])] = find(index_by_gers[decision.gers_id_b])
 
     clusters: dict[int, list[Place]] = defaultdict(list)
     for index, place in enumerate(places):
@@ -187,12 +282,19 @@ def group_key(place: Place) -> str:
     return place.category_group or place.raw.overture_category or ""
 
 
-def review_pairs(con: duckdb.DuckDBPyConnection, places: list[Place]) -> list[ReviewItem]:
+def review_pairs(
+    con: duckdb.DuckDBPyConnection, places: list[Place], decisions: tuple[Decision, ...] | list[Decision] = ()
+) -> list[ReviewItem]:
     """Nomes parecidos, perto e do mesmo grupo: uma pessoa decide (D4). Nunca mescla sozinho."""
+    decided = {decision.key for decision in decisions}
     candidates = []
     for i, j, distance in nearby_pairs(places, MERGE_DISTANCE_M):
         a, b = places[i], places[j]
-        if normalize_name(a.raw.name) != normalize_name(b.raw.name) and group_key(a) == group_key(b):
+        if (
+            normalize_name(a.raw.name) != normalize_name(b.raw.name)
+            and group_key(a) == group_key(b)
+            and pair_key(a.raw.gers_id, b.raw.gers_id) not in decided
+        ):
             candidates.append((a, b, distance))
     if not candidates:
         return []
@@ -218,12 +320,18 @@ def review_pairs(con: duckdb.DuckDBPyConnection, places: list[Place]) -> list[Re
     return sorted(items, key=lambda item: (item.gers_id_a, item.gers_id_b))
 
 
-def impossible_category_items(places: list[Place]) -> list[ReviewItem]:
+def impossible_category_items(places: list[Place], decisions: tuple[Decision, ...] | list[Decision] = ()) -> list[ReviewItem]:
+    decided = {decision.key for decision in decisions}
     return [
         ReviewItem(IMPOSSIBLE_CATEGORIES[p.raw.overture_category], p.raw.gers_id, p.raw.name)
         for p in places
-        if p.raw.overture_category in IMPOSSIBLE_CATEGORIES
+        if p.raw.overture_category in IMPOSSIBLE_CATEGORIES and pair_key(p.raw.gers_id, "") not in decided
     ]
+
+
+def not_in_city_ids(decisions: tuple[Decision, ...] | list[Decision]) -> set[str]:
+    """Lugares que a revisão disse não existirem na cidade: saem da busca, sem apagar o registro."""
+    return {decision.gers_id_a for decision in decisions if decision.decision == NOT_IN_CITY}
 
 
 # ─── Leitura e escrita ───────────────────────────────────────────────────────
@@ -298,7 +406,19 @@ UPSERT = f"""
 """
 
 
-def write_places(con: duckdb.DuckDBPyConnection, places: list[Place]) -> tuple:
+# Registros que uma mesclagem absorveu depois de já estarem no banco: viram "merged" e apontam para
+# o principal (D4). Sem visitas ainda, não há nada para migrar; a Fatia 4 precisa levar isso em conta.
+MARK_MERGED = """
+    update public.places as absorbed
+    set status = 'merged', merged_into_id = main.id
+    from public.places as main
+    where absorbed.gers_id = any (main.merged_gers_ids)
+      and absorbed.id <> main.id
+      and absorbed.status <> 'merged'
+"""
+
+
+def write_places(con: duckdb.DuckDBPyConnection, places: list[Place], not_in_city: set[str]) -> tuple:
     if not query_remote(con, f"select 1 from public.cities where gers_id = '{JUIZ_DE_FORA_GERS_ID}'"):
         raise SystemExit("Juiz de Fora não está em cities. Rode `npx supabase db reset` ou `python importar_divisoes.py`.")
 
@@ -341,6 +461,10 @@ def write_places(con: duckdb.DuckDBPyConnection, places: list[Place]) -> tuple:
         changes = query_remote(con, CHANGES)[0]
         print("Atualizando a tabela...")
         run_remote(con, UPSERT)
+        run_remote(con, MARK_MERGED)
+        if not_in_city:
+            ids = ", ".join(f"'{gers_id.replace(chr(39), chr(39) * 2)}'" for gers_id in sorted(not_in_city))
+            run_remote(con, f"update public.places set status = 'closed' where gers_id in ({ids}) and status <> 'closed'")
         return changes
     finally:
         run_remote(con, f"drop schema if exists {STAGING_SCHEMA} cascade")
@@ -357,15 +481,24 @@ def record_import(con: duckdb.DuckDBPyConnection, release: str, added: int, chan
 
 
 def write_review_file(items: list[ReviewItem]) -> None:
+    """Só o que ainda falta decidir. As decisões já foram para DECISIONS_FILE antes desta gravação."""
     SAIDA.mkdir(exist_ok=True)
     with REVIEW_FILE.open("w", newline="", encoding="utf-8-sig") as file:
         writer = csv.writer(file, delimiter=";")
-        writer.writerow(["motivo", "gers_a", "nome_a", "gers_b", "nome_b", "distancia_m", "similaridade"])
+        writer.writerow(["motivo", "gers_a", "nome_a", "gers_b", "nome_b", "distancia_m", "similaridade", REVIEW_COLUMN])
         for item in items:
-            writer.writerow([item.reason, item.gers_id_a, item.name_a, item.gers_id_b, item.name_b, item.distance_m, item.similarity])
+            writer.writerow([item.reason, item.gers_id_a, item.name_a, item.gers_id_b, item.name_b, item.distance_m, item.similarity, ""])
 
 
-def print_report(con: duckdb.DuckDBPyConnection, raw_count: int, places: list[Place], changes: tuple, review_count: int, started: float) -> None:
+def print_report(
+    con: duckdb.DuckDBPyConnection,
+    raw_count: int,
+    places: list[Place],
+    changes: tuple,
+    review_count: int,
+    decision_count: int,
+    started: float,
+) -> None:
     new, changed, total = changes
     merged = sum(len(p.merged_gers_ids) for p in places)
 
@@ -374,24 +507,27 @@ def print_report(con: duckdb.DuckDBPyConnection, raw_count: int, places: list[Pl
     print(f"Mesclados (D4): {merged} registros, que viraram {sum(1 for p in places if p.merged_gers_ids)} lugares")
     print(f"Lugares a gravar: {total}")
     print(f"No banco: {new} novos, {changed} alterados, {total - new - changed} iguais")
-    print(f"Para revisão manual: {review_count} (em {REVIEW_FILE.relative_to(Path(__file__).resolve().parent)})")
+    print(f"Decisões de revisão guardadas: {decision_count} · ainda pendentes: {review_count} (em {REVIEW_FILE.relative_to(Path(__file__).resolve().parent)})")
 
     print("\n── O que está no banco ──")
-    count, visitable, not_visitable, sensitive, residential, no_category, repeated = query_remote(
+    active, closed, merged_rows, visitable, not_visitable, sensitive, residential, no_category, repeated = query_remote(
         con,
         """
         select
-          count(*),
-          count(*) filter (where is_visitable),
-          count(*) filter (where not is_visitable),
-          count(*) filter (where is_sensitive),
-          count(*) filter (where category = 'residential'),
-          count(*) filter (where overture_category is null),
+          count(*) filter (where status = 'active'),
+          count(*) filter (where status = 'closed'),
+          count(*) filter (where status = 'merged'),
+          count(*) filter (where status = 'active' and is_visitable),
+          count(*) filter (where status = 'active' and not is_visitable),
+          count(*) filter (where status = 'active' and is_sensitive),
+          count(*) filter (where status = 'active' and category = 'residential'),
+          count(*) filter (where status = 'active' and overture_category is null),
           (select count(*) from (select gers_id from public.places group by 1 having count(*) > 1) as d)
         from public.places
         """,
     )[0]
-    print(f"Lugares: {count} (visitáveis: {visitable}, não visitáveis: {not_visitable})")
+    print(f"Lugares ativos: {active} (visitáveis: {visitable}, não visitáveis: {not_visitable})")
+    print(f"Fora da busca: {closed} fechados pela revisão, {merged_rows} mesclados depois de carregados")
     print(f"Sensíveis: {sensitive} · residenciais: {residential} · sem categoria: {no_category}")
     print(f"Identificadores repetidos: {repeated}")
     print(f"\nTempo: {time.time() - started:.0f} s")
@@ -417,16 +553,21 @@ def main() -> None:
     release = json.loads(ARQ_META.read_text(encoding="utf-8"))["release"]
     print(f"Usando o snapshot da release {release}.")
 
+    # Antes de tudo: o que a pessoa escreveu na fila vai para o arquivo versionado. Só depois disso
+    # a fila é regravada, para nenhuma revisão se perder.
+    decisions = merge_decisions(read_decisions(DECISIONS_FILE), parse_queue_decisions(read_spreadsheet_text(REVIEW_FILE)))
+    write_decisions(DECISIONS_FILE, decisions)
+
     con = connect()
     raw = read_snapshot(con)
     attach_database(con, db_url)
     try:
         rules = read_category_rules(con)
-        places = deduplicate([classify(item, rules) for item in raw])
-        review = review_pairs(con, places) + impossible_category_items(places)
+        places = deduplicate([classify(item, rules) for item in raw], decisions)
+        review = review_pairs(con, places, decisions) + impossible_category_items(places, decisions)
         write_review_file(review)
 
-        changes = write_places(con, places)
+        changes = write_places(con, places, not_in_city_ids(decisions))
         record_import(
             con,
             release,
@@ -436,7 +577,7 @@ def main() -> None:
             in_review=len(review),
             not_visitable=sum(1 for p in places if not p.is_visitable),
         )
-        print_report(con, len(raw), places, changes, len(review), started)
+        print_report(con, len(raw), places, changes, len(review), len(decisions), started)
     except duckdb.Error as error:
         # Se a conexão cair no meio da carga, a mensagem original traz a URL com a senha.
         raise SystemExit(f"A gravação no banco falhou: {redact_credentials(str(error), db_url)}") from None

@@ -98,9 +98,25 @@ python importar_lugares.py --atualizar  # baixa de novo
 
 - **Precisa** do banco local no ar e de Juiz de Fora em `cities`, que já vem no seed.
 - **Idempotente:** rodar de novo mostra "0 novos, 0 alterados". Cada execução grava uma linha em `overture_imports`.
-- **Revisão manual:** nomes parecidos e praias em cidade sem litoral vão para `relatorio/fila_revisao_lugares.csv`, fora do git. Nada ali é mesclado sozinho.
-- **Resultado na release 2026-10-21.0:** 19.459 registros viram 19.431 lugares, com 28 mesclados e 39 para revisão. São 4.370 visitáveis, 1.961 sensíveis e 270 residenciais.
+- **Resultado na release 2026-10-21.0:** 19.459 registros viram 19.419 lugares, com 40 mesclados. Na busca ficam 19.411 ativos: 4.365 visitáveis, 1.961 sensíveis e 270 residenciais.
 - **Diferença em relação à D4:** o documento cita a faixa de similaridade de 0,90 a 0,97, mas o exemplo dele ("Nave Estúdio" × "NAVE Studio") dá 0,983, e o par "Auto escola Brasília" × "Auto Escola Transitar", citado como separado, dá 0,93. Por isso, todo nome diferente a partir de 0,90, a até 50 m e do mesmo grupo, vai para a revisão; nenhum deles mescla sozinho.
+
+### Revisão manual
+
+Nomes parecidos e praias em cidade sem litoral vão para `relatorio/fila_revisao_lugares.csv`, fora do git. Nada ali é mesclado sozinho.
+
+1. Abra o arquivo e escreva, na coluna `REVISÃO`, "São a mesma coisa", "São lojas diferentes" ou "Não existe" ("Não tem..." também vale).
+2. Rode `python importar_lugares.py`.
+
+| Decisão | O que acontece |
+| --- | --- |
+| Mesma coisa | Os dois viram um lugar só, e o GERS do outro fica em `merged_gers_ids` |
+| Diferentes | Continuam separados e saem da fila |
+| Não existe | O lugar sai da busca (`status = 'closed'`), sem ser apagado |
+
+- **As decisões não se perdem:** antes de regravar a fila, o script as copia para `decisoes_revisao.csv`, que fica no git e só tem identificadores. Assim, elas sobrevivem a um `db reset`.
+- **Uma resposta que o script não entende** interrompe a execução antes de mexer em qualquer arquivo.
+- **Para desfazer uma decisão:** edite `decisoes_revisao.csv`, rode `npx supabase db reset` e carregue tudo de novo.
 
 ## Privacidade e atribuição
 

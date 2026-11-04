@@ -4,15 +4,27 @@ import duckdb
 import pytest
 
 from importar_lugares import (
+    DIFFERENT_PLACES,
+    NOT_IN_CITY,
+    SAME_PLACE,
     CategoryRule,
+    Decision,
     Place,
     RawPlace,
     classify,
+    decision_from_text,
     deduplicate,
     distance_m,
     impossible_category_items,
+    merge_decisions,
     nearby_pairs,
+    not_in_city_ids,
+    pair_key,
+    parse_queue_decisions,
+    read_decisions,
+    read_spreadsheet_text,
     review_pairs,
+    write_decisions,
 )
 
 RULES = {
@@ -277,6 +289,132 @@ def test_similar_names_far_apart_do_not_go_to_review(con):
 
 def test_review_without_candidates_does_not_query(con):
     assert review_pairs(con, []) == []
+
+
+# ─── Revisão manual: as decisões do Victor valem e não se perdem ─────────────
+QUEUE = (
+    "motivo;gers_a;nome_a;gers_b;nome_b;distancia_m;similaridade;REVISÃO\n"
+    "nome parecido;a;Nave Estúdio;b;NAVE Studio;0.0;0.983;São a mesma coisa\n"
+    "nome parecido;c;Livraria Flamingo;d;Livraria Camões;19.1;0.901;São lojas diferentes\n"
+    "praia;e;Buzios - Rio De Janeiro;;;;;Não tem praia em Juiz de Fora\n"
+    "nome parecido;f;Pendente;g;Pendente 2;1.0;0.95;\n"
+)
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("São a mesma coisa", SAME_PLACE),
+        ("sao a MESMA COISA", SAME_PLACE),
+        ("São lojas diferentes", DIFFERENT_PLACES),
+        ("Não tem praia em Juiz de Fora", NOT_IN_CITY),
+        ("Não existe", NOT_IN_CITY),
+        ("", None),
+        ("   ", None),
+    ],
+)
+def test_review_text_is_understood(text, expected):
+    assert decision_from_text(text) == expected
+
+
+def test_queue_decisions_are_read_and_blank_rows_stay_pending():
+    assert parse_queue_decisions(QUEUE) == [
+        Decision("a", "b", SAME_PLACE),
+        Decision("c", "d", DIFFERENT_PLACES),
+        Decision("e", "", NOT_IN_CITY),
+    ]
+
+
+def test_queue_without_the_review_column_has_no_decisions():
+    assert parse_queue_decisions("motivo;gers_a;nome_a;gers_b\nx;a;A;b\n") == []
+
+
+def test_answer_that_cannot_be_understood_stops_before_anything_is_lost():
+    queue = "motivo;gers_a;nome_a;gers_b;REVISÃO\nx;a;A;b;Talvez\n"
+
+    with pytest.raises(SystemExit, match="Linha 2.*Talvez"):
+        parse_queue_decisions(queue)
+
+
+def test_spreadsheet_is_readable_in_either_encoding(tmp_path):
+    utf8 = tmp_path / "utf8.csv"
+    utf8.write_bytes("REVISÃO".encode("utf-8-sig"))
+    excel = tmp_path / "excel.csv"
+    excel.write_bytes("REVISÃO".encode("cp1252"))
+
+    assert read_spreadsheet_text(utf8) == "REVISÃO"
+    assert read_spreadsheet_text(excel) == "REVISÃO"
+    assert read_spreadsheet_text(tmp_path / "nao-existe.csv") == ""
+
+
+def test_decisions_survive_a_round_trip_through_the_versioned_file(tmp_path):
+    path = tmp_path / "decisoes.csv"
+    decisions = [Decision("b", "a", SAME_PLACE), Decision("e", "", NOT_IN_CITY)]
+
+    write_decisions(path, decisions)
+
+    assert read_decisions(path) == [Decision("a", "b", SAME_PLACE), Decision("e", "", NOT_IN_CITY)]
+    assert read_decisions(tmp_path / "nao-existe.csv") == []
+
+
+def test_versioned_file_holds_only_identifiers_and_decisions(tmp_path):
+    # A base tem nomes de profissionais autônomos e não pode entrar no repositório.
+    path = tmp_path / "decisoes.csv"
+
+    write_decisions(path, parse_queue_decisions(QUEUE))
+
+    content = path.read_text(encoding="utf-8")
+    assert content.splitlines()[0] == "gers_a;gers_b;decisao"
+    assert "Nave" not in content and "Livraria" not in content and "Buzios" not in content
+
+
+def test_newer_decision_about_the_same_pair_wins_in_any_order():
+    merged = merge_decisions([Decision("a", "b", DIFFERENT_PLACES)], [Decision("b", "a", SAME_PLACE)])
+
+    assert merged == [Decision("b", "a", SAME_PLACE)]
+    assert pair_key("b", "a") == pair_key("a", "b")
+
+
+def test_pair_marked_as_the_same_place_merges(con):
+    # Caso real: "Nave Estúdio" × "NAVE Studio". O principal é o de maior confiança.
+    places = clean(
+        raw("a", "Nave Estúdio", category="media_service", confidence=0.36, lat=-21.80073, lng=-43.39934),
+        raw("b", "NAVE Studio", category="media_service", confidence=0.68, lat=-21.80073, lng=-43.39934),
+    )
+    decisions = [Decision("a", "b", SAME_PLACE)]
+
+    result = deduplicate(places, decisions)
+
+    assert [p.raw.name for p in result] == ["NAVE Studio"]
+    assert result[0].merged_gers_ids == ("a",)
+    assert review_pairs(con, result, decisions) == []
+
+
+def test_pair_marked_as_different_stays_separate_and_leaves_the_queue(con):
+    # Caso real, com nomes fictícios: dois consultórios a 12 m, com nomes parecidos.
+    places = clean(
+        raw("a", "Consultorio Odontologico Dra. Fulana", category="media_service"),
+        raw("b", "Consultorio Odontologico Dra. Fulano", category="media_service"),
+    )
+    decisions = [Decision("b", "a", DIFFERENT_PLACES)]
+
+    assert review_pairs(con, places) != []
+    assert review_pairs(con, places, decisions) == []
+    assert len(deduplicate(places, decisions)) == 2
+
+
+def test_decision_about_a_record_that_left_the_base_is_ignored():
+    places = clean(raw("a", "Bar"))
+
+    assert deduplicate(places, [Decision("a", "sumiu", SAME_PLACE)]) == places
+
+
+def test_place_marked_as_not_in_the_city_leaves_the_queue_and_is_listed():
+    places = clean(raw("e", "Buzios - Rio De Janeiro", category="beach"), raw("f", "Praia Grande", category="beach"))
+    decisions = [Decision("e", "", NOT_IN_CITY)]
+
+    assert [item.gers_id_a for item in impossible_category_items(places, decisions)] == ["f"]
+    assert not_in_city_ids(decisions) == {"e"}
 
 
 def test_place_never_carries_contact_fields():
