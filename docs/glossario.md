@@ -37,14 +37,20 @@ O documento de visão usa nomes em português. O código e o banco usam inglês 
 | mostrar_cidade (9.3) | `show_home_city` | padrão `false` |
 | mostrar_sequencia | `show_streak` | |
 | nivel_confianca | `trust_level` | derivado (D6) |
-| finalidade / versao_politica / aceito | `purpose` / `policy_version` / `granted` | |
+| finalidade / versao_politica / aceito | `purpose` / `policy_version` / `granted` | `essential`, `precise_location`, `emails`, `analytics` |
+| nome (usuário) | `name` | 1 a 80 caracteres |
+| username | `username` | o @: 3 a 30 caracteres, com minúsculas, números e `_` |
+| codigo_iso | `iso_code` | duas letras maiúsculas (`BR`); territórios em disputa usam `X?` do Overture (ADR 0008) |
+| geometria (país, cidade) | `boundary` | `geography(MultiPolygon, 4326)` |
+| fonte (cidade) | `source` | `overture` |
+| chave / valor / descricao (parâmetro) | `key` / `value` / `description` | `value` em `jsonb` |
 | ponto | `location` | `geography(Point, 4326)` |
 | categoria_overture | `overture_category` | |
 | categoria_lugora | `category` | |
 | categoria_corrigida | `category_override` | tem prioridade (D3) |
 | confianca | `confidence` | 0 a 1 |
 | fontes | `sources` | |
-| id_externo / ids_externos | `gers_id` / `merged_gers_ids` | GERS do Overture |
+| id_externo / ids_externos | `gers_id` / `merged_gers_ids` | GERS do Overture; em `cities`, é o `division_id` da divisão |
 | endereco | `address` | |
 | cep | `postal_code` | fora da tabela da seção 8; incluído por decisão do Victor (importação de JF, 2026-11) |
 | estado_regiao (cidade) | `state` | UF no Brasil |
@@ -110,7 +116,7 @@ Lista única em `web/src/lib/categories.ts`; ícones em `web/src/lib/category-ic
 
 ## Rotas do app (português, porque são interface)
 
-`/mapa` · `/feed` · `/registrar` · `/quero-ir` · `/perfil` · `/perfil/[username]` · `/lugar/[id]` · `/configuracoes` · `/entrar` · `/cadastro` · `/sobre` · `/estilos` (temporária, Fatia 1)
+`/mapa` · `/feed` · `/registrar` · `/quero-ir` · `/perfil` · `/perfil/[username]` · `/lugar/[id]` · `/configuracoes` · `/entrar` · `/cadastro` · `/privacidade` · `/sobre` · `/estilos` (temporária, Fatia 1)
 
 ## Termos da interface
 

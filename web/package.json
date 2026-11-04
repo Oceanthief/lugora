@@ -12,9 +12,12 @@
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
     "seed:lugares": "node scripts/seed-lugares.mjs",
-    "seed:demo": "node scripts/seed-demo.mjs"
+    "seed:demo": "node scripts/seed-demo.mjs",
+    "env:local": "node scripts/env-local.mjs"
   },
   "dependencies": {
+    "@supabase/ssr": "0.12.7",
+    "@supabase/supabase-js": "2.118.0",
     "maplibre-gl": "6.14.0",
     "next": "16.4.3",
     "react": "19.3.0",

@@ -22,7 +22,7 @@ As duas se encontram no **portão do beta**, depois da Fatia 10.
 | --- | --- | --- | --- | --- | --- |
 | 0 | Esqueleto no localhost | App com navegação, telas de exemplo e mapa de JF | M | — | concluída |
 | 1 | Direção visual | Três estilos lado a lado em `/estilos`; você escolhe um | P | 0 | concluída |
-| 2 | Banco local e contas | Entrar, fazer o cadastro e ver o próprio perfil | G | 0 | a fazer |
+| 2 | Banco local e contas | Entrar, fazer o cadastro e ver o próprio perfil | G | 0 | concluída |
 | 3 | Base de lugares de JF e busca | Buscar "poleiro" e ver as duas unidades, sem duplicatas | M | 2 | a fazer |
 | 4 | Registro rápido e mapa | Registrar uma visita e ver o ponto no mapa | G | 3 | a fazer |
 | 5 | Lugares novos e sinalizações | Criar um lugar e sinalizar "fechou" | M | 4 | a fazer |
@@ -119,7 +119,7 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 
 ### Fatia 2: Banco local e contas
 
-**Status:** a fazer · **Tamanho:** G
+**Status:** concluída · **Tamanho:** G
 
 **Objetivo:** Supabase rodando no seu computador, com as primeiras tabelas, login e cadastro, e as regras de acesso testadas desde o início.
 
@@ -131,16 +131,16 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 
 **Tarefas:**
 
-- [ ] `npx supabase init` na raiz e `npx supabase start`.
-- [ ] Migrações de `profiles`, `profiles_private`, `consents`, `countries`, `cities` e `app_parameters`, com PostGIS. As outras tabelas entram nas fatias que precisam delas.
-- [ ] A cidade de residência e as configurações ficam em `profiles_private`, que só o dono lê. Motivo: o RLS protege linhas, não colunas; se `home_city_id` ficasse em `profiles`, quem pode ver o perfil veria a cidade.
-- [ ] Pipeline de carga dos limites do Overture (tema divisions): todos os países e as cidades do Brasil, em `pipelines/overture/`.
-- [ ] Login por e-mail. Login com Google é opcional aqui: ele exige criar credenciais no Google Cloud Console, então, se travar, deixe para a Fatia 10.
-- [ ] Cadastro: confirmação de 18+, consentimentos por finalidade (seção 9.1), nome, @ e cidade onde mora (privada).
-- [ ] RLS em todas as tabelas, com testes pgTAP: o usuário lê e edita o próprio perfil e não lê a cidade de residência de outra pessoa.
-- [ ] `supabase/seed.sql` com 3 usuários fictícios.
-- [ ] CI: job "database" rodando `supabase test db`.
-- [ ] (Recomendado) Criar um projeto Supabase de homologação na nuvem, aplicar as migrações e ligá-lo ao preview da Vercel. Ele passa a ser obrigatório na Fatia 4, para testar o GPS no celular.
+- [x] `npx supabase init` na raiz e `npx supabase start`.
+- [x] Migrações de `profiles`, `profiles_private`, `consents`, `countries`, `cities` e `app_parameters`, com PostGIS. As outras tabelas entram nas fatias que precisam delas.
+- [x] A cidade de residência e as configurações ficam em `profiles_private`, que só o dono lê. Motivo: o RLS protege linhas, não colunas; se `home_city_id` ficasse em `profiles`, quem pode ver o perfil veria a cidade.
+- [x] Pipeline de carga dos limites do Overture (tema divisions): todos os países e as cidades do Brasil, em `pipelines/overture/` (ADR 0008).
+- [x] Login por e-mail, com código de 6 dígitos (ADR 0009). Login com Google fica para a Fatia 10, porque exige criar credenciais no Google Cloud Console.
+- [x] Cadastro: confirmação de 18+, consentimentos por finalidade (seção 9.1), nome, @ e cidade onde mora (privada). A política de privacidade é um rascunho em `/privacidade`, a revisar antes de abrir ao público.
+- [x] RLS em todas as tabelas, com testes pgTAP: o usuário lê e edita o próprio perfil e não lê a cidade de residência de outra pessoa.
+- [x] `supabase/seed.sql` com 3 usuários: Victor Ramos (nome do autor, autorizado por ele), Duda Freitas e Gabriel Santos (fictícios), todos com e-mail `@example.com`.
+- [x] CI: job "database" rodando `supabase test db`.
+- Criar um projeto Supabase de homologação na nuvem, aplicar as migrações e ligá-lo ao preview da Vercel ficou para a Fatia 4, por decisão do Victor: é lá que ele passa a ser obrigatório, para testar o GPS no celular.
 
 **Aceite:**
 
@@ -203,7 +203,9 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 - [ ] Fluxo de registro rápido: lugar, data (hoje por padrão), nota de 0,5 a 5 e até 3 ocasiões.
 - [ ] `is_resident` gravado no momento da visita.
 - [ ] Regras de publicação (7.5): Minha cidade 24 h depois; viagem ao encerrar; "publicar agora" com aviso; lugar sensível nasce "só eu".
-- [ ] "Lugares perto de mim" pelo GPS, testado no celular pelo preview em HTTPS (projeto de homologação da Fatia 2).
+- [ ] Criar o projeto Supabase de homologação na nuvem (veio da Fatia 2): aplicar as migrações, carregar países e cidades e ligá-lo ao preview da Vercel. Repetir a configuração do login por código, senão a nuvem volta a mandar link: os templates de e-mail (`magic_link`, `confirmation`, `recovery` e `email_change`), validade, limites e confirmação de e-mail (ADR 0009). Conferir de novo, na nuvem, que uma conta criada com o e-mail de outra pessoa não dá acesso.
+- [ ] Limite de requisições na nuvem (seção 9.4), incluindo a leitura de polígonos em `cities` e `countries`, que hoje qualquer pessoa consegue baixar sem limite (achado da revisão da Fatia 2).
+- [ ] "Lugares perto de mim" pelo GPS, testado no celular pelo preview em HTTPS (projeto de homologação).
 - [ ] Mapa com os pontos visitados, as abas Viagens e Minha cidade, e as faixas de cor por lugares distintos (7.4).
 - [ ] Primeiro teste de fluxo com Playwright: registrar uma visita do começo ao fim.
 
@@ -369,8 +371,9 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 
 - [ ] Atualização mensal incremental pelo changelog do Overture: idempotente, registrada em `overture_imports`, com `removed` virando sinalização (D2).
 - [ ] Projeto Supabase de produção, migrações aplicadas pela CLI, e a Vercel apontando para ele.
-- [ ] Login com Google em produção, se ainda não estiver feito.
-- [ ] Termos de uso e política de privacidade em linguagem simples (revisar com um advogado antes de abrir ao público).
+- [ ] Login com Google, como opção além do código por e-mail (decidido na Fatia 2).
+- [ ] Provedor de e-mail próprio (SMTP) para o código de acesso: o do Supabase é só para testes (ADR 0009).
+- [ ] Termos de uso e política de privacidade em linguagem simples (revisar com um advogado antes de abrir ao público). Parte do rascunho em `/privacidade`, que ainda precisa de um contato para dúvidas.
 - [ ] Página Sobre com a atribuição (seção 10).
 - [ ] Tabela `events` gravando os eventos da seção 12.
 - [ ] Importar os registros da Fase 0 e medir quantos lugares digitados pelas pessoas a base encontrou (cobertura real).

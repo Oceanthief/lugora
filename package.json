@@ -1,0 +1,8 @@
+{
+  "name": "lugora-raiz",
+  "private": true,
+  "description": "Existe só para fixar a versão da CLI do Supabase usada com npx. O app fica em web/.",
+  "devDependencies": {
+    "supabase": "3.0.0"
+  }
+}

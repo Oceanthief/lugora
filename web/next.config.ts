@@ -11,7 +11,12 @@ const nextConfig: NextConfig = {
   // Wi-Fi (http://IP-do-PC:3000). Cada * é um pedaço do IP, então cobre as
   // redes de casa mesmo quando o roteador troca o IP do PC.
   allowedDevOrigins: ["192.168.*.*"],
+  // A raiz do repositório tem um package.json só para a CLI do Supabase. Sem as
+  // duas opções apontando para web/, o Next toma aquela pasta como raiz do app;
+  // com só uma delas, ele grava o build em web/web/.next.
+  outputFileTracingRoot: __dirname,
   turbopack: {
+    root: __dirname,
     rules: {
       "*.css": {
         loaders: ["@tailwindcss/turbopack"],
