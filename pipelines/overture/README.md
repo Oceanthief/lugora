@@ -121,6 +121,7 @@ Nomes parecidos e praias em cidade sem litoral vão para `relatorio/fila_revisao
 
 ## Privacidade e atribuição
 
-- **Sem contatos:** o script não copia e-mails nem telefones.
+- **Sem contatos:** o script não copia e-mails nem telefones, nem os que vêm no meio do texto. Endereço com contato ou link fica inteiro de fora, e o CEP só entra se tiver formato de CEP. Faixas de números ("2998-3000", "sala 1801-1803") não contam como telefone; na dúvida, conta. O lugar continua na base. A cópia local em `dados/` guarda o texto como veio, e por isso fica fora do git.
+- **Nomes de pessoas:** testes e documentos usam nomes fictícios, porque o repositório é público.
 - **Base bruta fora do repositório:** ela contém nomes de profissionais autônomos, então só o script e os números agregados são publicados.
 - **Licenças e créditos:** dados de lugares © Overture Maps Foundation, com licenças por fonte (Meta e outras: CDLA Permissive 2.0; Foursquare: Apache 2.0; AllThePlaces: CC0). Limites © OpenStreetMap contributors (ODbL). Lista de municípios: IBGE.

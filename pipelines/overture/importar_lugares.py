@@ -56,6 +56,20 @@ RESIDENTIAL_CATEGORY = "residential"
 # D3: Juiz de Fora não tem litoral. Vai para a revisão, em vez de ser corrigido sozinho.
 IMPOSSIBLE_CATEGORIES = {"beach": "praia em cidade sem litoral"}
 
+# Minimização (LGPD): o Overture às vezes traz contatos no meio do texto do endereço.
+EMAIL_OR_LINK = re.compile(r"[^\s@]+@[^\s@]+\.[^\s@]+|https?://|www\.", re.IGNORECASE)
+PHONE = re.compile(
+    r"\+\s*\d{2}\b"  # +55
+    r"|\(\s*\d{2}\s*\)\s*\d"  # (32) 3212-3456, (32)98888-7777
+    r"|\b[1-9]\d\s+[2-9]\d{7}\b"  # 32 32123456
+    r"|\b9\d{4}[\s.,-]*\d{4}\b"  # 98888-7777, 98888.7777, 98888,7777
+)
+# 3212-3456 é telefone; 2998-3000 e "sala 1801-1803" são faixas de números. Na dúvida, conta como telefone.
+LANDLINE = re.compile(r"\b([2-5]\d{3})[\s.-](\d{4})\b")
+NUMBER_RANGE_MAX_SPAN = 200
+# Com hífen, o CEP não se confunde com telefone. Só com oito dígitos, pode ser um fixo: em Juiz de Fora, começa com 36.
+POSTAL_CODE = re.compile(r"\d{5}-\d{3}|36\d{6}")
+
 REQUIRED_COLUMNS = {"id", "nome", "categoria", "confianca", "lat", "lng", "endereco", "cep", "fontes"}
 
 
@@ -346,6 +360,24 @@ def not_in_city_ids(decisions: tuple[Decision, ...] | list[Decision]) -> set[str
     return {decision.gers_id_a for decision in decisions if decision.decision == NOT_IN_CITY}
 
 
+# ─── Contatos ────────────────────────────────────────────────────────────────
+def has_contact(text: str) -> bool:
+    if EMAIL_OR_LINK.search(text) or PHONE.search(text):
+        return True
+    return any(abs(int(first) - int(second)) >= NUMBER_RANGE_MAX_SPAN for first, second in LANDLINE.findall(text))
+
+
+def clean_address(address: str | None) -> str | None:
+    """Com um contato, o endereço inteiro fica de fora: o lugar continua na base, e nenhum pedaço do número sobra."""
+    return None if not address or has_contact(address) else address
+
+
+def clean_postal_code(postal_code: str | None) -> str | None:
+    """Esse campo do Overture traz de tudo, até telefone. Só fica o que tem formato de CEP."""
+    value = (postal_code or "").strip()
+    return value if POSTAL_CODE.fullmatch(value) else None
+
+
 # ─── Leitura e escrita ───────────────────────────────────────────────────────
 def connect() -> duckdb.DuckDBPyConnection:
     con = duckdb.connect()
@@ -363,10 +395,18 @@ def read_snapshot(con: duckdb.DuckDBPyConnection) -> list[RawPlace]:
     rows = con.execute(
         f"SELECT id, nome, categoria, confianca, lat, lng, endereco, cep, fontes FROM read_parquet('{path}')"
     ).fetchall()
-    return [
-        RawPlace(gers_id, name, category, confidence, lat, lng, address, postal_code, tuple((sources or "").split(" + ")) if sources else ())
+    places = [
+        RawPlace(gers_id, name, category, confidence, lat, lng, clean_address(address), clean_postal_code(postal_code), tuple((sources or "").split(" + ")) if sources else ())
         for gers_id, name, category, confidence, lat, lng, address, postal_code, sources in rows
     ]
+
+    without_address = sum(1 for row, place in zip(rows, places) if row[6] and not place.address)
+    print(f"Endereços deixados de fora por trazerem contato: {without_address}")
+    # O nome não pode ficar vazio, então isto só avisa: uma pessoa decide o que fazer.
+    names_with_contact = sum(1 for place in places if has_contact(place.name))
+    if names_with_contact:
+        print(f"ATENÇÃO: {names_with_contact} nomes parecem trazer um contato. Confira antes de publicar.")
+    return places
 
 
 def read_category_rules(con: duckdb.DuckDBPyConnection) -> dict[str, CategoryRule]:

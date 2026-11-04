@@ -3,6 +3,7 @@
 import duckdb
 import pytest
 
+import importar_lugares
 from importar_lugares import (
     DIFFERENT_PLACES,
     EXISTS_IN_CITY,
@@ -13,9 +14,12 @@ from importar_lugares import (
     Place,
     RawPlace,
     classify,
+    clean_address,
+    clean_postal_code,
     decision_from_text,
     deduplicate,
     distance_m,
+    has_contact,
     impossible_category_items,
     merge_decisions,
     nearby_pairs,
@@ -23,6 +27,7 @@ from importar_lugares import (
     pair_key,
     parse_queue_decisions,
     read_decisions,
+    read_snapshot,
     read_spreadsheet_text,
     review_pairs,
     write_decisions,
@@ -452,3 +457,101 @@ def test_place_never_carries_contact_fields():
     fields = set(RawPlace.__dataclass_fields__) | set(Place.__dataclass_fields__)
 
     assert not {"phone", "phones", "email", "emails", "telefone"} & fields
+
+
+# ─── Contatos no texto livre: os formatos são os da base, com dados fictícios ──
+@pytest.mark.parametrize(
+    "address",
+    [
+        "Bar (32)98888-7777 - R. Fictícia, 45",
+        "Bar ( 32 - 98888.7777",
+        "Bar ( 31 - 98888-7777, R. Fictícia, 72",
+        "+55 32 - R. A. Fictícia, 10 - 98888-7777",
+        "R. Fictícia, 15, Centro, 32 - 98888,7777",
+        "R. Fictícia, 55, Tel:, 98888-7777",
+        "R. Fictícia, 84 - 3212-3456",
+        "Tel 3212-3456 - Rua Fictícia, 2",
+        "Rua Fictícia, 28 - (32) 3012 - 4567",
+        "Fone:(83) 98888 - 7777_R. Fictícia, 83",
+        "Rua Fictícia 32 30123456",
+        "contato.ficticio@example.com",
+        "https://maps.app.goo.gl/ficticio - R. Fictícia, 23",
+        "www.ficticio.com.br",
+        "A&B (55)3100, 0300™R. Fictícia, 19",
+    ],
+)
+def test_address_with_a_contact_is_left_out(address):
+    assert clean_address(address) is None
+
+
+@pytest.mark.parametrize(
+    "address",
+    [
+        "R. Fictícia, 1820-1825",
+        "R. Fictícia, 2998-3000",
+        "R. Fictícia, 5701-5699",
+        "R. Fictícia, 1100 - Sala 1801-1803",
+        "R. Fictícia, 1100 - 2301-2305",
+        "Rua Fictícia, 12 - Centro, Juiz de Fora - MG, 36010000",
+        "Rua Fictícia, 12 - Centro, Juiz de Fora - MG, 36010-000",
+        "Rua Fictícia (2600) Bloco 1200 A",
+        "R. Fictícia, 2300 - Sala 1000 (10° andar)",
+    ],
+)
+def test_address_with_numbers_that_are_not_a_contact_stays(address):
+    assert clean_address(address) == address
+
+
+def test_address_may_be_missing():
+    assert clean_address(None) is None
+    assert clean_address("") is None
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("36010-000", "36010-000"),
+        ("36010000", "36010000"),
+        (" 36010-000 ", "36010-000"),
+        ("30130-000", "30130-000"),
+        ("(32) 3212-3456", None),
+        ("3212-3456", None),
+        ("32123456", None),
+        ("988887777", None),
+        ("Brasil", None),
+        ("<<not-applicable>>", None),
+        ("", None),
+        (None, None),
+    ],
+)
+def test_postal_code_only_keeps_what_looks_like_one(value, expected):
+    assert clean_postal_code(value) == expected
+
+
+def test_social_handle_as_a_name_is_not_a_contact():
+    assert has_contact("@bar.ficticio") is False
+
+
+def test_snapshot_reader_leaves_contacts_out(con, tmp_path, monkeypatch, capsys):
+    path = tmp_path / "lugares.parquet"
+    con.execute(
+        f"""
+        COPY (
+          SELECT * FROM (VALUES
+            ('a', 'Bar', 'R. Fictícia, 1 - 98888-7777', '(32) 3212-3456'),
+            ('b', 'Café', 'R. Fictícia, 2', '36010-000'),
+            ('c', 'Pizzaria 3212-3456', NULL, NULL)
+          ) AS t (id, nome, endereco, cep)
+          CROSS JOIN (SELECT NULL::VARCHAR AS categoria, 0.5 AS confianca, -21.7 AS lat, -43.3 AS lng, 'meta' AS fontes)
+        ) TO '{path.as_posix()}' (FORMAT parquet)
+        """
+    )
+    monkeypatch.setattr(importar_lugares, "ARQ_LUGARES", path)
+
+    places = {place.gers_id: place for place in read_snapshot(con)}
+    printed = capsys.readouterr().out
+
+    assert (places["a"].address, places["a"].postal_code) == (None, None)
+    assert (places["b"].address, places["b"].postal_code) == ("R. Fictícia, 2", "36010-000")
+    assert "deixados de fora por trazerem contato: 1" in printed
+    assert "1 nomes parecem trazer um contato" in printed
