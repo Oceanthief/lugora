@@ -518,7 +518,7 @@ def print_report(
 
     print("\n── Esta execução ──")
     print(f"Registros no snapshot: {raw_count}")
-    print(f"Mesclados (D4): {merged} registros, que viraram {sum(1 for p in places if p.merged_gers_ids)} lugares")
+    print(f"Mesclados (D4): {merged} registros incorporados a {sum(1 for p in places if p.merged_gers_ids)} lugares")
     print(f"Lugares a gravar: {total}")
     print(f"No banco: {new} novos, {changed} alterados, {total - new - changed} iguais")
     print(f"Decisões de revisão guardadas: {decision_count} · ainda pendentes: {review_count} (em {REVIEW_FILE.relative_to(Path(__file__).resolve().parent)})")
