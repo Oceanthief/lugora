@@ -23,9 +23,13 @@ Opção 2, com o Supabase Auth:
 - **Limites:** um e-mail por minuto para o mesmo endereço e 30 verificações a cada 5 minutos por IP.
 - **E-mail:** template próprio em português, só com o código, sem link.
 - **Sessão:** no servidor, em cookies que o JavaScript da página não lê (`httpOnly`). O app faz as chamadas de login em Server Actions, sem cliente do Supabase no navegador.
+- **Sem senha, de verdade:** a API do Supabase Auth aceita criar conta com senha, mesmo sem o app oferecer isso. A revisão de privacidade reproduziu o ataque: alguém criava a conta com o e-mail de outra pessoa, ela confirmava com o próprio código, e a senha escolhida por quem atacou continuava valendo. Por isso:
+  - a confirmação de e-mail fica ligada (`enable_confirmations`), e ninguém recebe sessão sem o código;
+  - um gatilho em `auth.users` descarta qualquer senha, ao criar e ao alterar a conta.
 
 ## Consequências
 
-- O template e os limites valem para o banco local, em `supabase/config.toml`. O projeto na nuvem (Fatia 4) precisa da mesma configuração, senão volta a mandar link.
+- O template, os limites e a confirmação de e-mail valem para o banco local, em `supabase/config.toml`. O projeto na nuvem (Fatia 4) precisa da mesma configuração, senão volta a mandar link. O gatilho vai com as migrações.
+- Login por senha nunca funcionará neste projeto sem remover o gatilho. Para o login com Google (Fatia 10), o gatilho não atrapalha, mas o ataque equivalente precisa ser testado de novo.
 - A produção precisa de um provedor de e-mail próprio (SMTP); o do Supabase é só para testes. Fica para a Fatia 10.
 - Se um dia o navegador precisar falar direto com o Supabase, os cookies `httpOnly` terão de ser revistos, porque o cliente de navegador precisa lê-los.

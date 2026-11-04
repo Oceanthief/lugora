@@ -55,6 +55,7 @@ Atualize esta seção sempre que um comando mudar.
 - Demonstração (em `web/`): `npm run seed:demo` gera usuários, quem segue quem, ~200 visitas e o "Quero ir" do Victor em `web/src/data/demo.json`, com semente fixa (42). Rode de novo se mudar os lugares; um teste avisa se o arquivo ficar desatualizado.
 - Banco local (na raiz, com o Docker Desktop aberto; na primeira vez, `npm install`): `npx supabase start`, `npx supabase db reset`, `npx supabase test db`. Para liberar memória: `npx supabase stop`. Studio em http://127.0.0.1:54323; e-mails de teste (com os códigos de login) em http://127.0.0.1:54324. Mudou o `config.toml`? Rode `npx supabase stop` e `npx supabase start`.
 - Variáveis do app (em `web/`, com o banco no ar): `npm run env:local` cria o `.env.local` sem imprimir a chave.
+- Migração nova (na raiz): `npx supabase migration new nome_curto`. Em script, acrescente `< /dev/null`: o comando também aceita o SQL pela entrada padrão e fica esperando por ele.
 - Tipos do banco (na raiz, depois de cada migração): `npx supabase gen types typescript --local > web/src/lib/supabase/database.types.ts`. O arquivo é gerado: não edite à mão.
 - Pipeline (em `pipelines/overture/`): `python relatorio_jf.py` (diagnóstico de JF) e `python importar_divisoes.py` (países e cidades do Brasil; rode de novo depois de um `db reset`, porque o reset apaga a carga). Testes: `python -m pytest pipelines/overture/tests`, na raiz.
 
