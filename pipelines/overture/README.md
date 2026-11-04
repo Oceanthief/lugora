@@ -83,6 +83,25 @@ python importar_divisoes.py --atualizar
 - **Depois de um `npx supabase db reset`,** rode de novo: o reset apaga a carga e deixa só o que está no seed.
 - **Resultado na release 2026-10-21.0:** 5.571 municípios, 219 países e territórios (97 MB + 188 MB no banco), Juiz de Fora com 1.436,8 km². Com a cópia local, a execução leva de 2 a 3 minutos; na primeira vez, soma-se o download.
 
+## Lugares de Juiz de Fora (`importar_lugares.py`)
+
+Carrega no banco os lugares do snapshot gerado pelo `relatorio_jf.py`, com as regras da seção 7.2:
+
+- **D1:** importa tudo, sem corte de confiança e sem contatos.
+- **D3:** aplica a `category_map`, e nomes como "condomínio" e "edifício" viram residenciais, não visitáveis.
+- **D4:** só nome idêntico a até 50 m mescla sozinho. Filiais a mais de 50 m ficam separadas.
+
+```bash
+python importar_lugares.py              # usa o snapshot local, se houver
+python importar_lugares.py --atualizar  # baixa de novo
+```
+
+- **Precisa** do banco local no ar e de Juiz de Fora em `cities`, que já vem no seed.
+- **Idempotente:** rodar de novo mostra "0 novos, 0 alterados". Cada execução grava uma linha em `overture_imports`.
+- **Revisão manual:** nomes parecidos e praias em cidade sem litoral vão para `relatorio/fila_revisao_lugares.csv`, fora do git. Nada ali é mesclado sozinho.
+- **Resultado na release 2026-10-21.0:** 19.459 registros viram 19.431 lugares, com 28 mesclados e 39 para revisão. São 4.370 visitáveis, 1.961 sensíveis e 270 residenciais.
+- **Diferença em relação à D4:** o documento cita a faixa de similaridade de 0,90 a 0,97, mas o exemplo dele ("Nave Estúdio" × "NAVE Studio") dá 0,983, e o par "Auto escola Brasília" × "Auto Escola Transitar", citado como separado, dá 0,93. Por isso, todo nome diferente a partir de 0,90, a até 50 m e do mesmo grupo, vai para a revisão; nenhum deles mescla sozinho.
+
 ## Privacidade e atribuição
 
 - **Sem contatos:** o script não copia e-mails nem telefones.

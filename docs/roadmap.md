@@ -166,10 +166,10 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 
 **Tarefas:**
 
-- [ ] Migrações de `places`, `category_map` e `overture_imports`.
-- [ ] Popular `category_map` com os grupos visitáveis (D3) e as categorias sensíveis (D5).
-- [ ] `pipelines/overture/importar_lugares.py`: lê o snapshot, aplica a limpeza (D3), deduplica (D4), importa tudo sem corte de confiança (D1), sem e-mails nem telefones, e registra a execução em `overture_imports`.
-- [ ] Testes `pytest` da limpeza e da deduplicação, com os casos reais do diagnóstico.
+- [x] Migrações de `places`, `category_map` e `overture_imports`.
+- [x] Popular `category_map` com os grupos visitáveis (D3) e as categorias sensíveis (D5).
+- [x] `pipelines/overture/importar_lugares.py`: lê o snapshot, aplica a limpeza (D3), deduplica (D4), importa tudo sem corte de confiança (D1), sem e-mails nem telefones, e registra a execução em `overture_imports`.
+- [x] Testes `pytest` da limpeza e da deduplicação, com os casos reais do diagnóstico.
 - [ ] Função SQL de busca: semelhança de nome (extensão `pg_trgm`), distância, visitas no Lugora e confiança, nessa ordem (D1).
 - [ ] Tela de busca dentro de Registrar.
 

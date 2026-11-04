@@ -57,7 +57,7 @@ Atualize esta seção sempre que um comando mudar.
 - Variáveis do app (em `web/`, com o banco no ar): `npm run env:local` cria o `.env.local` sem imprimir a chave.
 - Migração nova (na raiz): `npx supabase migration new nome_curto`. Em script, acrescente `< /dev/null`: o comando também aceita o SQL pela entrada padrão e fica esperando por ele.
 - Tipos do banco (na raiz, depois de cada migração): `npx supabase gen types typescript --local > web/src/lib/supabase/database.types.ts`. O arquivo é gerado: não edite à mão.
-- Pipeline (em `pipelines/overture/`): `python relatorio_jf.py` (diagnóstico de JF) e `python importar_divisoes.py` (países e cidades do Brasil; rode de novo depois de um `db reset`, porque o reset apaga a carga). Testes: `python -m pytest pipelines/overture/tests`, na raiz.
+- Pipeline (em `pipelines/overture/`): `python relatorio_jf.py` (diagnóstico de JF) e `python importar_divisoes.py` (países e cidades do Brasil) e `python importar_lugares.py` (lugares de JF, depois das cidades). Rode os dois de novo depois de um `db reset`, porque o reset apaga a carga. Testes: `python -m pytest pipelines/overture/tests`, na raiz.
 
 ## Ambiente
 
