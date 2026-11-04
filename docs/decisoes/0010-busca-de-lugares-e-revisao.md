@@ -23,7 +23,7 @@ Opção 2, em `search_places`, sem índice de texto por enquanto:
 
 1. **Texto:** o nome exato vem primeiro; depois, a semelhança arredondada a uma casa.
 2. **Visitável antes de serviço,** quando o texto empata. Não está na D1: foi decisão do Victor, sem mudar o documento de visão.
-3. **Distância,** só para quem deu o consentimento de localização. A posição não fica guardada e não vai na URL.
+3. **Distância,** só para quem deu o consentimento de localização. O banco confere a resposta mais recente, mesmo para quem chama a função direto. A posição não fica guardada e não vai na URL.
 4. **Visitas no Lugora:** entram na Fatia 4, quando existirem.
 5. **Confiança.**
 
@@ -33,10 +33,19 @@ Opção 2, em `search_places`, sem índice de texto por enquanto:
 
 **Revisão manual:** a fila é um CSV fora do git, porque ainda não há tela para revisar. As decisões vão para `pipelines/overture/decisoes_revisao.csv`, que fica no git só com identificadores, sem os nomes da base, e sobrevive a um `db reset`. O nome de um registro mesclado continua valendo para a busca, em `other_names`, sem aparecer na tela.
 
+**Tamanho do texto:** nas buscas de lugares e de cidades, só os primeiros 150 caracteres contam (`search_max_length`). O maior nome da base tem 141. Sem o limite, 1 MB de texto prendia uma conexão do banco por mais de 8 s; com ele, leva de 100 a 250 ms.
+
+**Contatos na base:** o Overture traz telefones e e-mails no meio do texto do endereço, e até no campo de CEP. Com um contato, o endereço inteiro fica de fora, sem sobrar pedaço do número, e o lugar continua na base. Nesta base, foram 29 endereços. O CEP só entra se tiver formato de CEP.
+
+**Categorias sensíveis:** decisão do Victor, sem mudar o documento de visão. A lista da D5 deixava de fora 7 tipos de saúde (493 lugares), mesmo a seção 9.1 citando serviços de saúde como dado sensível por inferência, e um mesmo hospital tinha um registro sensível e outro não. Entraram também sindicato, organização política, entretenimento adulto e vidência (26 lugares), que a LGPD protege (art. 5º, II). Farmácias ficam de fora, porque dizem pouco sobre a saúde de alguém.
+
 ## Consequências
 
 - A busca lê a semelhança de todos os lugares ativos a cada pedido: leva de 60 a 90 ms com 19 mil lugares. Com mais cidades, o índice de texto volta a fazer sentido, e a Fatia 10 é um bom momento para medir de novo.
 - A D4 cita a faixa de 0,90 a 0,97 para a revisão, mas o exemplo dela ("Nave Estúdio" × "NAVE Studio") dá 0,983. Todo nome diferente a partir de 0,90 vai para a revisão, porque só a igualdade exata mescla sozinha.
 - A regra do nome da D3 marca como residencial um hotel de verdade, o "Serrano Residencial Hotel". Ele aparece, mas não pode ser escolhido, até a correção de categoria da Fatia 5.
 - "Praia do Norte JF" são quadras de areia, com a categoria errada no Overture. Ela continua na busca, com o aviso de fora da lista, até a mesma correção.
+- Lugares sem categoria com nome de igreja ou clínica (14, nesta base) continuam sem a marca de sensível, até a correção de categoria da Fatia 5.
+- Mudar o grupo de uma categoria pode criar pares novos na fila de revisão, porque a D4 só compara lugares do mesmo grupo. A ampliação acima criou 2. Eles ficam separados até uma pessoa decidir.
+- Até a Fatia 8, não há tela para retirar o consentimento de localização. Nenhuma pessoa real usa o app antes disso, e o item está no Portão do beta.
 - Desfazer uma decisão da revisão exige editar o arquivo e recriar o banco: a importação não reabre um lugar fechado, para não desfazer no futuro um fechamento feito pelos usuários (D2).
