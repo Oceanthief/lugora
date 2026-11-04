@@ -34,7 +34,7 @@ jobs:
             echo "web/package.json ainda não existe: nada a verificar."
           fi
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v7
         if: steps.app.outputs.existe == 'true'
         with:
           node-version: lts/*
