@@ -60,7 +60,7 @@ export function PlaceSearch({
     setStatus("searching");
     const request = lastRequest.current;
     timer.current = setTimeout(async () => {
-      const result = await searchPlaces(value, position.current);
+      const result = await searchPlaces(value, canUseLocation ? position.current : null);
       if (request !== lastRequest.current) return;
       setPlaces(result.places);
       setStatus(result.failed ? "failed" : "done");

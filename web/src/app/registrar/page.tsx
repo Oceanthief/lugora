@@ -32,7 +32,9 @@ async function RegisterContent() {
     <>
       <h1 className="text-2xl font-semibold">{text.title}</h1>
       <p className="mt-1 text-ink-muted">{text.subtitle}</p>
-      <VisitForm canUseLocation={await hasLocationConsent(user.id)} />
+      {/* A tela fica viva na memória depois de sair da conta. A chave faz outra pessoa começar do zero,
+          sem a busca, o rascunho e a posição de quem usava o aparelho antes. */}
+      <VisitForm key={user.id} canUseLocation={await hasLocationConsent(user.id)} />
     </>
   );
 }
