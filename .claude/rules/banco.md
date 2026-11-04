@@ -8,6 +8,7 @@ paths:
 - **Toda mudança de estrutura é uma migração:** `npx supabase migration new nome_curto`. Nunca edite uma migração já aplicada. Nunca mude o banco pelo Studio sem migração.
 - **Nomes:** inglês, `snake_case`, tabelas no plural, conforme `docs/glossario.md`.
 - **RLS em toda tabela do schema `public`**, com uma política por operação (`select`, `insert`, `update`, `delete`). Para cada política, um teste pgTAP em `supabase/tests/` cobrindo o dono e outro usuário. Os casos mínimos estão na seção 9.5 do documento.
+- **Funções com as permissões do dono (`security definer`):** ignoram o RLS, então só com motivo forte, `search_path` vazio e sempre gravando para `auth.uid()`, nunca para um id recebido. Toda nova entra de propósito no teste `00_guardrails_test.sql`. Hoje, só `complete_signup`, o único caminho do cadastro.
 - **Views expostas:** `create view ... with (security_invoker = true)`. Views materializadas e agregados ficam no schema `private`, que não é exposto pela API; leitura só por funções que aplicam as regras da seção 9.3.
 - **Geografia:** lugares em `geography(Point, 4326)` com índice GiST. Limites de cidades e países em `geography(MultiPolygon, 4326)`.
 - **Nota:** `numeric(2,1)` com check entre 0,5 e 5 e múltiplo de 0,5.

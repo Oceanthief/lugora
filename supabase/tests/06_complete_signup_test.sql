@@ -1,6 +1,6 @@
 -- Critério de aceite da Fatia 2: sem a confirmação de 18+, o cadastro não conclui.
 begin;
-select plan(15);
+select plan(16);
 
 insert into auth.users (id, email) values
   ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'a@example.com'),
@@ -50,9 +50,10 @@ select results_eq(
   $$ values ('99999999-0000-4000-8000-000000000001'::uuid) $$,
   'a cidade fica nos dados privados'
 );
-select ok(
-  (select age_confirmed_at is not null from public.profiles_private where user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'),
-  'a data da confirmação de 18+ fica registrada'
+select is(
+  (select age_confirmed_at from public.profiles_private where user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'),
+  now(),
+  'a data da confirmação de 18+ vem do banco, na hora do cadastro'
 );
 select results_eq(
   $$ select purpose, granted from public.consents where user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' order by purpose $$,
@@ -82,6 +83,17 @@ select throws_ok(
 select is_empty(
   $$ select id from public.consents where user_id = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' $$,
   'o cadastro que falha no fim não deixa nada pela metade'
+);
+
+reset role;
+
+-- A função roda com as permissões do dono: sem usuário no token, ela não grava em nome de ninguém.
+set local role authenticated;
+set local request.jwt.claims = '{"role":"authenticated"}';
+
+select throws_ok(
+  $$ select public.complete_signup('Ninguém', 'ninguem', '99999999-0000-4000-8000-000000000001', true, true) $$,
+  'P0001', 'not_authenticated', 'sem usuário no token, o cadastro não conclui'
 );
 
 reset role;

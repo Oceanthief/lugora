@@ -53,7 +53,7 @@ select throws_ok(
 );
 select throws_ok(
   $$ insert into public.profiles_private (user_id, home_city_id) values ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', '99999999-0000-4000-8000-00000000000a') $$,
-  '42501', 'new row violates row-level security policy for table "profiles_private"', 'A não cria dados privados em nome de outra pessoa'
+  '42501', 'permission denied for table profiles_private', 'A não cria dados privados em nome de outra pessoa'
 );
 select is_empty(
   $$ delete from public.profiles_private where user_id = 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' returning user_id $$,
@@ -74,13 +74,14 @@ select throws_ok(
   $$ insert into public.profiles_private (user_id, home_city_id, age_confirmed_at) values ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', '99999999-0000-4000-8000-00000000000a', '2099-01-01') $$,
   '42501', 'permission denied for table profiles_private', 'C não escolhe a própria data de 18+'
 );
-select lives_ok(
+-- Só o cadastro cria esta linha: ela é a prova de que a pessoa declarou ter 18 anos ou mais.
+select throws_ok(
   $$ insert into public.profiles_private (user_id, home_city_id) values ('cccccccc-cccc-4ccc-8ccc-cccccccccccc', '99999999-0000-4000-8000-00000000000a') $$,
-  'C cria os próprios dados privados'
+  '42501', 'permission denied for table profiles_private', 'C não cria os próprios dados privados sem passar pelo cadastro'
 );
-select ok(
-  (select age_confirmed_at <= now() from public.profiles_private where user_id = 'cccccccc-cccc-4ccc-8ccc-cccccccccccc'),
-  'a data do 18+ vem do banco'
+select is_empty(
+  $$ select user_id from public.profiles_private $$,
+  'a tentativa não deixa nada gravado'
 );
 
 reset role;
