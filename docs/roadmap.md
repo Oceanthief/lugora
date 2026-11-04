@@ -203,7 +203,7 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 - [ ] Fluxo de registro rápido: lugar, data (hoje por padrão), nota de 0,5 a 5 e até 3 ocasiões.
 - [ ] `is_resident` gravado no momento da visita.
 - [ ] Regras de publicação (7.5): Minha cidade 24 h depois; viagem ao encerrar; "publicar agora" com aviso; lugar sensível nasce "só eu".
-- [ ] Criar o projeto Supabase de homologação na nuvem (veio da Fatia 2): aplicar as migrações, carregar países e cidades e ligá-lo ao preview da Vercel. Repetir a configuração do login por código, senão a nuvem volta a mandar link: template do e-mail, validade, limites e confirmação de e-mail (ADR 0009). Conferir de novo, na nuvem, que uma conta criada com o e-mail de outra pessoa não dá acesso.
+- [ ] Criar o projeto Supabase de homologação na nuvem (veio da Fatia 2): aplicar as migrações, carregar países e cidades e ligá-lo ao preview da Vercel. Repetir a configuração do login por código, senão a nuvem volta a mandar link: os templates de e-mail (`magic_link`, `confirmation`, `recovery` e `email_change`), validade, limites e confirmação de e-mail (ADR 0009). Conferir de novo, na nuvem, que uma conta criada com o e-mail de outra pessoa não dá acesso.
 - [ ] Limite de requisições na nuvem (seção 9.4), incluindo a leitura de polígonos em `cities` e `countries`, que hoje qualquer pessoa consegue baixar sem limite (achado da revisão da Fatia 2).
 - [ ] "Lugares perto de mim" pelo GPS, testado no celular pelo preview em HTTPS (projeto de homologação).
 - [ ] Mapa com os pontos visitados, as abas Viagens e Minha cidade, e as faixas de cor por lugares distintos (7.4).

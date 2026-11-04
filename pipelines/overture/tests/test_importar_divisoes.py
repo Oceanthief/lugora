@@ -136,13 +136,32 @@ def test_connection_error_does_not_print_the_password():
     assert error.value.__suppress_context__ is True
 
 
-def test_error_during_the_load_hides_the_password():
-    message = 'IO Error: Unable to connect to Postgres at "postgresql://postgres:segredo@host:5432/db": timeout'
+@pytest.mark.parametrize(
+    "db_url",
+    [
+        "postgresql://postgres:segredo@host:5432/db",
+        "postgresql://postgres:\"segredo\"@host:5432/db",
+        "postgresql://postgres:segredo com espaco@host:5432/db",
+        "host=host user=postgres password=segredo dbname=db",
+    ],
+)
+def test_connection_lost_during_the_load_hides_the_password(db_url):
+    message = f'IO Error: Unable to connect to Postgres at "{db_url}": timeout'
 
-    assert redact_credentials(message) == 'IO Error: Unable to connect to Postgres at "postgresql://***@host:5432/db": timeout'
+    assert "segredo" not in redact_credentials(message, db_url)
 
 
-def test_error_without_url_stays_readable():
+def test_other_errors_never_repeat_the_connection():
+    db_url = "host=host user=postgres password=segredo dbname=db"
+    message = f"Erro ao usar {db_url} e postgresql://postgres:outro@host/db"
+
+    redacted = redact_credentials(message, db_url)
+
+    assert "segredo" not in redacted
+    assert "outro" not in redacted
+
+
+def test_error_without_connection_stays_readable():
     message = "Catalog Error: Table with name cities does not exist!"
 
-    assert redact_credentials(message) == message
+    assert redact_credentials(message, "postgresql://postgres:segredo@host/db") == message

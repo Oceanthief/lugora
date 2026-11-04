@@ -57,8 +57,8 @@ select is_empty(
      join pg_catalog.pg_namespace as n on n.oid = p.pronamespace
      where n.nspname = 'public'
        and p.prosecdef
-       and not coalesce(p.proconfig::text like '%search_path=%', false) $$,
-  'toda função com as permissões do dono fixa o search_path'
+       and not coalesce('search_path=""' = any (p.proconfig), false) $$,
+  'toda função com as permissões do dono usa search_path vazio'
 );
 
 -- Esta tabela existe só durante o teste: o rollback do fim a desfaz.

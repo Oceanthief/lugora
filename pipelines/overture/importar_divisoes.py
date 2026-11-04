@@ -286,9 +286,12 @@ def add_boundary_column(con: duckdb.DuckDBPyConnection, table: str) -> None:
     )
 
 
-def redact_credentials(message: str) -> str:
-    """Tira usuário e senha de qualquer URL de banco que apareça numa mensagem de erro."""
-    return re.sub(r"://[^@\s\"']+@", "://***@", message)
+def redact_credentials(message: str, db_url: str) -> str:
+    """Tira a conexão com o banco de uma mensagem de erro, porque ela traz a senha."""
+    # Erro de conexão repete a conexão inteira, que pode vir em mais de um formato.
+    if "Unable to connect" in message:
+        return "a conexão com o banco caiu."
+    return re.sub(r"://[^@\s\"']+@", "://***@", message.replace(db_url, "***"))
 
 
 def attach_database(con: duckdb.DuckDBPyConnection, db_url: str) -> None:
@@ -411,7 +414,7 @@ def main() -> None:
         print_report(con, selection, changes, started)
     except duckdb.Error as error:
         # Se a conexão cair no meio da carga, a mensagem original traz a URL com a senha.
-        raise SystemExit(f"A gravação no banco falhou: {redact_credentials(str(error))}") from None
+        raise SystemExit(f"A gravação no banco falhou: {redact_credentials(str(error), db_url)}") from None
 
 
 if __name__ == "__main__":

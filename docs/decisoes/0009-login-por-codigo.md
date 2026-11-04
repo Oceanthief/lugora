@@ -21,11 +21,12 @@ Opção 2, com o Supabase Auth:
 
 - **Validade:** 10 minutos, e cada código funciona uma vez.
 - **Limites:** um e-mail por minuto para o mesmo endereço e 30 verificações a cada 5 minutos por IP.
-- **E-mail:** template próprio em português, só com o código, sem link.
+- **E-mail:** templates próprios em português, só com o código, sem link. Valem também para a recuperação de senha e a troca de e-mail: o app não oferece esses dois fluxos, mas a API do Supabase Auth, sim.
 - **Sessão:** no servidor, em cookies que o JavaScript da página não lê (`httpOnly`). O app faz as chamadas de login em Server Actions, sem cliente do Supabase no navegador.
 - **Sem senha, de verdade:** a API do Supabase Auth aceita criar conta com senha, mesmo sem o app oferecer isso. A revisão de privacidade reproduziu o ataque: alguém criava a conta com o e-mail de outra pessoa, ela confirmava com o próprio código, e a senha escolhida por quem atacou continuava valendo. Por isso:
   - a confirmação de e-mail fica ligada (`enable_confirmations`), e ninguém recebe sessão sem o código;
   - um gatilho em `auth.users` descarta qualquer senha, ao criar e ao alterar a conta.
+- **Cadastro por um caminho só:** `complete_signup` é a única forma de criar perfil e dados privados. Ela roda com as permissões do dono, sempre para `auth.uid()`, e exige a confirmação de 18+ e o aceite da política. Antes, um `POST` direto na tabela registrava o 18+ sem declaração.
 
 ## Consequências
 
