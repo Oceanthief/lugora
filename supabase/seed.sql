@@ -54,7 +54,8 @@ select
   seed_users.id,
   purpose,
   (select value #>> '{}' from public.app_parameters where key = 'privacy_policy_version'),
-  purpose = 'essential'
+  -- O Victor aceita a localização, para dar para ver a distância na busca. Os outros, não.
+  purpose = 'essential' or (purpose = 'precise_location' and seed_users.username = 'victorramos')
 from seed_users
 cross join unnest(array['essential', 'precise_location', 'emails', 'analytics']) as purpose;
 

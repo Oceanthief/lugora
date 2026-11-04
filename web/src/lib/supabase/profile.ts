@@ -32,6 +32,20 @@ export async function getMyProfile(userId: string): Promise<MyProfile | null> {
   return { name: profile.name, username: profile.username, homeCity: privateData?.cities ?? null };
 }
 
+/** O GPS só entra na busca de quem deu este consentimento (seção 9.1). Vale a resposta mais recente. */
+export async function hasLocationConsent(userId: string): Promise<boolean> {
+  const supabase = await createClient();
+  const { data } = await supabase
+    .from("consents")
+    .select("granted")
+    .eq("user_id", userId)
+    .eq("purpose", "precise_location")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  return data?.granted === true;
+}
+
 /** A versão da política vem do banco, a mesma registrada em cada consentimento. */
 export async function getPrivacyPolicyVersion(): Promise<string | null> {
   if (!hasSupabaseEnv()) return null;

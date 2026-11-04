@@ -33,6 +33,18 @@ export function toISODate(date: Date): string {
   return `${date.getFullYear()}-${month}-${day}`;
 }
 
+/**
+ * Distância em português: "450 m", "1,1 km" ou "12 km". Arredonda para não
+ * passar uma precisão que o GPS do celular não tem.
+ */
+export function formatDistance(meters: number): string {
+  if (meters < 1000) return `${Math.max(10, Math.round(meters / 10) * 10)} m`;
+  const kilometers = meters / 1000;
+  return `${new Intl.NumberFormat("pt-BR", {
+    maximumFractionDigits: kilometers < 10 ? 1 : 0,
+  }).format(kilometers)} km`;
+}
+
 const countryNames = new Intl.DisplayNames("pt-BR", { type: "region" });
 
 /** Nome do país em português a partir do código: "PT" vira "Portugal". */
