@@ -98,7 +98,7 @@ python importar_lugares.py --atualizar  # baixa de novo
 
 - **Precisa** do banco local no ar e de Juiz de Fora em `cities`, que já vem no seed.
 - **Idempotente:** rodar de novo mostra "0 novos, 0 alterados". Cada execução grava uma linha em `overture_imports`.
-- **Resultado na release 2026-10-21.0:** 19.459 registros viram 19.419 lugares, com 40 mesclados. Na busca ficam 19.412 ativos: 4.365 visitáveis, 2.480 sensíveis e 270 residenciais.
+- **Resultado na release 2026-10-21.0:** 19.459 registros viram 19.419 lugares, com 40 mesclados. Na busca ficam 19.412 ativos: 4.365 visitáveis, 2.749 sensíveis e 270 residenciais.
 - **Diferença em relação à D4:** o documento cita a faixa de similaridade de 0,90 a 0,97, mas o exemplo dele ("Nave Estúdio" × "NAVE Studio") dá 0,983, e o par "Auto escola Brasília" × "Auto Escola Transitar", citado como separado, dá 0,93. Por isso, todo nome diferente a partir de 0,90, a até 50 m e do mesmo grupo, vai para a revisão; nenhum deles mescla sozinho.
 
 ### Revisão manual

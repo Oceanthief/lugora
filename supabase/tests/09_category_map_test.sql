@@ -6,11 +6,11 @@ insert into auth.users (id, email) values
 
 -- O conteúdo da tabela (D3 e D5)
 select is((select count(*)::int from public.category_map where is_visitable), 36, 'os 36 tipos visitáveis da D3 estão na tabela');
-select is((select count(*)::int from public.category_map where is_sensitive), 27, 'os 16 tipos sensíveis da D5 e os 11 do ADR 0010 estão na tabela');
+select is((select count(*)::int from public.category_map where is_sensitive), 29, 'os 16 tipos sensíveis da D5 e os 13 do ADR 0010 estão na tabela');
 select is(
   (select count(*)::int from public.category_map where category_group = 'health' and is_sensitive),
-  18,
-  'os 18 tipos de saúde são sensíveis'
+  20,
+  'os 20 tipos de saúde são sensíveis'
 );
 select results_eq(
   $$ select category, is_visitable, is_sensitive from public.category_map where overture_category = 'reproductive_perinatal_and_womens_care' $$,
