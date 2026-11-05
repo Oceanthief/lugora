@@ -6,10 +6,11 @@
 import { io } from "next/cache";
 import { use, useLayoutEffect, useRef, useState, type FormEvent } from "react";
 
+import { PlaceSearch } from "@/components/place-search";
 import { strings } from "@/content/pt-BR";
 import { formatRating, toISODate } from "@/lib/format";
-import type { MockPlace } from "@/lib/mock-data";
 import { occasions, type Occasion } from "@/lib/occasions";
+import type { PlaceResult } from "@/lib/places";
 import {
   MAX_OCCASIONS,
   RATING_OPTIONS,
@@ -34,14 +35,14 @@ const ratingChipClass = `${chipBase} has-checked:bg-accent has-checked:text-on-a
 /** A ocasião escolhida fica em âmbar suave, com contorno âmbar para não depender só da cor. */
 const occasionChipClass = `${chipBase} has-checked:bg-glow has-checked:text-on-glow`;
 
-export function VisitForm({ places }: { places: readonly MockPlace[] }) {
+export function VisitForm({ userId, canUseLocation }: { userId: string; canUseLocation: boolean }) {
   // A data de hoje tem que ser a do aparelho, não a do dia em que o site foi
   // gerado. io() avisa o Next: na geração, ele mostra o aviso do <Suspense>
   // da página; no navegador, segue direto.
   use(io());
   const [today] = useState(() => toISODate(new Date()));
 
-  const [placeId, setPlaceId] = useState("");
+  const [place, setPlace] = useState<PlaceResult | null>(null);
   const [visitedOn, setVisitedOn] = useState(today);
   const [rating, setRating] = useState<number | null>(null);
   const [selected, setSelected] = useState<readonly Occasion[]>([]);
@@ -55,7 +56,7 @@ export function VisitForm({ places }: { places: readonly MockPlace[] }) {
     () => () => {
       if (!startFresh.current) return;
       startFresh.current = false;
-      setPlaceId("");
+      setPlace(null);
       setVisitedOn(today);
       setRating(null);
       setSelected([]);
@@ -68,7 +69,7 @@ export function VisitForm({ places }: { places: readonly MockPlace[] }) {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     const found = validateVisitDraft(
-      { placeId, visitedOn, rating, occasions: selected },
+      { placeId: place?.id ?? "", visitedOn, rating, occasions: selected },
       today,
     );
     const ok = Object.keys(found).length === 0;
@@ -80,24 +81,15 @@ export function VisitForm({ places }: { places: readonly MockPlace[] }) {
   return (
     <form noValidate onSubmit={handleSubmit} className="mt-6 flex flex-col gap-6">
       <div>
-        <label htmlFor="place" className="font-medium">
-          {text.place}
-        </label>
-        <select
-          id="place"
-          value={placeId}
-          onChange={(event) => setPlaceId(event.target.value)}
-          aria-invalid={errors.placeId ? true : undefined}
-          aria-describedby={errors.placeId ? "place-error" : undefined}
-          className={fieldClass}
-        >
-          <option value="">{text.placePlaceholder}</option>
-          {places.map((place) => (
-            <option key={place.id} value={place.id}>
-              {place.name} ({strings.categories[place.category]})
-            </option>
-          ))}
-        </select>
+        <PlaceSearch
+          userId={userId}
+          canUseLocation={canUseLocation}
+          selected={place}
+          onSelect={setPlace}
+          fieldClass={fieldClass}
+          invalid={Boolean(errors.placeId)}
+          describedBy={errors.placeId ? "place-error" : undefined}
+        />
         <FieldError id="place-error" error={errors.placeId} />
       </div>
 

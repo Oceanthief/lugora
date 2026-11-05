@@ -7,6 +7,9 @@ const nextConfig: NextConfig = {
   // O botão do Next (só em desenvolvimento) fica no canto de baixo por padrão
   // e cobre a aba Mapa da barra inferior.
   devIndicators: { position: "top-right" },
+  // Em desenvolvimento, o Next escreve no terminal os argumentos de cada Server
+  // Action, o que incluiria o e-mail do login e a posição do GPS (seção 9.1).
+  logging: { serverFunctions: false },
   // Só vale para `npm run dev`: libera abrir o app pelo celular na mesma
   // Wi-Fi (http://IP-do-PC:3000). Cada * é um pedaço do IP, então cobre as
   // redes de casa mesmo quando o roteador troca o IP do PC.

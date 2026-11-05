@@ -1,0 +1,52 @@
+# 0010. Busca de lugares e revisão manual da deduplicação
+
+- **Status:** aceita (Fatia 3)
+- **Data:** 2026-11-04
+
+## Contexto
+
+A D1 manda ordenar a busca por semelhança do texto, distância, visitas no Lugora e confiança. A D4 manda mesclar sozinho só o nome idêntico a até 50 m e deixar os nomes parecidos para uma pessoa decidir. Três medições com os 19.459 registros de Juiz de Fora mostraram o que faltava definir:
+
+- Só com um limite de semelhança, "poleiro" trazia "Casa do Oleiro" e um estúdio de pilates de sobrenome parecido, e o critério de aceite exige 2 resultados.
+- No empate do texto, a distância colocava "Santiago Advogados" antes de "Santiago Lanches", porque o escritório fica mais perto.
+- Depois das mesclas da revisão, quem digitava "Posto Rumo Certo" não achava mais o "POSTO TOP CENTRO", contrariando a D1: quem digita o nome certo sempre encontra o lugar.
+
+## Opções consideradas
+
+1. **Nota única, somando texto, distância e confiança com pesos:** um número só. Contra: pesos difíceis de explicar e de ajustar, e a distância pode vencer o nome.
+2. **Critérios em sequência, com a semelhança arredondada a uma casa:** simples de explicar, e a distância só decide quando o texto empata de verdade.
+3. **Índice de texto (GIN com `pg_trgm`):** padrão para buscas grandes. Contra: nesta base, não mudou o tempo (cerca de 50 ms nos dois casos).
+
+## Decisão
+
+Opção 2, em `search_places`, sem índice de texto por enquanto:
+
+1. **Texto:** o nome exato vem primeiro; depois, a semelhança arredondada a uma casa.
+2. **Visitável antes de serviço,** quando o texto empata. Não está na D1: foi decisão do Victor, sem mudar o documento de visão.
+3. **Distância,** só para quem deu o consentimento de localização. O banco confere a resposta mais recente, mesmo para quem chama a função direto. A posição não fica guardada e não vai na URL.
+4. **Visitas no Lugora:** entram na Fatia 4, quando existirem.
+5. **Confiança.**
+
+**O que aparece:** se algum nome contém a palavra digitada (semelhança de 0,9 ou mais), só esses aparecem. Se nenhum contém, a busca tolera erro de digitação (0,5 ou mais). Os dois limites ficam em `app_parameters`.
+
+**O que não é visitável:** continua aparecendo pelo nome, como a D3 pede, com um aviso discreto. Só os residenciais não podem ser escolhidos.
+
+**Revisão manual:** a fila é um CSV fora do git, porque ainda não há tela para revisar. As decisões vão para `pipelines/overture/decisoes_revisao.csv`, que fica no git só com identificadores, sem os nomes da base, e sobrevive a um `db reset`. O nome de um registro mesclado continua valendo para a busca, em `other_names`, sem aparecer na tela.
+
+**Tamanho do texto:** nas buscas de lugares e de cidades, só os primeiros 150 caracteres contam (`search_max_length`). O maior nome da base tem 141. Sem o limite, 1 MB de texto prendia uma conexão do banco por mais de 8 s; com ele, leva de 100 a 250 ms.
+
+**Contatos na base:** o Overture traz telefones e e-mails no meio do texto do endereço, e até no campo de CEP. Com um contato, o endereço inteiro fica de fora, sem sobrar pedaço do número, e o lugar continua na base. Nesta base, foram 32 endereços. Faixas de números, como "2998-3000", continuam, e o que fica em dúvida conta como telefone. O CEP só entra se tiver formato de CEP.
+
+**Categorias sensíveis:** decisão do Victor, sem mudar o documento de visão. A lista da D5 deixava de fora 9 tipos ligados à saúde (761 lugares), mesmo a seção 9.1 citando serviços de saúde como dado sensível por inferência, e um mesmo hospital tinha um registro sensível e outro não. Entraram também sindicato, organização política, entretenimento adulto e vidência (26 lugares), que a LGPD protege (art. 5º, II). Farmácias ficam de fora, porque dizem pouco sobre a saúde de alguém.
+
+## Consequências
+
+- O Next mantém as telas vivas na memória, então uma tela com dados de alguém precisa de `key={user.id}`, e sair da conta recarrega a página inteira. Uma aba antiga é recusada na primeira busca, porque a tela diz de quem é e o servidor compara com a sessão. Isso é conferência, não autorização: quem autoriza continua sendo a sessão.
+- A busca lê a semelhança de todos os lugares ativos a cada pedido: leva de 60 a 90 ms com 19 mil lugares. Com mais cidades, o índice de texto volta a fazer sentido, e a Fatia 10 é um bom momento para medir de novo.
+- A D4 cita a faixa de 0,90 a 0,97 para a revisão, mas o exemplo dela ("Nave Estúdio" × "NAVE Studio") dá 0,983. Todo nome diferente a partir de 0,90 vai para a revisão, porque só a igualdade exata mescla sozinha.
+- A regra do nome da D3 marca como residencial um hotel de verdade, o "Serrano Residencial Hotel". Ele aparece, mas não pode ser escolhido, até a correção de categoria da Fatia 5.
+- "Praia do Norte JF" são quadras de areia, com a categoria errada no Overture. Ela continua na busca, com o aviso de fora da lista, até a mesma correção.
+- Lugares sem categoria com nome de igreja ou clínica (14, nesta base) continuam sem a marca de sensível, até a correção de categoria da Fatia 5.
+- Mudar o grupo de uma categoria pode criar pares novos na fila de revisão, porque a D4 só compara lugares do mesmo grupo. Esses pares ficam separados até uma pessoa decidir.
+- Até a Fatia 8, não há tela para retirar o consentimento de localização. Nenhuma pessoa real usa o app antes disso, e o item está no Portão do beta.
+- Desfazer uma decisão da revisão exige editar o arquivo e recriar o banco: a importação não reabre um lugar fechado, para não desfazer no futuro um fechamento feito pelos usuários (D2).

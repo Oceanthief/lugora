@@ -3,7 +3,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { signOut } from "@/app/entrar/actions";
+import { SignInPrompt } from "@/components/sign-in-prompt";
+import { SignOutButton } from "@/components/sign-out-button";
 import { strings } from "@/content/pt-BR";
 import { computeProfileStats, describeTravel, type TravelSummary } from "@/lib/stats";
 import { getMyProfile } from "@/lib/supabase/profile";
@@ -28,7 +29,7 @@ export default function ProfilePage() {
 
 async function ProfileContent() {
   const user = await getCurrentUser();
-  if (!user) return <SignedOut />;
+  if (!user) return <SignInPrompt title={text.signedOutTitle} text={text.signedOutText} action={text.signIn} />;
 
   const profile = await getMyProfile(user.id);
   if (!profile) redirect("/cadastro");
@@ -93,31 +94,12 @@ async function ProfileContent() {
             {text.privacyLink}
           </Link>
         </div>
-        <form action={signOut}>
-          <button
-            type="submit"
-            className={`min-h-11 rounded-control border border-line px-4 text-sm font-semibold ${focusRing}`}
-          >
-            {text.signOut}
-          </button>
-        </form>
+        <SignOutButton
+          label={text.signOut}
+          className={`min-h-11 rounded-control border border-line px-4 text-sm font-semibold ${focusRing}`}
+        />
       </div>
     </>
-  );
-}
-
-function SignedOut() {
-  return (
-    <div className="flex flex-col items-start gap-4">
-      <h1 className="text-2xl font-semibold">{text.signedOutTitle}</h1>
-      <p className="text-ink-muted">{text.signedOutText}</p>
-      <Link
-        href="/entrar"
-        className={`flex min-h-12 items-center rounded-control bg-accent px-6 font-semibold text-on-accent ${focusRing}`}
-      >
-        {text.signIn}
-      </Link>
-    </div>
   );
 }
 

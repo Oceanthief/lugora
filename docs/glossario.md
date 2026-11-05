@@ -46,7 +46,13 @@ O documento de visão usa nomes em português. O código e o banco usam inglês 
 | chave / valor / descricao (parâmetro) | `key` / `value` / `description` | `value` em `jsonb` |
 | ponto | `location` | `geography(Point, 4326)` |
 | categoria_overture | `overture_category` | |
-| categoria_lugora | `category` | |
+| categoria_lugora | `category` | veja "Categorias de lugar"; `residential` vem da limpeza pelo nome (D3) |
+| grupo (categoria) | `category_group` | `food_and_drink`, `culture`, `outdoors`, `sports`, `leisure_shopping`, `lodging`, `religion`, `health`, `other_sensitive` |
+| outros nomes | `other_names` | nomes de registros mesclados, só para a busca; fora da tabela da seção 8 (D1) |
+| nome normalizado | `search_name` | sem acentos, em minúsculas e sem pontuação; gerado a partir de `name` e `other_names` |
+| executada_em | `ran_at` | em `overture_imports` |
+| adicionados / removidos / alterados / reconciliados / sinalizados | `added` / `removed` / `changed` / `reconciled` / `flagged` | em `overture_imports` |
+| mesclados / em revisão / não visitáveis | `merged` / `in_review` / `not_visitable` | em `overture_imports`; fora da tabela da seção 8, para a prova de cada importação |
 | categoria_corrigida | `category_override` | tem prioridade (D3) |
 | confianca | `confidence` | 0 a 1 |
 | fontes | `sources` | |
@@ -113,6 +119,40 @@ Lista única em `web/src/lib/categories.ts`; ícones em `web/src/lib/category-ic
 | Centro cultural | `cultural_center` | Cultura |
 | Cinema | `cinema` | Cultura |
 | Parque | `park` | Ar livre |
+| Lanchonete | `casual_eatery` | Comer e beber |
+| Fast food | `fast_food` | Comer e beber |
+| Casa de sucos | `juice_bar` | Comer e beber |
+| Galeria de arte | `art_gallery` | Cultura |
+| Biblioteca | `library` | Cultura |
+| Teatro | `theater` | Cultura |
+| Monumento | `monument` | Cultura |
+| Local histórico | `historic_site` | Cultura |
+| Praça | `plaza` | Ar livre |
+| Jardim | `garden` | Ar livre |
+| Reserva natural | `nature_reserve` | Ar livre |
+| Cachoeira | `waterfall` | Ar livre |
+| Lago | `lake` | Ar livre |
+| Zoológico | `zoo` | Ar livre |
+| Pista de skate | `skate_park` | Ar livre |
+| Parque para cães | `dog_park` | Ar livre |
+| Estádio | `stadium` | Esporte |
+| Academia | `gym` | Esporte |
+| Estúdio de ginástica | `fitness_studio` | Esporte |
+| Espaço esportivo | `sports_facility` | Esporte |
+| Piscina | `swimming_pool` | Esporte |
+| Shopping | `shopping_mall` | Passeio e compras |
+| Artesanato e hobby | `craft_store` | Passeio e compras |
+| Parque de diversões | `amusement_park` | Passeio e compras |
+| Hotel | `hotel` | Hospedagem |
+| Hospedagem | `lodging` | Hospedagem |
+| Local de culto | `place_of_worship` | Religião (sensível, D5) |
+| Organização religiosa | `religious_organization` | Religião (sensível, D5) |
+| Hospital | `hospital` | Saúde (sensível, D5) |
+| Dentista | `dental_clinic` | Saúde (sensível, D5) |
+| Saúde | `health_care` | Saúde (sensível, D5) |
+| Residencial | `residential` | Nenhum: não visitável (D3) |
+
+Só no banco, sem ícone nem nome na tela: `labor_union`, `political_organization`, `adult_entertainment` e `psychic_advising`, do grupo `other_sensitive` (sensíveis, ADR 0010).
 
 ## Rotas do app (português, porque são interface)
 

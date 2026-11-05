@@ -37,6 +37,20 @@ export type Database = {
                   Relationships: [
                     
                   ]
+                },"category_map": {
+                  Row: {
+                    "category": string,"category_group": string,"created_at": string,"is_sensitive": boolean,"is_visitable": boolean,"overture_category": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "category": string,"category_group": string,"created_at"?: string,"is_sensitive": boolean,"is_visitable": boolean,"overture_category": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "category"?: string,"category_group"?: string,"created_at"?: string,"is_sensitive"?: boolean,"is_visitable"?: boolean,"overture_category"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"cities": {
                   Row: {
                     "boundary": unknown,"country_id": string,"created_at": string,"gers_id": string,"id": string,"name": string,"source": string,"state": string | null,"updated_at": string
@@ -85,6 +99,46 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"overture_imports": {
+                  Row: {
+                    "added": number,"changed": number,"created_at": string,"flagged": number,"id": string,"in_review": number,"merged": number,"not_visitable": number,"ran_at": string,"reconciled": number,"release": string,"removed": number,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "added"?: number,"changed"?: number,"created_at"?: string,"flagged"?: number,"id"?: string,"in_review"?: number,"merged"?: number,"not_visitable"?: number,"ran_at"?: string,"reconciled"?: number,"release": string,"removed"?: number,"updated_at"?: string
+                  }
+                  Update: {
+                    "added"?: number,"changed"?: number,"created_at"?: string,"flagged"?: number,"id"?: string,"in_review"?: number,"merged"?: number,"not_visitable"?: number,"ran_at"?: string,"reconciled"?: number,"release"?: string,"removed"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"places": {
+                  Row: {
+                    "address": string | null,"category": string | null,"category_override": string | null,"city_id": string,"confidence": number | null,"created_at": string,"gers_id": string | null,"id": string,"is_sensitive": boolean,"is_visitable": boolean,"location": unknown,"merged_gers_ids": (string)[],"merged_into_id": string | null,"name": string,"origin": string,"other_names": string | null,"overture_category": string | null,"postal_code": string | null,"search_name": string | null,"sources": (string)[],"status": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "address"?: string | null,"category"?: string | null,"category_override"?: string | null,"city_id": string,"confidence"?: number | null,"created_at"?: string,"gers_id"?: string | null,"id"?: string,"is_sensitive"?: boolean,"is_visitable": boolean,"location": unknown,"merged_gers_ids"?: (string)[],"merged_into_id"?: string | null,"name": string,"origin"?: string,"other_names"?: string | null,"overture_category"?: string | null,"postal_code"?: string | null,"search_name"?: never,"sources"?: (string)[],"status"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "address"?: string | null,"category"?: string | null,"category_override"?: string | null,"city_id"?: string,"confidence"?: number | null,"created_at"?: string,"gers_id"?: string | null,"id"?: string,"is_sensitive"?: boolean,"is_visitable"?: boolean,"location"?: unknown,"merged_gers_ids"?: (string)[],"merged_into_id"?: string | null,"name"?: string,"origin"?: string,"other_names"?: string | null,"overture_category"?: string | null,"postal_code"?: string | null,"search_name"?: never,"sources"?: (string)[],"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "places_city_id_fkey"
+      columns: ["city_id"]
+isOneToOne: false
+      referencedRelation: "cities"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "places_merged_into_id_fkey"
+      columns: ["merged_into_id"]
+isOneToOne: false
+      referencedRelation: "places"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"profiles": {
                   Row: {
                     "created_at": string,"id": string,"name": string,"updated_at": string,"username": string
@@ -131,6 +185,11 @@ isOneToOne: false
 "search_cities":
 { Args: { "p_query": string }; Returns: {
               "id": string,"name": string,"state": string
+            }[]
+                           },
+"search_places":
+{ Args: { "p_latitude"?: number,"p_longitude"?: number,"p_query": string }; Returns: {
+              "address": string,"category": string,"distance_meters": number,"id": string,"is_visitable": boolean,"name": string
             }[]
                            }
           }

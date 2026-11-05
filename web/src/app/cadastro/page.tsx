@@ -26,5 +26,7 @@ async function SignupContent() {
   const user = await getCurrentUser();
   if (!user) redirect("/entrar");
   if (await hasProfile(user.id)) redirect("/perfil");
-  return <SignupForm />;
+  // A tela fica viva na memória mesmo quando a sessão vence. A chave impede que a pessoa
+  // seguinte encontre o nome, o @ e a cidade de quem estava preenchendo antes.
+  return <SignupForm key={user.id} />;
 }

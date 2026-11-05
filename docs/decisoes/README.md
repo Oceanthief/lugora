@@ -15,3 +15,4 @@ Para criar um novo, use a skill `/adr <título>` no Claude Code, ou copie `0000-
 | [0007](0007-tokens-de-design.md) | Tokens de design: fonte única em TypeScript | proposta |
 | [0008](0008-paises-e-cidades-overture-ibge.md) | Países e cidades: polígonos do Overture, lista oficial do IBGE | aceita |
 | [0009](0009-login-por-codigo.md) | Login por código de 6 dígitos enviado por e-mail | aceita |
+| [0010](0010-busca-de-lugares-e-revisao.md) | Busca de lugares e revisão manual da deduplicação | aceita |

@@ -18,16 +18,16 @@ import argparse
 import gzip
 import json
 import os
-import re
 import sys
 import time
-import unicodedata
 import urllib.request
 from dataclasses import dataclass
 from pathlib import Path
 
 import duckdb
 from dotenv import load_dotenv
+
+from comum import STAGING_SCHEMA, attach_database, normalize_name, query_remote, redact_credentials, run_remote
 
 DEFAULT_RELEASE = "2026-10-21.0"  # confira a mais recente em docs.overturemaps.org
 S3_URL = "s3://overturemaps-us-west-2/release/{release}/theme=divisions/type=division_area/*"
@@ -55,7 +55,6 @@ ALIASES = {
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "dados"
 IBGE_FILE = DATA_DIR / "municipios_ibge.json"
-STAGING_SCHEMA = "pipeline_staging"
 
 
 # ─── Regras de seleção (sem rede nem banco, cobertas pelo pytest) ────────────
@@ -80,12 +79,6 @@ class Selection:
     cities: list[City]
     missing: list[tuple[str, str]]
     discarded: int
-
-
-def normalize_name(name: str) -> str:
-    """Ignora acentos, maiúsculas e pontuação ao comparar nomes de cidades."""
-    ascii_name = unicodedata.normalize("NFKD", name).encode("ascii", "ignore").decode()
-    return re.sub(r"[^a-z0-9]+", " ", ascii_name.lower()).strip()
 
 
 def state_from_region(region: str) -> str:
@@ -216,14 +209,6 @@ def read_localities(con: duckdb.DuckDBPyConnection, snapshot_dir: Path) -> list[
 
 
 # ─── Escrita no Postgres ─────────────────────────────────────────────────────
-def run_remote(con: duckdb.DuckDBPyConnection, sql: str) -> None:
-    con.execute(f"CALL postgres_execute('pg', '{sql.replace(chr(39), chr(39) * 2)}')")
-
-
-def query_remote(con: duckdb.DuckDBPyConnection, sql: str) -> list[tuple]:
-    return con.execute(f"SELECT * FROM postgres_query('pg', '{sql.replace(chr(39), chr(39) * 2)}')").fetchall()
-
-
 COUNTRY_CHANGES = f"""
     select
       count(*) filter (where c.id is null) as new,
@@ -284,22 +269,6 @@ def add_boundary_column(con: duckdb.DuckDBPyConnection, table: str) -> None:
         set boundary = extensions.ST_Multi(extensions.ST_GeomFromWKB(wkb, 4326))::extensions.geography
         """,
     )
-
-
-def redact_credentials(message: str, db_url: str) -> str:
-    """Tira a conexão com o banco de uma mensagem de erro, porque ela traz a senha."""
-    # Erro de conexão repete a conexão inteira, que pode vir em mais de um formato.
-    if "Unable to connect" in message:
-        return "a conexão com o banco caiu."
-    return re.sub(r"://[^@\s\"']+@", "://***@", message.replace(db_url, "***"))
-
-
-def attach_database(con: duckdb.DuckDBPyConnection, db_url: str) -> None:
-    try:
-        con.execute(f"ATTACH '{db_url}' AS pg (TYPE postgres);")
-    except duckdb.Error:
-        # A mensagem original traz a URL inteira, com a senha. Ela não pode ir para o terminal.
-        raise SystemExit("Não consegui conectar ao banco. Confira LUGORA_DB_URL e se o banco está no ar.") from None
 
 
 def write_to_postgres(

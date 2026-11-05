@@ -23,7 +23,7 @@ As duas se encontram no **portão do beta**, depois da Fatia 10.
 | 0 | Esqueleto no localhost | App com navegação, telas de exemplo e mapa de JF | M | — | concluída |
 | 1 | Direção visual | Três estilos lado a lado em `/estilos`; você escolhe um | P | 0 | concluída |
 | 2 | Banco local e contas | Entrar, fazer o cadastro e ver o próprio perfil | G | 0 | concluída |
-| 3 | Base de lugares de JF e busca | Buscar "poleiro" e ver as duas unidades, sem duplicatas | M | 2 | a fazer |
+| 3 | Base de lugares de JF e busca | Buscar "poleiro" e ver as duas unidades, sem duplicatas | M | 2 | concluída |
 | 4 | Registro rápido e mapa | Registrar uma visita e ver o ponto no mapa | G | 3 | a fazer |
 | 5 | Lugares novos e sinalizações | Criar um lugar e sinalizar "fechou" | M | 4 | a fazer |
 | 6 | Cidades já visitadas e abas do mapa | Marcar Paris e ver a França pintada | M | 4 | a fazer |
@@ -156,7 +156,7 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 
 ### Fatia 3: Base de lugares de JF e busca
 
-**Status:** a fazer · **Tamanho:** M
+**Status:** concluída · **Tamanho:** M
 
 **Objetivo:** carregar os 19.459 lugares de Juiz de Fora com as regras D1 a D4 e ter uma busca boa.
 
@@ -166,12 +166,12 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 
 **Tarefas:**
 
-- [ ] Migrações de `places`, `category_map` e `overture_imports`.
-- [ ] Popular `category_map` com os grupos visitáveis (D3) e as categorias sensíveis (D5).
-- [ ] `pipelines/overture/importar_lugares.py`: lê o snapshot, aplica a limpeza (D3), deduplica (D4), importa tudo sem corte de confiança (D1), sem e-mails nem telefones, e registra a execução em `overture_imports`.
-- [ ] Testes `pytest` da limpeza e da deduplicação, com os casos reais do diagnóstico.
-- [ ] Função SQL de busca: semelhança de nome (extensão `pg_trgm`), distância, visitas no Lugora e confiança, nessa ordem (D1).
-- [ ] Tela de busca dentro de Registrar.
+- [x] Migrações de `places`, `category_map` e `overture_imports`.
+- [x] Popular `category_map` com os grupos visitáveis (D3) e as categorias sensíveis (D5, ampliadas no ADR 0010).
+- [x] `pipelines/overture/importar_lugares.py`: lê o snapshot, aplica a limpeza (D3), deduplica (D4), importa tudo sem corte de confiança (D1), sem e-mails nem telefones, e registra a execução em `overture_imports`.
+- [x] Testes `pytest` da limpeza e da deduplicação, com os casos reais do diagnóstico.
+- [x] Função SQL de busca: semelhança de nome (extensão `pg_trgm`), distância, visitas no Lugora e confiança, nessa ordem (D1). No empate do texto, o visitável vem antes do serviço (decisão do Victor). As visitas entram na ordenação na Fatia 4, quando existirem.
+- [x] Tela de busca dentro de Registrar.
 
 **Aceite:**
 
@@ -208,6 +208,7 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 - [ ] "Lugares perto de mim" pelo GPS, testado no celular pelo preview em HTTPS (projeto de homologação).
 - [ ] Mapa com os pontos visitados, as abas Viagens e Minha cidade, e as faixas de cor por lugares distintos (7.4).
 - [ ] Primeiro teste de fluxo com Playwright: registrar uma visita do começo ao fim.
+- [ ] Teste de fluxo da troca de conta, na mesma aba e com uma aba antiga aberta: a busca, o rascunho, a posição e o cadastro pela metade não passam para a pessoa seguinte (achados da revisão da Fatia 3, conferidos até agora com scripts fora do repositório).
 
 **Aceite:** testes de aceitação 1, 2, 3, 4 e 5 da seção 9.5, mais:
 
@@ -317,7 +318,7 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 **Tarefas:**
 
 - [ ] Perfil próprio × perfil público (9.3): mapa público grosso, `show_home_city` desligado por padrão, eixo Onde depois de 10 visitas.
-- [ ] Configurações: visibilidade padrão, mostrar cidade, consentimentos.
+- [ ] Configurações: visibilidade padrão, mostrar cidade, consentimentos, incluindo retirar o de localização, que a busca usa desde a Fatia 3 (seção 9.1).
 - [ ] Exportar meus dados (JSON) e excluir conta, incluindo as fotos no armazenamento.
 - [ ] Funções de agregados que aplicam a regra "só o que quem vê pode ver", fora do schema `public` (ADR 0005).
 
@@ -392,6 +393,7 @@ O beta fechado (20 a 30 pessoas) só abre quando:
 - [ ] As decisões da Fase 0 foram aplicadas: lista de ocasiões revisada e ideias de `ideias-para-depois.md` promovidas ou arquivadas.
 - [ ] As Fatias 0 a 10 estão concluídas.
 - [ ] Os 9 testes de aceitação da seção 9.5 passam em homologação.
+- [ ] Cada consentimento opcional, incluindo o de localização, pode ser retirado pelo app (seção 9.1).
 - [ ] Os termos, a política de privacidade e a atribuição estão publicados.
 - [ ] Os eventos de métricas estão sendo gravados.
 
