@@ -208,7 +208,7 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 - [ ] "Lugares perto de mim" pelo GPS, testado no celular pelo preview em HTTPS (projeto de homologação).
 - [ ] Mapa com os pontos visitados, as abas Viagens e Minha cidade, e as faixas de cor por lugares distintos (7.4).
 - [ ] Primeiro teste de fluxo com Playwright: registrar uma visita do começo ao fim.
-- [ ] Teste de fluxo da troca de conta na mesma aba: a busca, o rascunho e a posição não passam para a pessoa seguinte (achado da revisão da Fatia 3, conferido até agora com um script fora do repositório).
+- [ ] Teste de fluxo da troca de conta, na mesma aba e com uma aba antiga aberta: a busca, o rascunho, a posição e o cadastro pela metade não passam para a pessoa seguinte (achados da revisão da Fatia 3, conferidos até agora com scripts fora do repositório).
 
 **Aceite:** testes de aceitação 1, 2, 3, 4 e 5 da seção 9.5, mais:
 

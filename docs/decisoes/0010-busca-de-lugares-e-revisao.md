@@ -35,12 +35,13 @@ Opção 2, em `search_places`, sem índice de texto por enquanto:
 
 **Tamanho do texto:** nas buscas de lugares e de cidades, só os primeiros 150 caracteres contam (`search_max_length`). O maior nome da base tem 141. Sem o limite, 1 MB de texto prendia uma conexão do banco por mais de 8 s; com ele, leva de 100 a 250 ms.
 
-**Contatos na base:** o Overture traz telefones e e-mails no meio do texto do endereço, e até no campo de CEP. Com um contato, o endereço inteiro fica de fora, sem sobrar pedaço do número, e o lugar continua na base. Nesta base, foram 29 endereços. O CEP só entra se tiver formato de CEP.
+**Contatos na base:** o Overture traz telefones e e-mails no meio do texto do endereço, e até no campo de CEP. Com um contato, o endereço inteiro fica de fora, sem sobrar pedaço do número, e o lugar continua na base. Nesta base, foram 32 endereços. Faixas de números, como "2998-3000", continuam, e o que fica em dúvida conta como telefone. O CEP só entra se tiver formato de CEP.
 
 **Categorias sensíveis:** decisão do Victor, sem mudar o documento de visão. A lista da D5 deixava de fora 7 tipos de saúde (493 lugares), mesmo a seção 9.1 citando serviços de saúde como dado sensível por inferência, e um mesmo hospital tinha um registro sensível e outro não. Entraram também sindicato, organização política, entretenimento adulto e vidência (26 lugares), que a LGPD protege (art. 5º, II). Farmácias ficam de fora, porque dizem pouco sobre a saúde de alguém.
 
 ## Consequências
 
+- O Next mantém as telas vivas na memória, então uma tela com dados de alguém precisa de `key={user.id}`, e sair da conta recarrega a página inteira. Uma aba antiga é recusada na primeira busca, porque a tela diz de quem é e o servidor compara com a sessão. Isso é conferência, não autorização: quem autoriza continua sendo a sessão.
 - A busca lê a semelhança de todos os lugares ativos a cada pedido: leva de 60 a 90 ms com 19 mil lugares. Com mais cidades, o índice de texto volta a fazer sentido, e a Fatia 10 é um bom momento para medir de novo.
 - A D4 cita a faixa de 0,90 a 0,97 para a revisão, mas o exemplo dela ("Nave Estúdio" × "NAVE Studio") dá 0,983. Todo nome diferente a partir de 0,90 vai para a revisão, porque só a igualdade exata mescla sozinha.
 - A regra do nome da D3 marca como residencial um hotel de verdade, o "Serrano Residencial Hotel". Ele aparece, mas não pode ser escolhido, até a correção de categoria da Fatia 5.
