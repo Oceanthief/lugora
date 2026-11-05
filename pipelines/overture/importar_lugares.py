@@ -57,18 +57,25 @@ RESIDENTIAL_CATEGORY = "residential"
 IMPOSSIBLE_CATEGORIES = {"beach": "praia em cidade sem litoral"}
 
 # Minimização (LGPD): o Overture às vezes traz contatos no meio do texto do endereço.
-EMAIL_OR_LINK = re.compile(r"[^\s@]+@[^\s@]+\.[^\s@]+|https?://|www\.", re.IGNORECASE)
+EMAIL = re.compile(r"[^\s@]+@|\(at\)|\[at\]|\barroba\s+\S+\.\S", re.IGNORECASE)
 PHONE = re.compile(
     r"\+\s*\d{2}\b"  # +55
     r"|\(\s*\d{2}\s*\)\s*\d"  # (32) 3212-3456, (32)98888-7777
     r"|\b[1-9]\d\s+[2-9]\d{7}\b"  # 32 32123456
-    r"|\b9\d{4}[\s.,-]*\d{4}\b"  # 98888-7777, 98888.7777, 98888,7777
+    r"|\b9[\s.-]?\d{4}[\s.,-]*\d{4}\b"  # 98888-7777, 98888.7777, 98888,7777, 9 8888 7777
+    r"|\b3[23]\d{2}\s*[-./]\s*\d{4}\b"  # os fixos de Juiz de Fora começam com 32 ou 33: 3212-3301, 3212 - 3301
+    r"|\b\d{9,}\b"  # 32988887777
+    r"|\b(?!360)\d{8}\b"  # 32123456: oito dígitos seguidos só valem como CEP de Juiz de Fora
+    r"|\b0?800[\s.-]*\d{3}[\s.-]*\d{4}\b"  # 0800 123 4567
+    r"|\b(?:tel|telefone|fone|celular|whats\w*|wpp|zap)\b[\s.:,-]*\d{4}",  # tel 3212, whats 8888-7777, mas não "Celular 24 Horas"
+    re.IGNORECASE,
 )
-# 3212-3456 é telefone; 2998-3000 e "sala 1801-1803" são faixas de números. Na dúvida, conta como telefone.
-LANDLINE = re.compile(r"\b([2-5]\d{3})[\s.-](\d{4})\b")
+# Fora disso, 4+4 dígitos próximos são faixa de números ("2998-3000", "sala 1801-1803"). Na dúvida, conta como telefone.
+FOUR_AND_FOUR = re.compile(r"\b([2-9]\d{3})[\s.-](\d{4})\b")
 NUMBER_RANGE_MAX_SPAN = 200
-# Com hífen, o CEP não se confunde com telefone. Só com oito dígitos, pode ser um fixo: em Juiz de Fora, começa com 36.
-POSTAL_CODE = re.compile(r"\d{5}-\d{3}|36\d{6}")
+LINK = re.compile(r"https?://|www\.|\b[\w-]+\.(?:com|net|org|me|br)\b", re.IGNORECASE)
+# Com hífen, o CEP não se confunde com telefone. Só com oito dígitos, pode ser um fixo: em Juiz de Fora, o CEP começa com 360.
+POSTAL_CODE = re.compile(r"\d{5}-\d{3}|360\d{5}")
 
 REQUIRED_COLUMNS = {"id", "nome", "categoria", "confianca", "lat", "lng", "endereco", "cep", "fontes"}
 
@@ -362,14 +369,14 @@ def not_in_city_ids(decisions: tuple[Decision, ...] | list[Decision]) -> set[str
 
 # ─── Contatos ────────────────────────────────────────────────────────────────
 def has_contact(text: str) -> bool:
-    if EMAIL_OR_LINK.search(text) or PHONE.search(text):
+    if EMAIL.search(text) or PHONE.search(text):
         return True
-    return any(abs(int(first) - int(second)) >= NUMBER_RANGE_MAX_SPAN for first, second in LANDLINE.findall(text))
+    return any(abs(int(first) - int(second)) >= NUMBER_RANGE_MAX_SPAN for first, second in FOUR_AND_FOUR.findall(text))
 
 
 def clean_address(address: str | None) -> str | None:
-    """Com um contato, o endereço inteiro fica de fora: o lugar continua na base, e nenhum pedaço do número sobra."""
-    return None if not address or has_contact(address) else address
+    """Com um contato ou link, o endereço inteiro fica de fora: o lugar continua na base, e nenhum pedaço do número sobra."""
+    return None if not address or has_contact(address) or LINK.search(address) else address
 
 
 def clean_postal_code(postal_code: str | None) -> str | None:

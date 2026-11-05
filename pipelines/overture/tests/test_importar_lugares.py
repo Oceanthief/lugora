@@ -478,6 +478,28 @@ def test_place_never_carries_contact_fields():
         "https://maps.app.goo.gl/ficticio - R. Fictícia, 23",
         "www.ficticio.com.br",
         "A&B (55)3100, 0300™R. Fictícia, 19",
+        "R. Fictícia, 10 - 3212-3300",
+        "R. Fictícia, 10 - 3232-3232",
+        "R. Fictícia, 10 3232.3232",
+        "R. Fictícia, 10 - 3212 - 3456",
+        "R. Fictícia, 10 - 3212/3456",
+        "R. Fictícia, 10 - 32123456",
+        "R. Fictícia, 10 - 32 3212-3300",
+        "R. Fictícia, 10 - 8888-7777",
+        "R. Fictícia, 10 - 9988-7766",
+        "R. Fictícia, 10 - 9 8888-7777",
+        "R. Fictícia, 10 - 32 9 8888 7777",
+        "R. Fictícia, 10 - 32988887777",
+        "R. Fictícia, 10 - 0800 123 4567",
+        "R. Fictícia, 10 - tel 32123",
+        "R. Fictícia, 10 - whats 8888",
+        "R. Fictícia, 10 - fulano(at)gmail.com",
+        "R. Fictícia, 10 - fulano [at] gmail.com",
+        "R. Fictícia, 10 - fulano arroba gmail.com",
+        "R. Fictícia, 10 - fulano@gmail",
+        "R. Fictícia, 10 - gmail.com",
+        "R. Fictícia, 10 - instagram.com/fulano",
+        "R. Fictícia, 10 - wa.me/553298888",
     ],
 )
 def test_address_with_a_contact_is_left_out(address):
@@ -496,6 +518,9 @@ def test_address_with_a_contact_is_left_out(address):
         "Rua Fictícia, 12 - Centro, Juiz de Fora - MG, 36010-000",
         "Rua Fictícia (2600) Bloco 1200 A",
         "R. Fictícia, 2300 - Sala 1000 (10° andar)",
+        "R. Cel. Vidal, 120",
+        "Rua 15 de Novembro, 1200 - Loja 3",
+        "Galeria Pio X, Loja 12 - Centro",
     ],
 )
 def test_address_with_numbers_that_are_not_a_contact_stays(address):
@@ -517,6 +542,7 @@ def test_address_may_be_missing():
         ("(32) 3212-3456", None),
         ("3212-3456", None),
         ("32123456", None),
+        ("36907000", None),
         ("988887777", None),
         ("Brasil", None),
         ("<<not-applicable>>", None),
@@ -528,8 +554,10 @@ def test_postal_code_only_keeps_what_looks_like_one(value, expected):
     assert clean_postal_code(value) == expected
 
 
-def test_social_handle_as_a_name_is_not_a_contact():
-    assert has_contact("@bar.ficticio") is False
+@pytest.mark.parametrize("name", ["@bar.ficticio", "Arroba Bar", "Arroba.Carnes", "Celular 24 Horas"])
+def test_words_in_a_name_are_not_a_contact(name):
+    # Nomes assim existem na base, e um aviso falso a cada importação acabaria ignorado.
+    assert has_contact(name) is False
 
 
 def test_snapshot_reader_leaves_contacts_out(con, tmp_path, monkeypatch, capsys):
