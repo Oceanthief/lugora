@@ -22,6 +22,7 @@ type SearchStatus = "idle" | "searching" | "done" | "failed";
 type LocationStatus = "idle" | "locating" | "on" | "failed";
 
 export function PlaceSearch({
+  userId,
   canUseLocation,
   selected,
   onSelect,
@@ -29,6 +30,7 @@ export function PlaceSearch({
   invalid,
   describedBy,
 }: {
+  userId: string;
   canUseLocation: boolean;
   selected: PlaceResult | null;
   onSelect: (place: PlaceResult | null) => void;
@@ -60,7 +62,12 @@ export function PlaceSearch({
     setStatus("searching");
     const request = lastRequest.current;
     timer.current = setTimeout(async () => {
-      const result = await searchPlaces(value, canUseLocation ? position.current : null);
+      const result = await searchPlaces(value, canUseLocation ? position.current : null, userId);
+      // A sessão mudou em outra aba: recarregar apaga o que esta aba guarda de quem saiu.
+      if (result.sessionChanged) {
+        window.location.reload();
+        return;
+      }
       if (request !== lastRequest.current) return;
       setPlaces(result.places);
       setStatus(result.failed ? "failed" : "done");

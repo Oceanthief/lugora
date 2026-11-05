@@ -35,7 +35,7 @@ const ratingChipClass = `${chipBase} has-checked:bg-accent has-checked:text-on-a
 /** A ocasião escolhida fica em âmbar suave, com contorno âmbar para não depender só da cor. */
 const occasionChipClass = `${chipBase} has-checked:bg-glow has-checked:text-on-glow`;
 
-export function VisitForm({ canUseLocation }: { canUseLocation: boolean }) {
+export function VisitForm({ userId, canUseLocation }: { userId: string; canUseLocation: boolean }) {
   // A data de hoje tem que ser a do aparelho, não a do dia em que o site foi
   // gerado. io() avisa o Next: na geração, ele mostra o aviso do <Suspense>
   // da página; no navegador, segue direto.
@@ -82,6 +82,7 @@ export function VisitForm({ canUseLocation }: { canUseLocation: boolean }) {
     <form noValidate onSubmit={handleSubmit} className="mt-6 flex flex-col gap-6">
       <div>
         <PlaceSearch
+          userId={userId}
           canUseLocation={canUseLocation}
           selected={place}
           onSelect={setPlace}

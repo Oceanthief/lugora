@@ -5,18 +5,27 @@ import { hasProfile } from "@/lib/supabase/profile";
 import { createClient } from "@/lib/supabase/server";
 import { getCurrentUser } from "@/lib/supabase/session";
 
-export type PlaceSearchResult = { places: PlaceResult[]; failed: boolean };
+export type PlaceSearchResult = { places: PlaceResult[]; failed: boolean; sessionChanged?: boolean };
 
 /**
  * A posição vai no corpo do pedido, nunca na URL, e só serve para calcular a
  * distância: nada guarda onde a pessoa estava (seção 9.1). A função do banco
  * confere o consentimento e ignora a posição de quem não deu.
  */
-export async function searchPlaces(query: string, position: Position | null): Promise<PlaceSearchResult> {
+export async function searchPlaces(
+  query: string,
+  position: Position | null,
+  screenUserId: string,
+): Promise<PlaceSearchResult> {
   if (query.trim().length < PLACE_SEARCH_MIN_LENGTH) return { places: [], failed: false };
-  // A tela já manda para o cadastro, mas esta ação também pode ser chamada direto: sem cadastro, não há 18+ declarado.
+
   const user = await getCurrentUser();
-  if (!user || !(await hasProfile(user.id))) return { places: [], failed: true };
+  // Uma aba antiga pode guardar a posição de quem já saiu da conta, e ela não vale para a sessão de
+  // agora. Isto só confere se a tela e a sessão são da mesma pessoa: quem autoriza continua sendo a sessão.
+  if (!user || user.id !== screenUserId) return { places: [], failed: true, sessionChanged: true };
+
+  // A tela já manda para o cadastro, mas esta ação também pode ser chamada direto: sem cadastro, não há 18+ declarado.
+  if (!(await hasProfile(user.id))) return { places: [], failed: true };
 
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("search_places", {

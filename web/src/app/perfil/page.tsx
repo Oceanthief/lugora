@@ -3,8 +3,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Suspense } from "react";
 
-import { signOut } from "@/app/entrar/actions";
 import { SignInPrompt } from "@/components/sign-in-prompt";
+import { SignOutButton } from "@/components/sign-out-button";
 import { strings } from "@/content/pt-BR";
 import { computeProfileStats, describeTravel, type TravelSummary } from "@/lib/stats";
 import { getMyProfile } from "@/lib/supabase/profile";
@@ -94,14 +94,10 @@ async function ProfileContent() {
             {text.privacyLink}
           </Link>
         </div>
-        <form action={signOut}>
-          <button
-            type="submit"
-            className={`min-h-11 rounded-control border border-line px-4 text-sm font-semibold ${focusRing}`}
-          >
-            {text.signOut}
-          </button>
-        </form>
+        <SignOutButton
+          label={text.signOut}
+          className={`min-h-11 rounded-control border border-line px-4 text-sm font-semibold ${focusRing}`}
+        />
       </div>
     </>
   );

@@ -49,8 +49,8 @@ async function verifyCode(email: string, rawCode: string): Promise<LoginState> {
   redirect((await hasProfile(data.user.id)) ? "/perfil" : "/cadastro");
 }
 
+/** Quem chama recarrega a página depois (SignOutButton), para limpar as telas guardadas na memória. */
 export async function signOut(): Promise<void> {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  redirect("/perfil");
 }
