@@ -3,9 +3,12 @@
 -- Usuários: Victor Ramos (nome do autor, autorizado por ele) e dois nomes fictícios da
 -- demonstração. Os e-mails usam example.com, domínio reservado que não entrega para ninguém.
 --
--- Geografia: o Brasil e Juiz de Fora, com retângulos aproximados, para que o reset e a CI
--- funcionem sem o pipeline. O pipeline troca esses limites pelos reais e carrega o resto;
+-- Geografia: o Brasil, Juiz de Fora e São Paulo, com retângulos aproximados, para que o reset e
+-- a CI funcionem sem o pipeline. O pipeline troca esses limites pelos reais e carrega o resto;
 -- ele encontra estas linhas pelo iso_code e pelo gers_id, então nada duplica.
+--
+-- Victor e Duda moram em Juiz de Fora; Gabriel, em São Paulo. Assim, uma visita do Gabriel a JF
+-- é viagem, e a aba Viagens tem o que mostrar. Duda segue Victor; Gabriel não segue ninguém.
 
 insert into public.countries (id, name, iso_code, boundary) values (
   '10000000-0000-4000-8000-000000000001',
@@ -14,14 +17,23 @@ insert into public.countries (id, name, iso_code, boundary) values (
   'SRID=4326;MULTIPOLYGON(((-74 -34,-34 -34,-34 6,-74 6,-74 -34)))'
 );
 
-insert into public.cities (id, name, state, country_id, boundary, gers_id) values (
-  '20000000-0000-4000-8000-000000000001',
-  'Juiz de Fora',
-  'MG',
-  '10000000-0000-4000-8000-000000000001',
-  'SRID=4326;MULTIPOLYGON(((-43.7 -21.93,-43.15 -21.93,-43.15 -21.55,-43.7 -21.55,-43.7 -21.93)))',
-  '8b275bf4-2525-4616-b815-f6c777ab419a'
-);
+insert into public.cities (id, name, state, country_id, boundary, gers_id) values
+  (
+    '20000000-0000-4000-8000-000000000001',
+    'Juiz de Fora',
+    'MG',
+    '10000000-0000-4000-8000-000000000001',
+    'SRID=4326;MULTIPOLYGON(((-43.7 -21.93,-43.15 -21.93,-43.15 -21.55,-43.7 -21.55,-43.7 -21.93)))',
+    '8b275bf4-2525-4616-b815-f6c777ab419a'
+  ),
+  (
+    '20000000-0000-4000-8000-000000000002',
+    'São Paulo',
+    'SP',
+    '10000000-0000-4000-8000-000000000001',
+    'SRID=4326;MULTIPOLYGON(((-46.83 -24.01,-46.36 -24.01,-46.36 -23.36,-46.83 -23.36,-46.83 -24.01)))',
+    'da93f482-8f04-4e8d-aec2-f0884d9c0ed2'
+  );
 
 create temporary table seed_users (id uuid, email text, name text, username text) on commit drop;
 
@@ -60,9 +72,18 @@ from seed_users
 cross join unnest(array['essential', 'precise_location', 'emails', 'analytics']) as purpose;
 
 insert into public.profiles_private (user_id, home_city_id, age_confirmed_at)
-select id, '20000000-0000-4000-8000-000000000001', now()
+select
+  id,
+  case when username = 'gabrielsantos'
+    then '20000000-0000-4000-8000-000000000002'::uuid
+    else '20000000-0000-4000-8000-000000000001'::uuid
+  end,
+  now()
 from seed_users;
 
 insert into public.profiles (id, name, username)
 select id, name, username
 from seed_users;
+
+insert into public.follows (follower_id, followee_id, status) values
+  ('a0000000-0000-4000-8000-000000000002', 'a0000000-0000-4000-8000-000000000001', 'active');

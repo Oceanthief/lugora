@@ -33,7 +33,7 @@ O documento de visão usa nomes em português. O código e o banco usam inglês 
 | --- | --- | --- |
 | cidade_residencia_id | `home_city_id` | privado, em `profiles_private` |
 | confirmou_18_em | `age_confirmed_at` | |
-| visibilidade_padrao | `default_visibility` | |
+| visibilidade_padrao | `default_visibility` | em `profiles_private`; padrão `public` (Fatia 4) |
 | mostrar_cidade (9.3) | `show_home_city` | padrão `false` |
 | mostrar_sequencia | `show_streak` | |
 | nivel_confianca | `trust_level` | derivado (D6) |
@@ -67,9 +67,14 @@ O documento de visão usa nomes em português. O código e o banco usam inglês 
 | data_visita | `visited_on` | `date`, sem hora |
 | nota | `rating` | 0,5 a 5, passo 0,5 |
 | comentario | `comment` | |
-| eh_morador | `is_resident` | gravado no momento da visita |
+| eh_morador | `is_resident` | gravado no momento da visita; não sai pela API (revela onde a pessoa mora) |
+| viagem_id | `trip_id` | não sai pela API, pelo mesmo motivo |
 | visibilidade | `visibility` | `public`, `followers`, `private` ("só eu") |
-| publicar_em | `publish_at` | |
+| publicar_em | `publish_at` | não sai pela API, porque revela a hora do registro |
+| data de publicação | `publish_on` | só a data de `publish_at`, no horário de Brasília; é o que a API mostra |
+| data_fim / status (viagem) | `closes_at` | a viagem está aberta enquanto `closes_at` está no futuro; título e data de início ficam para depois |
+| status (seguir) | `status` | `active`, `pending` (pedido ainda não aceito) |
+| nome / ativa (etiqueta) | `id` / `is_active` | `id` é o código (`with_friends`); o texto da tela fica em `pt-BR.ts` |
 | verificada (visita) | `is_location_verified` | |
 | status (visita) | `completeness` | `quick`, `complete` |
 | mostrar_na_galeria | `show_in_gallery` | consentimento por foto (7.7) |
