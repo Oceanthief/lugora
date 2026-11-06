@@ -1,6 +1,6 @@
 -- Critérios de aceite da Fatia 3, com os nomes reais do diagnóstico de Juiz de Fora.
 begin;
-select plan(35);
+select plan(37);
 
 -- Tudo some no rollback do fim: assim, o teste não depende de a base já estar carregada.
 delete from public.places;
@@ -51,6 +51,9 @@ from generate_series(1, 12) as n;
 -- Dois registros que a revisão manual disse serem o mesmo lugar.
 insert into public.places (name, other_names, location, city_id, is_visitable, gers_id) values
   ('POSTO TOP CENTRO', 'Posto Rumo Certo', 'SRID=4326;POINT(-43.35 -21.76)', '99999999-0000-4000-8000-000000000001', true, 'posto');
+
+-- Templo é categoria sensível (D5): o pipeline marca, aqui o teste marca à mão.
+update public.places set is_sensitive = true where gers_id = 'oleiro';
 
 set local role authenticated;
 set local request.jwt.claims = '{"sub":"aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa","role":"authenticated"}';
@@ -173,6 +176,14 @@ select results_eq(
 
 -- A categoria corrigida vale mais que a do Overture (D3)
 select is((select category from public.search_places('cafe corrigido')), 'bakery', 'a correção do usuário tem prioridade');
+
+-- A busca diz se o lugar é sensível, para a tela de registro avisar antes de salvar (D5)
+select is(
+  (select is_sensitive from public.search_places('igreja do evangelho casa do oleiro') limit 1),
+  true,
+  'o templo vem marcado como sensível'
+);
+select is((select is_sensitive from public.search_places('viva gula')), false, 'o restaurante, não');
 
 -- Um texto enorme não pode prender o banco (seção 9.4). Sem o limite, 1 MB passa de 8 s.
 set local statement_timeout = '5s';

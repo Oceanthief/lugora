@@ -308,6 +308,11 @@ isOneToOne: false
               "id": string,"publish_on": string,"visibility": string
             }[]
                            },
+"my_visited_places":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "away_visit_count": number,"category": string,"city_id": string,"city_latitude": number,"city_longitude": number,"city_name": string,"city_state": string,"country_code": string,"is_resident": boolean,"last_visited_on": string,"latitude": number,"longitude": number,"name": string,"place_id": string,"rating": number,"visit_count": number
+            }[]
+                           },
 "publish_visit_now":
 { Args: { "p_visit_id": string }; Returns: string
                            },
@@ -318,7 +323,7 @@ isOneToOne: false
                            },
 "search_places":
 { Args: { "p_latitude"?: number,"p_longitude"?: number,"p_query": string }; Returns: {
-              "address": string,"category": string,"distance_meters": number,"id": string,"is_visitable": boolean,"name": string
+              "address": string,"category": string,"distance_meters": number,"id": string,"is_sensitive": boolean,"is_visitable": boolean,"name": string
             }[]
                            }
           }
