@@ -11,6 +11,7 @@
     "lint": "eslint",
     "typecheck": "next typegen && tsc --noEmit",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "seed:lugares": "node scripts/seed-lugares.mjs",
     "seed:demo": "node scripts/seed-demo.mjs",
     "env:local": "node scripts/env-local.mjs"
@@ -24,6 +25,7 @@
     "react-dom": "19.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.65.0",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^24.19.2",
     "@types/react": "^19",
