@@ -6,7 +6,20 @@ import {
   formatSourceHost,
   formatVisitDate,
   toISODate,
+  toSaoPauloDate,
 } from "./format";
+
+describe("toSaoPauloDate", () => {
+  it("usa o dia de Brasília, não o de UTC", () => {
+    // 01h30 em UTC ainda é dia 5 em Brasília (UTC-3).
+    expect(toSaoPauloDate("2026-11-06T01:30:00Z")).toBe("2026-11-05");
+    expect(toSaoPauloDate("2026-11-06T03:00:00Z")).toBe("2026-11-06");
+  });
+
+  it("aceita o formato que a API do banco devolve", () => {
+    expect(toSaoPauloDate("2026-11-09T14:22:31.123456+00:00")).toBe("2026-11-09");
+  });
+});
 
 describe("formatRating", () => {
   it("usa vírgula como separador decimal", () => {

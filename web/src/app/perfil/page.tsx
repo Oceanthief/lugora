@@ -9,6 +9,7 @@ import { strings } from "@/content/pt-BR";
 import { computeProfileStats, describeTravel, type TravelSummary } from "@/lib/stats";
 import { getMyProfile } from "@/lib/supabase/profile";
 import { getCurrentUser } from "@/lib/supabase/session";
+import { getMyVisitedPlaces } from "@/lib/supabase/visits";
 
 const text = strings.profile;
 
@@ -41,9 +42,9 @@ async function ProfileContent() {
       : homeCity.name
     : undefined;
 
-  // As visitas de verdade entram na Fatia 4. Até lá, os números ficam zerados:
-  // melhor do que mostrar visitas de demonstração como se fossem desta pessoa.
-  const stats = computeProfileStats({ visits: [], places: [], cities: [], homeCityId: "" });
+  // Só as visitas da própria pessoa: é ela quem está vendo, então todas contam,
+  // inclusive as "só eu" e as que ainda não apareceram para os outros (seção 9.3).
+  const stats = computeProfileStats(await getMyVisitedPlaces());
 
   const numbers = [
     { label: text.countries, value: stats.countryCodes.length },

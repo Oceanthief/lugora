@@ -11,6 +11,8 @@ export type PlaceResult = {
   address: string | null;
   category: string | null;
   isVisitable: boolean;
+  /** Saúde, religião e outros temas sensíveis (D5): a visita nasce "só eu". */
+  isSensitive: boolean;
   distanceMeters: number | null;
 };
 
@@ -29,6 +31,7 @@ export function toPlaceResult(row: {
   address: string | null;
   category: string | null;
   is_visitable: boolean;
+  is_sensitive: boolean;
   distance_meters: number | null;
 }): PlaceResult {
   return {
@@ -37,6 +40,7 @@ export function toPlaceResult(row: {
     address: row.address,
     category: row.category,
     isVisitable: row.is_visitable,
+    isSensitive: row.is_sensitive,
     distanceMeters: row.distance_meters,
   };
 }

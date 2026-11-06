@@ -7,6 +7,7 @@ import { VisitForm } from "@/components/visit-form";
 import { strings } from "@/content/pt-BR";
 import { hasLocationConsent, hasProfile } from "@/lib/supabase/profile";
 import { getCurrentUser } from "@/lib/supabase/session";
+import { getVisitSettings } from "@/lib/supabase/visits";
 
 const text = strings.register;
 
@@ -28,13 +29,21 @@ async function RegisterContent() {
   if (!user) return <SignInPrompt title={text.signedOutTitle} text={text.signedOutText} action={text.signIn} />;
   if (!(await hasProfile(user.id))) redirect("/cadastro");
 
+  const [canUseLocation, settings] = await Promise.all([hasLocationConsent(user.id), getVisitSettings(user.id)]);
+
   return (
     <>
       <h1 className="text-2xl font-semibold">{text.title}</h1>
       <p className="mt-1 text-ink-muted">{text.subtitle}</p>
       {/* A tela fica viva na memória mesmo quando a sessão muda. A chave faz outra pessoa começar do zero,
           sem a busca, o rascunho e a posição de quem usava o aparelho antes. */}
-      <VisitForm key={user.id} userId={user.id} canUseLocation={await hasLocationConsent(user.id)} />
+      <VisitForm
+        key={user.id}
+        userId={user.id}
+        canUseLocation={canUseLocation}
+        defaultVisibility={settings.defaultVisibility}
+        maxOccasions={settings.maxOccasions}
+      />
     </>
   );
 }

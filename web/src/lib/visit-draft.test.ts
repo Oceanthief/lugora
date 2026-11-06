@@ -1,18 +1,23 @@
 import { describe, expect, it } from "vitest";
 
 import {
+  defaultVisibilityFor,
+  parseVisitDraft,
   RATING_OPTIONS,
   toggleOccasion,
   validateVisitDraft,
+  visitErrorsFromDatabase,
   type VisitDraft,
 } from "./visit-draft";
 
 const today = "2026-10-28";
+const placeId = "6f1c2c84-3d5e-4b8e-9a51-2a8f0f1e7b10";
 const valid: VisitDraft = {
-  placeId: "p1",
+  placeId,
   visitedOn: today,
   rating: 4.5,
   occasions: ["with_friends"],
+  visibility: null,
 };
 
 describe("validateVisitDraft", () => {
@@ -26,7 +31,7 @@ describe("validateVisitDraft", () => {
 
   it("exige lugar, data e nota", () => {
     const errors = validateVisitDraft(
-      { placeId: "", visitedOn: "", rating: null, occasions: [] },
+      { placeId: "", visitedOn: "", rating: null, occasions: [], visibility: null },
       today,
     );
     expect(errors).toEqual({
@@ -53,6 +58,11 @@ describe("validateVisitDraft", () => {
     );
     expect(errors.occasions).toBe("tooManyOccasions");
   });
+
+  it("usa o limite que vem do banco", () => {
+    const errors = validateVisitDraft({ ...valid, occasions: ["romantic", "solo"] }, today, 1);
+    expect(errors.occasions).toBe("tooManyOccasions");
+  });
 });
 
 describe("RATING_OPTIONS", () => {
@@ -71,5 +81,65 @@ describe("toggleOccasion", () => {
   it("não passa de 3 ocasiões", () => {
     const full = ["romantic", "with_friends", "solo"] as const;
     expect(toggleOccasion(full, "work_study")).toEqual(full);
+  });
+
+  it("não passa do limite que vem do banco", () => {
+    expect(toggleOccasion(["solo"], "romantic", 1)).toEqual(["solo"]);
+  });
+});
+
+describe("defaultVisibilityFor", () => {
+  it("antes de escolher o lugar, mostra o padrão do perfil", () => {
+    expect(defaultVisibilityFor(null, "public")).toBe("public");
+  });
+
+  it("lugar comum segue o padrão do perfil", () => {
+    expect(defaultVisibilityFor({ isSensitive: false }, "followers")).toBe("followers");
+  });
+
+  it("lugar sensível nasce só eu, qualquer que seja o padrão", () => {
+    expect(defaultVisibilityFor({ isSensitive: true }, "public")).toBe("private");
+  });
+});
+
+describe("visitErrorsFromDatabase", () => {
+  it.each([
+    ["place_not_found", { placeId: "placeUnavailable" }],
+    ["place_not_visitable", { placeId: "placeUnavailable" }],
+    ["visited_on_in_future", { visitedOn: "dateInFuture" }],
+    ["too_many_tags", { occasions: "tooManyOccasions" }],
+  ])("%s volta para o campo certo", (message, expected) => {
+    expect(visitErrorsFromDatabase(message)).toEqual(expected);
+  });
+
+  it("o resto vira falha genérica", () => {
+    expect(visitErrorsFromDatabase("not_your_visit")).toBeNull();
+    expect(visitErrorsFromDatabase(undefined)).toBeNull();
+  });
+});
+
+describe("parseVisitDraft", () => {
+  it("aceita o que a tela manda", () => {
+    expect(parseVisitDraft(valid)).toEqual(valid);
+  });
+
+  it("aceita uma visibilidade escolhida", () => {
+    expect(parseVisitDraft({ ...valid, visibility: "private" })?.visibility).toBe("private");
+  });
+
+  it("tira ocasiões repetidas", () => {
+    expect(parseVisitDraft({ ...valid, occasions: ["solo", "solo"] })?.occasions).toEqual(["solo"]);
+  });
+
+  it.each([
+    ["sem objeto", null],
+    ["lugar que não é um id", { ...valid, placeId: "1; drop table" }],
+    ["data em outro formato", { ...valid, visitedOn: "28/10/2026" }],
+    ["nota em texto", { ...valid, rating: "4,5" }],
+    ["ocasião inventada", { ...valid, occasions: ["inventada"] }],
+    ["ocasiões fora de uma lista", { ...valid, occasions: "solo" }],
+    ["visibilidade inventada", { ...valid, visibility: "amigos" }],
+  ])("recusa %s", (_, input) => {
+    expect(parseVisitDraft(input)).toBeNull();
   });
 });

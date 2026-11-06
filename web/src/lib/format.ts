@@ -33,6 +33,21 @@ export function toISODate(date: Date): string {
   return `${date.getFullYear()}-${month}-${day}`;
 }
 
+const saoPauloDay = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "America/Sao_Paulo",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+});
+
+/**
+ * O dia de um momento no horário de Brasília, como AAAA-MM-DD. O app mostra a
+ * data, nunca a hora: o horário fica no servidor. O "en-CA" só dá o formato.
+ */
+export function toSaoPauloDate(instant: string | Date): string {
+  return saoPauloDay.format(new Date(instant));
+}
+
 /**
  * Distância em português: "450 m", "1,1 km" ou "12 km". Arredonda para não
  * passar uma precisão que o GPS do celular não tem.

@@ -125,16 +125,58 @@ export const strings = {
     rating: "Nota",
     occasions: "Ocasião",
     occasionsHint: (max: number) => `opcional, até ${max}`,
+    visibility: "Quem pode ver",
+    visibilityOptions: {
+      public: "Pública",
+      followers: "Seguidores",
+      private: "Só eu",
+    },
+    visibilityHint:
+      "Ninguém vê na hora: a visita aparece para os outros 24 h depois, na sua cidade, ou quando a viagem acaba.",
+    sensitiveDefault:
+      "Este lugar pode revelar saúde, religião ou outro tema sensível, então a visita nasce “só eu”. Você pode mudar.",
+    sensitiveWarning: "Quem puder ver a visita vai saber que você esteve neste lugar.",
     submit: "Salvar visita",
-    success:
-      "Tudo certo! Nesta versão de demonstração, a visita ainda não é salva.",
+    saving: "Salvando…",
+    saveFailed: "Não conseguimos salvar agora. Tente de novo em instantes.",
     errors: {
       placeRequired: "Escolha o lugar.",
+      placeUnavailable: "Este lugar não recebe visitas. Escolha outro.",
       dateRequired: "Informe a data da visita.",
       dateInFuture: "A data não pode ser no futuro.",
       ratingRequired: "Dê uma nota de 0,5 a 5.",
       ratingInvalid: "A nota vai de 0,5 a 5, em passos de 0,5.",
-      tooManyOccasions: "Escolha no máximo 3 ocasiões.",
+      tooManyOccasions: "Escolha menos ocasiões.",
+    },
+    saved: {
+      title: "Visita salva",
+      visibility: {
+        public: "Pública: aparece para todo mundo no Lugora.",
+        followers: "Seguidores: só quem segue você vê.",
+        private: "Só eu: ninguém além de você vê.",
+      },
+      publishOn: {
+        public: (date: string) => `Aparece para os outros a partir de ${date}.`,
+        followers: (date: string) => `Aparece para quem segue você a partir de ${date}.`,
+      },
+      published: {
+        public: "Já aparece para os outros.",
+        followers: "Já aparece para quem segue você.",
+      },
+      tripPublishOn: (date: string) =>
+        `Você está em viagem. As visitas fora de casa aparecem quando a viagem acaba: em ${date}, se você não registrar mais nada fora de casa.`,
+      publishNow: "Publicar agora",
+      publishNowWarning:
+        "Publicar agora mostra que você esteve aqui hoje. Se ainda estiver no lugar, prefira esperar.",
+      publishNowConfirm: "Sim, publicar agora",
+      closeTrip: "Encerrar viagem",
+      closeTripWarning:
+        "Encerrar publica agora todas as visitas desta viagem. A próxima visita fora de casa começa outra viagem.",
+      closeTripConfirm: "Sim, encerrar",
+      cancel: "Cancelar",
+      actionFailed: "Não deu certo agora. Tente de novo em instantes.",
+      another: "Registrar outra visita",
+      seeOnMap: "Ver no mapa",
     },
   },
   feed: {

@@ -1,21 +1,27 @@
 "use client";
 
 // Client Component: o formulário guarda o que a pessoa escolhe (estado) e
-// reage a cada toque, o que só acontece no navegador.
+// reage a cada toque, o que só acontece no navegador. Quem grava é a Server
+// Action, no servidor, e o banco confere tudo de novo.
 
 import { io } from "next/cache";
-import { use, useLayoutEffect, useRef, useState, type FormEvent } from "react";
+import { use, useLayoutEffect, useRef, useState, useTransition, type FormEvent } from "react";
 
+import { saveVisit, type SavedVisit } from "@/app/registrar/actions";
 import { PlaceSearch } from "@/components/place-search";
+import { SavedVisitPanel } from "@/components/saved-visit";
 import { strings } from "@/content/pt-BR";
 import { formatRating, toISODate } from "@/lib/format";
 import { occasions, type Occasion } from "@/lib/occasions";
 import type { PlaceResult } from "@/lib/places";
 import {
-  MAX_OCCASIONS,
+  defaultVisibilityFor,
   RATING_OPTIONS,
   toggleOccasion,
   validateVisitDraft,
+  VISIBILITY_OPTIONS,
+  type Visibility,
+  type VisitDraft,
   type VisitDraftError,
   type VisitDraftErrors,
 } from "@/lib/visit-draft";
@@ -32,22 +38,23 @@ const chipBase =
 /** A nota escolhida acende em âmbar: é a sua avaliação. */
 const ratingChipClass = `${chipBase} has-checked:bg-accent has-checked:text-on-accent`;
 
-/** A ocasião escolhida fica em âmbar suave, com contorno âmbar para não depender só da cor. */
-const occasionChipClass = `${chipBase} has-checked:bg-glow has-checked:text-on-glow`;
+/** Ocasião e visibilidade escolhidas ficam em âmbar suave, com contorno âmbar para não depender só da cor. */
+const softChipClass = `${chipBase} has-checked:bg-glow has-checked:text-on-glow`;
 
-export function VisitForm({ userId, canUseLocation }: { userId: string; canUseLocation: boolean }) {
+type VisitFormProps = {
+  userId: string;
+  canUseLocation: boolean;
+  defaultVisibility: Visibility;
+  maxOccasions: number;
+};
+
+export function VisitForm(props: VisitFormProps) {
   // A data de hoje tem que ser a do aparelho, não a do dia em que o site foi
   // gerado. io() avisa o Next: na geração, ele mostra o aviso do <Suspense>
   // da página; no navegador, segue direto.
   use(io());
   const [today] = useState(() => toISODate(new Date()));
-
-  const [place, setPlace] = useState<PlaceResult | null>(null);
-  const [visitedOn, setVisitedOn] = useState(today);
-  const [rating, setRating] = useState<number | null>(null);
-  const [selected, setSelected] = useState<readonly Occasion[]>([]);
-  const [errors, setErrors] = useState<VisitDraftErrors>({});
-  const [done, setDone] = useState(false);
+  const [saved, setSaved] = useState<SavedVisit | null>(null);
   const startFresh = useRef(false);
 
   // O Next mantém esta tela viva ao trocar de aba, então um rascunho não se
@@ -56,26 +63,88 @@ export function VisitForm({ userId, canUseLocation }: { userId: string; canUseLo
     () => () => {
       if (!startFresh.current) return;
       startFresh.current = false;
-      setPlace(null);
-      setVisitedOn(today);
-      setRating(null);
-      setSelected([]);
-      setErrors({});
-      setDone(false);
+      setSaved(null);
     },
-    [today],
+    [],
   );
+
+  if (saved) {
+    return (
+      <SavedVisitPanel
+        visit={saved}
+        userId={props.userId}
+        today={today}
+        onAnother={() => {
+          startFresh.current = false;
+          setSaved(null);
+        }}
+      />
+    );
+  }
+
+  return (
+    <VisitFields
+      {...props}
+      today={today}
+      onSaved={(visit) => {
+        startFresh.current = true;
+        setSaved(visit);
+      }}
+    />
+  );
+}
+
+/** Os campos ficam num componente à parte: ao salvar, ele sai da tela, e o próximo registro começa vazio. */
+function VisitFields({
+  userId,
+  canUseLocation,
+  defaultVisibility,
+  maxOccasions,
+  today,
+  onSaved,
+}: VisitFormProps & { today: string; onSaved: (visit: SavedVisit) => void }) {
+  const [place, setPlace] = useState<PlaceResult | null>(null);
+  const [visitedOn, setVisitedOn] = useState(today);
+  const [rating, setRating] = useState<number | null>(null);
+  const [selected, setSelected] = useState<readonly Occasion[]>([]);
+  // null enquanto a pessoa não escolhe: o banco aplica o padrão.
+  const [visibility, setVisibility] = useState<Visibility | null>(null);
+  const [errors, setErrors] = useState<VisitDraftErrors>({});
+  const [failed, setFailed] = useState(false);
+  const [saving, startSaving] = useTransition();
+
+  const shownVisibility = visibility ?? defaultVisibilityFor(place, defaultVisibility);
+
+  function choosePlace(next: PlaceResult | null) {
+    setPlace(next);
+    // Lugar sensível volta para o padrão, "só eu", mesmo que a pessoa tenha escolhido antes.
+    if (next?.isSensitive) setVisibility(null);
+  }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const found = validateVisitDraft(
-      { placeId: place?.id ?? "", visitedOn, rating, occasions: selected },
-      today,
-    );
-    const ok = Object.keys(found).length === 0;
+    if (saving) return;
+
+    const draft: VisitDraft = { placeId: place?.id ?? "", visitedOn, rating, occasions: selected, visibility };
+    const found = validateVisitDraft(draft, today, maxOccasions);
     setErrors(found);
-    setDone(ok);
-    startFresh.current = ok;
+    setFailed(false);
+    if (Object.keys(found).length > 0) return;
+
+    startSaving(async () => {
+      const result = await saveVisit(draft, userId);
+      // A sessão mudou em outra aba: recarregar apaga o que esta aba guarda de quem saiu.
+      if (!result.ok && result.sessionChanged) {
+        window.location.reload();
+        return;
+      }
+      if (result.ok) {
+        onSaved(result.visit);
+        return;
+      }
+      setErrors(result.errors);
+      setFailed(Boolean(result.failed));
+    });
   }
 
   return (
@@ -85,7 +154,7 @@ export function VisitForm({ userId, canUseLocation }: { userId: string; canUseLo
           userId={userId}
           canUseLocation={canUseLocation}
           selected={place}
-          onSelect={setPlace}
+          onSelect={choosePlace}
           fieldClass={fieldClass}
           invalid={Boolean(errors.placeId)}
           describedBy={errors.placeId ? "place-error" : undefined}
@@ -133,21 +202,19 @@ export function VisitForm({ userId, canUseLocation }: { userId: string; canUseLo
       <fieldset aria-describedby={errors.occasions ? "occasions-error" : undefined}>
         <legend className="font-medium">
           {text.occasions}{" "}
-          <span className="font-normal text-ink-muted">
-            ({text.occasionsHint(MAX_OCCASIONS)})
-          </span>
+          <span className="font-normal text-ink-muted">({text.occasionsHint(maxOccasions)})</span>
         </legend>
         <div className="mt-2 flex flex-wrap gap-2">
           {occasions.map((occasion) => {
             const checked = selected.includes(occasion);
             return (
-              <label key={occasion} className={occasionChipClass}>
+              <label key={occasion} className={softChipClass}>
                 <input
                   type="checkbox"
                   checked={checked}
                   // No limite, as outras ficam desligadas até desmarcar uma.
-                  disabled={!checked && selected.length >= MAX_OCCASIONS}
-                  onChange={() => setSelected(toggleOccasion(selected, occasion))}
+                  disabled={!checked && selected.length >= maxOccasions}
+                  onChange={() => setSelected(toggleOccasion(selected, occasion, maxOccasions))}
                   className="sr-only"
                 />
                 {strings.occasions[occasion]}
@@ -158,16 +225,43 @@ export function VisitForm({ userId, canUseLocation }: { userId: string; canUseLo
         <FieldError id="occasions-error" error={errors.occasions} />
       </fieldset>
 
+      <fieldset aria-describedby="visibility-note">
+        <legend className="font-medium">{text.visibility}</legend>
+        <div className="mt-2 grid grid-cols-3 gap-2">
+          {VISIBILITY_OPTIONS.map((option) => (
+            <label key={option} className={softChipClass}>
+              <input
+                type="radio"
+                name="visibility"
+                value={option}
+                checked={shownVisibility === option}
+                onChange={() => setVisibility(option)}
+                className="sr-only"
+              />
+              {text.visibilityOptions[option]}
+            </label>
+          ))}
+        </div>
+        <p id="visibility-note" className="mt-2 text-sm text-ink-muted">
+          {place?.isSensitive
+            ? shownVisibility === "private"
+              ? text.sensitiveDefault
+              : text.sensitiveWarning
+            : text.visibilityHint}
+        </p>
+      </fieldset>
+
       <button
         type="submit"
-        className={`min-h-12 rounded-control bg-accent px-6 font-semibold text-on-accent ${focusRing}`}
+        aria-disabled={saving}
+        className={`min-h-12 rounded-control bg-accent px-6 font-semibold text-on-accent aria-disabled:opacity-60 ${focusRing}`}
       >
-        {text.submit}
+        {saving ? text.saving : text.submit}
       </button>
 
       {/* Leitores de tela anunciam o que aparece aqui. */}
-      <p role="status" className="text-sm font-medium">
-        {done ? text.success : ""}
+      <p role="status" className="text-sm font-medium text-danger">
+        {failed ? text.saveFailed : ""}
       </p>
     </form>
   );
