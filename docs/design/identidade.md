@@ -67,6 +67,7 @@ Meta: 4,5:1 para texto (seção 13). Todos os pares passam e são testados.
 
 - **Uma cor só, o âmbar, mudando de luminosidade.** No claro, mais lugares deixam a faixa mais escura; no escuro, mais clara. A faixa sempre "acende" contra o fundo.
 - **Na legenda,** cada quadradinho tem contorno `line`, porque a faixa 1 do tema claro quase some no fundo.
+- **No mapa (Fatia 4),** os círculos das cidades e a legenda usam as faixas do tema claro (`mapColors.levels`) em qualquer tema, porque o mapa base é sempre claro: assim, a legenda tem as mesmas cores dos círculos. O círculo tem contorno `ink`, e o número de lugares dentro dele usa `ink` nas faixas 1 a 3 e branco na 4, sempre com 4,5:1 ou mais (testado).
 - **Seguras para daltônicos:** cada faixa difere da vizinha em pelo menos 1,5:1, o que o teste garante. Menor diferença simulada, pelas matrizes de Machado e colegas (2009):
 
 | Tema | Visão normal | Protanopia | Deuteranopia | Tritanopia | Acromatopsia |

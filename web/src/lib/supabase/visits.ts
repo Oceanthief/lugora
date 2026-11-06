@@ -1,6 +1,7 @@
 import "server-only";
 
 import { toSaoPauloDate } from "@/lib/format";
+import { DEFAULT_CITY_LEVELS, isLevelList } from "@/lib/map-levels";
 import { DEFAULT_MAX_OCCASIONS, isVisibility, type Visibility } from "@/lib/visit-draft";
 import { toMyVisitedPlace, type MyVisitedPlace } from "@/lib/visited-places";
 
@@ -33,6 +34,13 @@ export async function getMyVisitedPlaces(): Promise<MyVisitedPlace[]> {
   const { data, error } = await supabase.rpc("my_visited_places");
   if (error) throw new Error("Não conseguimos carregar as visitas.", { cause: error });
   return (data ?? []).map(toMyVisitedPlace);
+}
+
+/** As faixas de cor do mapa (seção 7.4), de app_parameters. */
+export async function getCityLevels(): Promise<readonly number[]> {
+  const supabase = await createClient();
+  const { data } = await supabase.from("app_parameters").select("value").eq("key", "map_city_levels").maybeSingle();
+  return isLevelList(data?.value) ? data.value : DEFAULT_CITY_LEVELS;
 }
 
 /**

@@ -42,6 +42,16 @@ describe("contraste dos tokens (seção 13: texto com pelo menos 4,5:1)", () => 
   it("mapa: o ícone se destaca do ponto (3:1, elemento gráfico)", () => {
     expect(contrastRatio(mapColors.pointIcon, mapColors.pointFill)).toBeGreaterThanOrEqual(3);
   });
+
+  it("mapa: o número de lugares se lê dentro do círculo de cada faixa", () => {
+    mapColors.levels.forEach((level, index) => {
+      expect(contrastRatio(mapColors.levelText[index], level), `faixa ${index + 1}`).toBeGreaterThanOrEqual(MIN_TEXT_CONTRAST);
+    });
+  });
+
+  it("mapa: o contorno do círculo se destaca da faixa mais clara (3:1, elemento gráfico)", () => {
+    expect(contrastRatio(mapColors.levelStroke, mapColors.levels[0])).toBeGreaterThanOrEqual(3);
+  });
 });
 
 describe("faixas do mapa (seção 7.4: sequenciais e seguras para daltônicos)", () => {

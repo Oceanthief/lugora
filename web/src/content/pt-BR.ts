@@ -80,13 +80,38 @@ export const strings = {
   placeIn: (category: string, city: string) => `${category} em ${city}`,
   map: {
     title: "Mapa",
+    loading: "Carregando o mapa…",
+    signedOutTitle: "Entre para ver o seu mapa",
+    signedOutText: "Cada lugar que você registrar aparece aqui.",
+    signIn: "Entrar",
+    tabsLabel: "Parte do mapa",
+    tabs: { home: "Minha cidade", trips: "Viagens" },
+    showList: "Ver lista",
+    showMap: "Ver mapa",
     placesList: "Lugares no mapa",
     emptyTitle: "Seu mapa ainda está vazio",
     emptyText: "Cada lugar que você registrar aparece aqui.",
     emptyAction: "Registrar a primeira visita",
+    emptyTab: {
+      home: "Nenhum lugar da sua cidade ainda.",
+      trips: "Nenhuma viagem ainda. As visitas fora da cidade onde você mora aparecem aqui.",
+    },
+    legendTitle: "Lugares por cidade",
+    levelRange: (from: number, to: number | null) =>
+      to === null ? `${from} ou mais` : from === to ? `${from}` : `${from} a ${to}`,
+    places: (count: number) => (count === 1 ? "1 lugar" : `${count} lugares`),
+    visits: (count: number) => (count === 1 ? "1 visita" : `${count} visitas`),
+    cityLabel: (city: string, places: string, level: number) => `${city}, ${places}, faixa ${level} de 4`,
+    noCategory: "Sem categoria",
+    otherCategory: "Outro tipo de lugar",
     markerLabel: (name: string, category: string, rating: string) =>
       `${name}, ${category}, nota ${rating}`,
-    visitedOn: (date: string) => `Visitado em ${date}`,
+    visitedOn: (date: string) => `Última visita em ${date}`,
+    trip: {
+      title: "Viagem em andamento",
+      text: (date: string) =>
+        `As visitas desta viagem aparecem para os outros em ${date}, se você não registrar mais nada fora de casa.`,
+    },
     // Textos dos botões do próprio MapLibre (zoom, fechar o balão etc.).
     controls: {
       "AttributionControl.ToggleAttribution": "Mostrar ou ocultar a atribuição",

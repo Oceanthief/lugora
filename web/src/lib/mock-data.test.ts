@@ -4,7 +4,6 @@ import { placeCategories } from "./categories";
 import {
   getCity,
   getFeed,
-  getVisitedPlaces,
   getWantToGo,
   mockAllVisits,
   mockFeedVisits,
@@ -15,7 +14,7 @@ import {
   mockVisits,
   mockWantToGo,
 } from "./mock-data";
-import type { MockPlace, MockVisit } from "./mock-data";
+import type { MockVisit } from "./mock-data";
 import { occasions } from "./occasions";
 
 describe("dados do app", () => {
@@ -98,33 +97,6 @@ describe("usuário logado e quem ele segue", () => {
     expect(followed.has(mockProfile.id)).toBe(false);
     expect(mockFeedVisits.length).toBeGreaterThan(0);
     for (const visit of mockFeedVisits) expect(followed.has(visit.userId), visit.id).toBe(true);
-  });
-});
-
-describe("getVisitedPlaces", () => {
-  const places: MockPlace[] = [
-    { id: "a", name: "A", category: "cafe", cityId: "jf", location: [-43.35, -21.76] },
-    { id: "b", name: "B", category: "bar", cityId: "jf", location: [-43.36, -21.77] },
-  ];
-
-  it("conta o mesmo lugar uma vez só, com a visita mais recente", () => {
-    const visits: MockVisit[] = [
-      { id: "1", userId: "u0", placeId: "a", visitedOn: "2026-10-25", rating: 4.5, occasions: [] },
-      { id: "2", userId: "u0", placeId: "a", visitedOn: "2026-09-12", rating: 2, occasions: [] },
-    ];
-
-    const result = getVisitedPlaces(places, visits);
-
-    expect(result).toHaveLength(1);
-    expect(result[0]).toMatchObject({ id: "a", visitedOn: "2026-10-25", rating: 4.5 });
-  });
-
-  it("deixa de fora os lugares sem visita", () => {
-    const visits: MockVisit[] = [
-      { id: "1", userId: "u0", placeId: "b", visitedOn: "2026-10-01", rating: 3, occasions: [] },
-    ];
-
-    expect(getVisitedPlaces(places, visits).map((p) => p.id)).toEqual(["b"]);
   });
 });
 

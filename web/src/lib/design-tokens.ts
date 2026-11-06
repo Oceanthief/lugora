@@ -74,6 +74,12 @@ export const mapColors = {
   labelHalo: "#FFFFFF",
   /** Contorno do ponto em foco pelo teclado, legível sobre o mapa claro. */
   focus: colors.light.ink,
+  /** Círculo de cada cidade, pela faixa de lugares distintos (seção 7.4): as do tema claro. */
+  levels: [colors.light["level-1"], colors.light["level-2"], colors.light["level-3"], colors.light["level-4"]],
+  /** Número dentro do círculo: tinta escura nas faixas claras, branco na mais escura. */
+  levelText: [colors.light.ink, colors.light.ink, colors.light.ink, "#FFFFFF"],
+  /** Contorno do círculo: a faixa 1 quase some sobre o mapa claro. */
+  levelStroke: colors.light.ink,
 };
 
 /** Prefixo das variáveis CSS geradas a partir dos tokens. */

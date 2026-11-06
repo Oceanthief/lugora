@@ -119,7 +119,7 @@ export function SavedVisitPanel({
 }
 
 /** Uma ação com aviso de segurança: o primeiro toque só mostra o aviso e pede confirmação. */
-function Confirmable({
+export function Confirmable({
   label,
   warning,
   confirm,
