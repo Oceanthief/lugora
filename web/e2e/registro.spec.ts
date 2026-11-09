@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-import { brDate, chooseChip, choosePlace, goTo, newAccount, profileNumber, visible } from "./helpers";
+import { brDate, chooseChip, choosePlace, goTo, newAccount, placeField, profileNumber, visible } from "./helpers";
 
 // Fatia 4: o registro rápido de verdade, do toque em Registrar até o mapa.
 test.describe("registro rápido", () => {
@@ -73,5 +73,33 @@ test.describe("registro rápido", () => {
     await expect(saved).toContainText("Só eu: ninguém além de você vê.");
     // Uma visita "só eu" não aparece para ninguém, então não há o que publicar.
     await expect(saved.getByRole("button", { name: "Publicar agora" })).toHaveCount(0);
+  });
+});
+
+// O GPS de mentira fica em cima da Lanchonete Teste E2E (supabase/fixtures/e2e_places.sql).
+test.describe("perto de você", () => {
+  test.use({ geolocation: { latitude: -21.7483, longitude: -43.3591 }, permissions: ["geolocation"] });
+
+  test("com o GPS ligado e nada digitado, mostra os lugares perto", async ({ page }) => {
+    await newAccount(page, "perto", { allowLocation: true });
+    await goTo(page, "/registrar");
+    await visible(page.getByRole("button", { name: "Usar minha localização" })).click();
+
+    const nearby = visible(page.getByRole("list", { name: "Perto de você" }));
+    await expect(nearby).toContainText("Lanchonete Teste E2E");
+    await expect(nearby).toContainText("de você");
+
+    // Digitar troca a lista pela busca; apagar traz a lista de perto de volta.
+    await placeField(page).fill("padaria teste e2e");
+    await expect(visible(page.getByRole("button", { name: /Padaria Teste E2E/ }))).toBeVisible();
+    await expect(page.getByRole("list", { name: "Perto de você" })).toHaveCount(0);
+    await placeField(page).fill("");
+    await expect(nearby).toContainText("Lanchonete Teste E2E");
+
+    await nearby.getByRole("button", { name: /Lanchonete Teste E2E/ }).click();
+    await expect(visible(page.getByText("Rua dos Testes, 1"))).toBeVisible();
+    await chooseChip(page, "5,0");
+    await visible(page.getByRole("button", { name: "Salvar visita" })).click();
+    await expect(page.getByRole("region", { name: "Visita salva" })).toBeVisible();
   });
 });

@@ -5,7 +5,7 @@
 
 import { useRef, useState } from "react";
 
-import { searchPlaces } from "@/app/registrar/actions";
+import { nearbyPlaces, searchPlaces } from "@/app/registrar/actions";
 import { CategoryIcon } from "@/components/category-icon";
 import { strings } from "@/content/pt-BR";
 import { isPlaceCategory } from "@/lib/categories";
@@ -44,6 +44,9 @@ export function PlaceSearch({
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
   // Fica só na memória desta tela: nada guarda onde a pessoa estava.
   const position = useRef<Position | null>(null);
+  // "Perto de você": aparece com o GPS ligado enquanto nada está digitado.
+  const [nearby, setNearby] = useState<PlaceResult[]>([]);
+  const [nearbyStatus, setNearbyStatus] = useState<SearchStatus>("idle");
 
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // Uma resposta lenta não pode sobrescrever a de uma busca mais nova.
@@ -87,15 +90,32 @@ export function PlaceSearch({
     setLocationStatus("locating");
     navigator.geolocation.getCurrentPosition(
       ({ coords }) => {
-        position.current = { latitude: coords.latitude, longitude: coords.longitude };
+        const current = { latitude: coords.latitude, longitude: coords.longitude };
+        position.current = current;
         setLocationStatus("on");
         // Refaz a busca para trazer as distâncias do que já está na tela.
         search(query, 0);
+        void loadNearby(current);
       },
       () => setLocationStatus("failed"),
       { timeout: 10_000, maximumAge: 60_000 },
     );
   }
+
+  async function loadNearby(current: Position) {
+    setNearbyStatus("searching");
+    const result = await nearbyPlaces(current, userId);
+    if (result.sessionChanged) {
+      window.location.reload();
+      return;
+    }
+    setNearby(result.places);
+    setNearbyStatus(result.failed ? "failed" : "done");
+  }
+
+  // Digitou: vale a busca. Apagou: a lista de perto volta, sem pedir de novo ao banco.
+  const showingNearby = query.trim().length < PLACE_SEARCH_MIN_LENGTH && nearbyStatus !== "idle";
+  const list = showingNearby ? nearby : places;
 
   function choose(place: PlaceResult) {
     onSelect(place);
@@ -159,9 +179,15 @@ export function PlaceSearch({
             </div>
           ) : null}
 
-          {places.length > 0 ? (
-            <ul className="mt-2 flex flex-col gap-1">
-              {places.map((place) => (
+          {showingNearby ? (
+            <h2 id="nearby-title" className="mt-4 text-sm font-semibold">
+              {text.nearbyTitle}
+            </h2>
+          ) : null}
+
+          {list.length > 0 ? (
+            <ul aria-labelledby={showingNearby ? "nearby-title" : undefined} className="mt-2 flex flex-col gap-1">
+              {list.map((place) => (
                 <li key={place.id}>
                   <PlaceOption place={place} onChoose={choose} />
                 </li>
@@ -171,9 +197,9 @@ export function PlaceSearch({
 
           {/* Leitores de tela anunciam o resultado da busca. */}
           <p role="status" className="mt-2 text-sm text-ink-muted">
-            {statusText(status, places.length)}
+            {showingNearby ? nearbyText(nearbyStatus, nearby.length) : statusText(status, places.length)}
           </p>
-          {places.length > 0 ? <p className="mt-1 text-xs text-ink-muted">{text.placeCredit}</p> : null}
+          {list.length > 0 ? <p className="mt-1 text-xs text-ink-muted">{text.placeCredit}</p> : null}
         </>
       )}
     </div>
@@ -219,6 +245,13 @@ function statusText(status: SearchStatus, found: number): string {
   if (status === "searching") return text.placeSearching;
   if (status === "failed") return text.placeSearchFailed;
   if (status === "done") return found === 0 ? text.placeNotFound : text.placeFound(found);
+  return "";
+}
+
+function nearbyText(status: SearchStatus, found: number): string {
+  if (status === "searching") return text.nearbySearching;
+  if (status === "failed") return text.nearbyFailed;
+  if (status === "done") return found === 0 ? text.nearbyNone : text.nearbyFound(found);
   return "";
 }
 

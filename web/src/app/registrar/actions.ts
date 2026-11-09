@@ -60,6 +60,28 @@ export async function searchPlaces(
   return { places: (data ?? []).map(toPlaceResult), failed: Boolean(error) };
 }
 
+/**
+ * "Perto de você": com o GPS ligado e nada digitado. Mesmas regras da distância
+ * na busca: a posição vai no corpo do pedido, ninguém a guarda, e o banco só
+ * responde para quem deu o consentimento. O raio e a quantidade ficam no banco.
+ */
+export async function nearbyPlaces(position: Position, screenUserId: string): Promise<PlaceSearchResult> {
+  // Toda Server Action recebe qualquer coisa: a posição pode nem ser um objeto.
+  if (typeof position !== "object" || position === null || !isValidPosition(position)) {
+    return { places: [], failed: true };
+  }
+
+  const session = await signedUpUser(screenUserId);
+  if (!("user" in session)) return { places: [], failed: true, ...session };
+
+  const supabase = await createClient();
+  const { data, error } = await supabase.rpc("nearby_places", {
+    p_latitude: position.latitude,
+    p_longitude: position.longitude,
+  });
+  return { places: (data ?? []).map(toPlaceResult), failed: Boolean(error) };
+}
+
 export type SavedVisit = {
   id: string;
   visibility: Visibility;
