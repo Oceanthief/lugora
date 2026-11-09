@@ -199,16 +199,16 @@ A ordem segue a seção 15 do documento ("Ordem sugerida das fatias"), com três
 
 **Tarefas:**
 
-- [ ] Migrações de `visits`, `tags`, `visit_tags` e `trips` (o básico), com RLS.
-- [ ] Fluxo de registro rápido: lugar, data (hoje por padrão), nota de 0,5 a 5 e até 3 ocasiões.
-- [ ] `is_resident` gravado no momento da visita.
-- [ ] Regras de publicação (7.5): Minha cidade 24 h depois; viagem ao encerrar; "publicar agora" com aviso; lugar sensível nasce "só eu".
+- [x] Migrações de `visits`, `tags`, `visit_tags` e `trips` (o básico), com RLS. Também `follows`, mínimo e sem escrita pela API, para testar a visibilidade "seguidores".
+- [x] Fluxo de registro rápido: lugar, data (hoje por padrão), nota de 0,5 a 5 e até 3 ocasiões.
+- [x] `is_resident` gravado no momento da visita.
+- [x] Regras de publicação (7.5): Minha cidade 24 h depois; viagem ao encerrar; "publicar agora" com aviso; lugar sensível nasce "só eu". A hora e a moradia não saem pela API (ADR 0011).
 - [ ] Criar o projeto Supabase de homologação na nuvem (veio da Fatia 2): aplicar as migrações, carregar países e cidades e ligá-lo ao preview da Vercel. Repetir a configuração do login por código, senão a nuvem volta a mandar link: os templates de e-mail (`magic_link`, `confirmation`, `recovery` e `email_change`), validade, limites e confirmação de e-mail (ADR 0009). Conferir de novo, na nuvem, que uma conta criada com o e-mail de outra pessoa não dá acesso.
-- [ ] Limite de requisições na nuvem (seção 9.4), incluindo a leitura de polígonos em `cities` e `countries`, que hoje qualquer pessoa consegue baixar sem limite (achado da revisão da Fatia 2).
-- [ ] "Lugares perto de mim" pelo GPS, testado no celular pelo preview em HTTPS (projeto de homologação).
-- [ ] Mapa com os pontos visitados, as abas Viagens e Minha cidade, e as faixas de cor por lugares distintos (7.4).
-- [ ] Primeiro teste de fluxo com Playwright: registrar uma visita do começo ao fim.
-- [ ] Teste de fluxo da troca de conta, na mesma aba e com uma aba antiga aberta: a busca, o rascunho, a posição e o cadastro pela metade não passam para a pessoa seguinte (achados da revisão da Fatia 3, conferidos até agora com scripts fora do repositório).
+- [ ] Limite de requisições na nuvem (seção 9.4), incluindo a leitura de polígonos em `cities` e `countries`, que hoje qualquer pessoa consegue baixar sem limite (achado da revisão da Fatia 2). Pronto e conferido por HTTP no banco local (ADR 0012); falta conferir na homologação.
+- [ ] "Lugares perto de mim" pelo GPS, testado no celular pelo preview em HTTPS (projeto de homologação). Pronto no localhost, com teste de fluxo; falta o celular.
+- [x] Mapa com os pontos visitados, as abas Viagens e Minha cidade, e as faixas de cor por lugares distintos (7.4).
+- [x] Primeiro teste de fluxo com Playwright: registrar uma visita do começo ao fim.
+- [x] Teste de fluxo da troca de conta, na mesma aba e com uma aba antiga aberta: a busca, o rascunho, a posição e o cadastro pela metade não passam para a pessoa seguinte (achados da revisão da Fatia 3, conferidos até agora com scripts fora do repositório).
 
 **Aceite:** testes de aceitação 1, 2, 3, 4 e 5 da seção 9.5, mais:
 
@@ -396,6 +396,9 @@ O beta fechado (20 a 30 pessoas) só abre quando:
 - [ ] Cada consentimento opcional, incluindo o de localização, pode ser retirado pelo app (seção 9.1).
 - [ ] Os termos, a política de privacidade e a atribuição estão publicados.
 - [ ] Os eventos de métricas estão sendo gravados.
+- [ ] O e-mail de login sai por um SMTP próprio: o serviço padrão do Supabase só entrega para a equipe do projeto, 2 por hora (ADR 0012).
+- [ ] O limite do login não é dividido por todo mundo: Auth chamado pelo navegador ou limites ajustados no painel (ADR 0012).
+- [ ] O risco de anotar a hora em que cada visita aparece foi revisto (ADR 0011).
 
 ## Fases 2 e 3 (detalhar só depois do portão)
 
