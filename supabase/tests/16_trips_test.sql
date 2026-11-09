@@ -3,6 +3,10 @@
 begin;
 select plan(28);
 
+-- Começa sem as visitas e viagens de quem usou o app neste banco; o rollback do fim as devolve.
+delete from public.visits;
+delete from public.trips;
+
 -- G mora na Cidade Distante e viaja para a Cidade de Casa. A mora na Cidade de Casa. B observa.
 insert into auth.users (id, email) values
   ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'a@example.com'),

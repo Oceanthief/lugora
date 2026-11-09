@@ -2,6 +2,10 @@
 begin;
 select plan(49);
 
+-- Começa sem as visitas e viagens de quem usou o app neste banco; o rollback do fim as devolve.
+delete from public.visits;
+delete from public.trips;
+
 -- Pessoas: A registra; B não segue A; C segue A; D pediu para seguir e espera; N entrou, mas
 -- não concluiu o cadastro (18+).
 insert into auth.users (id, email) values

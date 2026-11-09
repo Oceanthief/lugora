@@ -2,6 +2,10 @@
 begin;
 select plan(13);
 
+-- Começa sem as visitas e viagens de quem usou o app neste banco; o rollback do fim as devolve.
+delete from public.visits;
+delete from public.trips;
+
 insert into auth.users (id, email) values
   ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'a@example.com'),
   ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb', 'b@example.com');

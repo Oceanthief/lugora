@@ -3,6 +3,8 @@ begin;
 select plan(37);
 
 -- Tudo some no rollback do fim: assim, o teste não depende de a base já estar carregada.
+-- As visitas saem antes, porque apontam para os lugares.
+delete from public.visits;
 delete from public.places;
 
 insert into auth.users (id, email) values

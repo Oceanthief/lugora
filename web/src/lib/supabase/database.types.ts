@@ -308,9 +308,17 @@ isOneToOne: false
               "id": string,"publish_on": string,"visibility": string
             }[]
                            },
+"limit_api_writes":
+{ Args: Record<PropertyKey, never>; Returns: undefined
+                           },
 "my_visited_places":
 { Args: Record<PropertyKey, never>; Returns: {
               "away_visit_count": number,"category": string,"city_id": string,"city_latitude": number,"city_longitude": number,"city_name": string,"city_state": string,"country_code": string,"is_resident": boolean,"last_visited_on": string,"latitude": number,"longitude": number,"name": string,"place_id": string,"rating": number,"visit_count": number
+            }[]
+                           },
+"nearby_places":
+{ Args: { "p_latitude": number,"p_longitude": number }; Returns: {
+              "address": string,"category": string,"distance_meters": number,"id": string,"is_sensitive": boolean,"is_visitable": boolean,"name": string
             }[]
                            },
 "publish_visit_now":

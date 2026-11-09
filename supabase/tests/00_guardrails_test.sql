@@ -47,8 +47,8 @@ select is(
    from pg_catalog.pg_proc as p
    join pg_catalog.pg_namespace as n on n.oid = p.pronamespace
    where n.nspname = 'public' and p.prosecdef),
-  'complete_signup, my_visited_places',
-  'no public, só o cadastro e o mapa da própria pessoa têm as permissões do dono'
+  'complete_signup, limit_api_writes, my_visited_places',
+  'no public, só o cadastro, o limite de escritas e o mapa da própria pessoa têm as permissões do dono'
 );
 
 -- No schema private, que a API não expõe, ficam só funções de gatilho, que ninguém chama direto.
