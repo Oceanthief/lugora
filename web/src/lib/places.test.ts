@@ -13,6 +13,7 @@ describe("resultado da busca", () => {
         address: null,
         category: null,
         is_visitable: true,
+        is_sensitive: false,
         distance_meters: null,
       }),
     ).toEqual({
@@ -21,6 +22,7 @@ describe("resultado da busca", () => {
       address: null,
       category: null,
       isVisitable: true,
+      isSensitive: false,
       distanceMeters: null,
     });
   });

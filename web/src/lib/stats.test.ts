@@ -1,36 +1,16 @@
 import { describe, expect, it } from "vitest";
 
-import type { MockCity, MockPlace, MockVisit } from "./mock-data";
 import { computeProfileStats, describeTravel, MIN_VISITS_FOR_TRAVEL_SHARE } from "./stats";
 
-const cities: MockCity[] = [
-  { id: "jf", name: "Juiz de Fora", countryCode: "BR", center: [-43.35, -21.76] },
-  { id: "lisboa", name: "Lisboa", countryCode: "PT", center: [-9.14, 38.72] },
-];
+const juizDeFora = { id: "jf", name: "Juiz de Fora", state: "MG", countryCode: "BR", location: [-43.35, -21.76] as [number, number] };
+const lisboa = { id: "lisboa", name: "Lisboa", state: null, countryCode: "PT", location: [-9.14, 38.72] as [number, number] };
 
-const places: MockPlace[] = [
-  { id: "casa", name: "Casa", category: "cafe", cityId: "jf", location: [-43.35, -21.76] },
-  { id: "fora", name: "Fora", category: "bar", cityId: "lisboa", location: [-9.14, 38.72] },
-];
-
-function visitsTo(placeId: string, count: number): MockVisit[] {
-  return Array.from({ length: count }, (_, i) => ({
-    id: `${placeId}-${i}`,
-    userId: "u0",
-    placeId,
-    visitedOn: "2026-10-01",
-    rating: 4,
-    occasions: [],
-  }));
-}
-
+/** Um lugar em casa visitado `home` vezes e um em viagem visitado `away` vezes. */
 const statsFor = (home: number, away: number) =>
-  computeProfileStats({
-    visits: [...visitsTo("casa", home), ...visitsTo("fora", away)],
-    places,
-    cities,
-    homeCityId: "jf",
-  });
+  computeProfileStats([
+    ...(home > 0 ? [{ city: juizDeFora, visitCount: home, awayVisitCount: 0 }] : []),
+    ...(away > 0 ? [{ city: lisboa, visitCount: away, awayVisitCount: away }] : []),
+  ]);
 
 describe("computeProfileStats", () => {
   it("conta lugares, cidades, países e viagens", () => {
@@ -43,9 +23,25 @@ describe("computeProfileStats", () => {
     });
   });
 
+  it("visitar o mesmo lugar de novo conta visita, não lugar", () => {
+    const stats = statsFor(2, 0);
+    expect(stats.places).toBe(1);
+    expect(stats.visits).toBe(2);
+  });
+
   it("conta como viagem só a visita fora da cidade onde a pessoa mora", () => {
     expect(statsFor(12, 0).travelVisits).toBe(0);
     expect(statsFor(0, 5).travelVisits).toBe(5);
+  });
+
+  it("conta a viagem gravada em cada visita, mesmo num lugar hoje em casa", () => {
+    // Quem se mudou para Lisboa: as visitas antigas, de quando morava fora, continuam viagens.
+    const stats = computeProfileStats([{ city: lisboa, visitCount: 3, awayVisitCount: 2 }]);
+    expect(stats.travelVisits).toBe(2);
+  });
+
+  it("sem visitas, tudo zera", () => {
+    expect(computeProfileStats([])).toEqual({ countryCodes: [], cityIds: [], places: 0, visits: 0, travelVisits: 0 });
   });
 });
 

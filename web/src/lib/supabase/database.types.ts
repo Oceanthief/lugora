@@ -99,6 +99,32 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"follows": {
+                  Row: {
+                    "created_at": string,"followee_id": string,"follower_id": string,"status": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"followee_id": string,"follower_id": string,"status"?: string,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"followee_id"?: string,"follower_id"?: string,"status"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "follows_followee_id_fkey"
+      columns: ["followee_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "follows_follower_id_fkey"
+      columns: ["follower_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"overture_imports": {
                   Row: {
                     "added": number,"changed": number,"created_at": string,"flagged": number,"id": string,"in_review": number,"merged": number,"not_visitable": number,"ran_at": string,"reconciled": number,"release": string,"removed": number,"updated_at": string
@@ -155,14 +181,14 @@ isOneToOne: false
                   ]
                 },"profiles_private": {
                   Row: {
-                    "age_confirmed_at": string,"created_at": string,"home_city_id": string,"show_home_city": boolean,"updated_at": string,"user_id": string
+                    "age_confirmed_at": string,"created_at": string,"default_visibility": string,"home_city_id": string,"show_home_city": boolean,"updated_at": string,"user_id": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "age_confirmed_at"?: string,"created_at"?: string,"home_city_id": string,"show_home_city"?: boolean,"updated_at"?: string,"user_id": string
+                    "age_confirmed_at"?: string,"created_at"?: string,"default_visibility"?: string,"home_city_id": string,"show_home_city"?: boolean,"updated_at"?: string,"user_id": string
                   }
                   Update: {
-                    "age_confirmed_at"?: string,"created_at"?: string,"home_city_id"?: string,"show_home_city"?: boolean,"updated_at"?: string,"user_id"?: string
+                    "age_confirmed_at"?: string,"created_at"?: string,"default_visibility"?: string,"home_city_id"?: string,"show_home_city"?: boolean,"updated_at"?: string,"user_id"?: string
                   }
                   Relationships: [
                     {
@@ -173,14 +199,130 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"tags": {
+                  Row: {
+                    "created_at": string,"id": string,"is_active": boolean,"kind": string,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id": string,"is_active"?: boolean,"kind": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"is_active"?: boolean,"kind"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"trips": {
+                  Row: {
+                    "closes_at": string,"created_at": string,"id": string,"updated_at": string,"user_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "closes_at": string,"created_at"?: string,"id"?: string,"updated_at"?: string,"user_id": string
+                  }
+                  Update: {
+                    "closes_at"?: string,"created_at"?: string,"id"?: string,"updated_at"?: string,"user_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "trips_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"visit_tags": {
+                  Row: {
+                    "tag_id": string,"visit_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "tag_id": string,"visit_id": string
+                  }
+                  Update: {
+                    "tag_id"?: string,"visit_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "visit_tags_tag_id_fkey"
+      columns: ["tag_id"]
+isOneToOne: false
+      referencedRelation: "tags"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "visit_tags_visit_id_fkey"
+      columns: ["visit_id"]
+isOneToOne: false
+      referencedRelation: "visits"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"visits": {
+                  Row: {
+                    "created_at": string,"id": string,"is_resident": boolean,"place_id": string,"publish_at": string,"publish_on": string | null,"rating": number,"trip_id": string | null,"updated_at": string,"user_id": string,"visibility": string,"visited_on": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "created_at"?: string,"id"?: string,"is_resident": boolean,"place_id": string,"publish_at": string,"publish_on"?: never,"rating": number,"trip_id"?: string | null,"updated_at"?: string,"user_id"?: string,"visibility": string,"visited_on": string
+                  }
+                  Update: {
+                    "created_at"?: string,"id"?: string,"is_resident"?: boolean,"place_id"?: string,"publish_at"?: string,"publish_on"?: never,"rating"?: number,"trip_id"?: string | null,"updated_at"?: string,"user_id"?: string,"visibility"?: string,"visited_on"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "visits_place_id_fkey"
+      columns: ["place_id"]
+isOneToOne: false
+      referencedRelation: "places"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "visits_trip_id_user_id_fkey"
+      columns: ["trip_id","user_id"]
+isOneToOne: false
+      referencedRelation: "trips"
+      referencedColumns: ["id","user_id"]
+    },{
+      foreignKeyName: "visits_user_id_fkey"
+      columns: ["user_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 }
           }
           Views: {
             [_ in never]: never
           }
           Functions: {
-            "complete_signup":
+            "close_trip":
+{ Args: { "p_trip_id": string }; Returns: undefined
+                           },
+"complete_signup":
 { Args: { "p_age_confirmed": boolean,"p_granted_purposes"?: (string)[],"p_home_city_id": string,"p_name": string,"p_policy_accepted": boolean,"p_username": string }; Returns: undefined
+                           },
+"create_visit":
+{ Args: { "p_place_id": string,"p_rating": number,"p_tag_ids"?: (string)[],"p_visibility"?: string,"p_visited_on": string }; Returns: {
+              "id": string,"publish_on": string,"visibility": string
+            }[]
+                           },
+"limit_api_writes":
+{ Args: Record<PropertyKey, never>; Returns: undefined
+                           },
+"my_visited_places":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "away_visit_count": number,"category": string,"city_id": string,"city_latitude": number,"city_longitude": number,"city_name": string,"city_state": string,"country_code": string,"is_resident": boolean,"last_visited_on": string,"latitude": number,"longitude": number,"name": string,"place_id": string,"rating": number,"visit_count": number
+            }[]
+                           },
+"nearby_places":
+{ Args: { "p_latitude": number,"p_longitude": number }; Returns: {
+              "address": string,"category": string,"distance_meters": number,"id": string,"is_sensitive": boolean,"is_visitable": boolean,"name": string
+            }[]
+                           },
+"publish_visit_now":
+{ Args: { "p_visit_id": string }; Returns: string
                            },
 "search_cities":
 { Args: { "p_query": string }; Returns: {
@@ -189,7 +331,7 @@ isOneToOne: false
                            },
 "search_places":
 { Args: { "p_latitude"?: number,"p_longitude"?: number,"p_query": string }; Returns: {
-              "address": string,"category": string,"distance_meters": number,"id": string,"is_visitable": boolean,"name": string
+              "address": string,"category": string,"distance_meters": number,"id": string,"is_sensitive": boolean,"is_visitable": boolean,"name": string
             }[]
                            }
           }

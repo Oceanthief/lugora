@@ -80,13 +80,38 @@ export const strings = {
   placeIn: (category: string, city: string) => `${category} em ${city}`,
   map: {
     title: "Mapa",
+    loading: "Carregando o mapa…",
+    signedOutTitle: "Entre para ver o seu mapa",
+    signedOutText: "Cada lugar que você registrar aparece aqui.",
+    signIn: "Entrar",
+    tabsLabel: "Parte do mapa",
+    tabs: { home: "Minha cidade", trips: "Viagens" },
+    showList: "Ver lista",
+    showMap: "Ver mapa",
     placesList: "Lugares no mapa",
     emptyTitle: "Seu mapa ainda está vazio",
     emptyText: "Cada lugar que você registrar aparece aqui.",
     emptyAction: "Registrar a primeira visita",
+    emptyTab: {
+      home: "Nenhum lugar da sua cidade ainda.",
+      trips: "Nenhuma viagem ainda. As visitas fora da cidade onde você mora aparecem aqui.",
+    },
+    legendTitle: "Lugares por cidade",
+    levelRange: (from: number, to: number | null) =>
+      to === null ? `${from} ou mais` : from === to ? `${from}` : `${from} a ${to}`,
+    places: (count: number) => (count === 1 ? "1 lugar" : `${count} lugares`),
+    visits: (count: number) => (count === 1 ? "1 visita" : `${count} visitas`),
+    cityLabel: (city: string, places: string, level: number) => `${city}, ${places}, faixa ${level} de 4`,
+    noCategory: "Sem categoria",
+    otherCategory: "Outro tipo de lugar",
     markerLabel: (name: string, category: string, rating: string) =>
       `${name}, ${category}, nota ${rating}`,
-    visitedOn: (date: string) => `Visitado em ${date}`,
+    visitedOn: (date: string) => `Última visita em ${date}`,
+    trip: {
+      title: "Viagem em andamento",
+      text: (date: string) =>
+        `As visitas desta viagem aparecem para os outros em ${date}, se você não registrar mais nada fora de casa.`,
+    },
     // Textos dos botões do próprio MapLibre (zoom, fechar o balão etc.).
     controls: {
       "AttributionControl.ToggleAttribution": "Mostrar ou ocultar a atribuição",
@@ -121,20 +146,67 @@ export const strings = {
     locating: "Buscando sua localização…",
     locationOn: "Mostrando a distância até você. Sua localização não fica guardada.",
     locationFailed: "Não conseguimos sua localização. A busca continua sem a distância.",
+    nearbyTitle: "Perto de você",
+    nearbySearching: "Procurando lugares perto de você…",
+    nearbyFailed: "Não conseguimos achar os lugares perto de você. Digite o nome para buscar.",
+    nearbyNone: "Nenhum lugar por perto. Digite o nome para buscar.",
+    nearbyFound: (found: number) => (found === 1 ? "1 lugar perto de você." : `${found} lugares perto de você.`),
     date: "Data da visita",
     rating: "Nota",
     occasions: "Ocasião",
     occasionsHint: (max: number) => `opcional, até ${max}`,
+    visibility: "Quem pode ver",
+    visibilityOptions: {
+      public: "Pública",
+      followers: "Seguidores",
+      private: "Só eu",
+    },
+    visibilityHint:
+      "Ninguém vê na hora: a visita aparece para os outros 24 h depois, na sua cidade, ou quando a viagem acaba.",
+    sensitiveDefault:
+      "Este lugar pode revelar saúde, religião ou outro tema sensível, então a visita nasce “só eu”. Você pode mudar.",
+    sensitiveWarning: "Quem puder ver a visita vai saber que você esteve neste lugar.",
     submit: "Salvar visita",
-    success:
-      "Tudo certo! Nesta versão de demonstração, a visita ainda não é salva.",
+    saving: "Salvando…",
+    saveFailed: "Não conseguimos salvar agora. Tente de novo em instantes.",
     errors: {
       placeRequired: "Escolha o lugar.",
+      placeUnavailable: "Este lugar não recebe visitas. Escolha outro.",
       dateRequired: "Informe a data da visita.",
       dateInFuture: "A data não pode ser no futuro.",
       ratingRequired: "Dê uma nota de 0,5 a 5.",
       ratingInvalid: "A nota vai de 0,5 a 5, em passos de 0,5.",
-      tooManyOccasions: "Escolha no máximo 3 ocasiões.",
+      tooManyOccasions: "Escolha menos ocasiões.",
+    },
+    saved: {
+      title: "Visita salva",
+      visibility: {
+        public: "Pública: aparece para todo mundo no Lugora.",
+        followers: "Seguidores: só quem segue você vê.",
+        private: "Só eu: ninguém além de você vê.",
+      },
+      publishOn: {
+        public: (date: string) => `Aparece para os outros a partir de ${date}.`,
+        followers: (date: string) => `Aparece para quem segue você a partir de ${date}.`,
+      },
+      published: {
+        public: "Já aparece para os outros.",
+        followers: "Já aparece para quem segue você.",
+      },
+      tripPublishOn: (date: string) =>
+        `Você está em viagem. As visitas fora de casa aparecem quando a viagem acaba: em ${date}, se você não registrar mais nada fora de casa.`,
+      publishNow: "Publicar agora",
+      publishNowWarning:
+        "Publicar agora mostra que você esteve aqui hoje. Se ainda estiver no lugar, prefira esperar.",
+      publishNowConfirm: "Sim, publicar agora",
+      closeTrip: "Encerrar viagem",
+      closeTripWarning:
+        "Encerrar publica agora todas as visitas desta viagem. A próxima visita fora de casa começa outra viagem.",
+      closeTripConfirm: "Sim, encerrar",
+      cancel: "Cancelar",
+      actionFailed: "Não deu certo agora. Tente de novo em instantes.",
+      another: "Registrar outra visita",
+      seeOnMap: "Ver no mapa",
     },
   },
   feed: {

@@ -156,35 +156,6 @@ export function getCity(cityId: string): MockCity | undefined {
   return mockCities.find((city) => city.id === cityId);
 }
 
-/** Um lugar visitado, com a visita mais recente a ele. */
-export type VisitedPlace = MockPlace & Pick<MockVisit, "visitedOn" | "rating">;
-
-/**
- * Lugares com pelo menos uma visita, cada um uma vez só, com a nota e a data
- * da visita mais recente (seção 7.1). Provisório: o mapa de verdade vem na
- * Fatia 4.
- */
-export function getVisitedPlaces(
-  places: readonly MockPlace[] = mockPlaces,
-  visits: readonly MockVisit[] = mockVisits,
-): VisitedPlace[] {
-  const latestByPlace = new Map<string, MockVisit>();
-  for (const visit of visits) {
-    const current = latestByPlace.get(visit.placeId);
-    // Datas AAAA-MM-DD podem ser comparadas como texto.
-    if (!current || visit.visitedOn > current.visitedOn) {
-      latestByPlace.set(visit.placeId, visit);
-    }
-  }
-
-  return places.flatMap((place) => {
-    const visit = latestByPlace.get(place.id);
-    return visit
-      ? [{ ...place, visitedOn: visit.visitedOn, rating: visit.rating }]
-      : [];
-  });
-}
-
 export type FeedItem = {
   visit: MockVisit;
   user: MockUser;

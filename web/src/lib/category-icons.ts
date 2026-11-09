@@ -1,4 +1,4 @@
-import type { PlaceCategory } from "./categories";
+import { isPlaceCategory, type PlaceCategory } from "./categories";
 
 /**
  * Ícones das categorias: o único lugar que liga categoria a ícone. Cada um é
@@ -131,3 +131,17 @@ export const categoryIconPaths: Record<PlaceCategory, readonly string[]> = {
   // Casa
   residential: ["M4 11.5 12 5l8 6.5", "M6 10v10h12V10", "M10 20v-5h4v5"],
 };
+
+/**
+ * Lugar sem categoria (como o Santiago Lanches) ou de uma categoria sem ícone
+ * próprio, como as sensíveis do grupo other_sensitive: um alfinete de mapa.
+ */
+export const otherCategoryIconPaths: readonly string[] = [
+  "M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11Z",
+  "M12 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z",
+];
+
+/** O desenho do ícone de qualquer categoria que vier do banco. */
+export function iconPathsFor(category: string | null): readonly string[] {
+  return isPlaceCategory(category) ? categoryIconPaths[category] : otherCategoryIconPaths;
+}

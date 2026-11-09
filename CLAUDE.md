@@ -50,6 +50,7 @@ Atualize esta seção sempre que um comando mudar.
 
 - App: `cd web` e `npm run dev`, depois abrir http://localhost:3000. Use sempre `npm run dev`/`npm run build`, não `next dev` direto: eles copiam antes o worker do MapLibre para `public/` (ADR 0006); sem ele, o mapa fica em branco.
 - Qualidade (em `web/`): `npm run lint`, `npm run typecheck`, `npm test`, `npm run build`
+- Testes de fluxo (em `web/`, com o banco no ar): `npm run build` e depois `npm run test:e2e`. O Playwright usa o app que já estiver em http://localhost:3000 ou sobe um sozinho, usa o Chrome instalado, cria contas `e2e-...@example.com` e as apaga no fim. Os lugares fictícios em que ele registra visitas ficam em `supabase/fixtures/e2e_places.sql`. Precisa do `docker` no terminal.
 - Mudou `globals.css` (tema do Tailwind) e as classes novas não aparecem no `npm run dev`? O cache do dev fica em disco: pare o servidor, apague `web/.next/dev` e suba de novo. O `npm run build` não tem esse problema.
 - Lugares (em `web/`): `npm run seed:lugares` importa `data/seed/lugares_jf_seed.csv` para `web/src/data/places.json` (idempotente). Não edite o JSON à mão.
 - Demonstração (em `web/`): `npm run seed:demo` gera usuários, quem segue quem, ~200 visitas e o "Quero ir" do Victor em `web/src/data/demo.json`, com semente fixa (42). Rode de novo se mudar os lugares; um teste avisa se o arquivo ficar desatualizado.

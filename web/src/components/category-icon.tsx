@@ -1,12 +1,12 @@
-import type { PlaceCategory } from "@/lib/categories";
-import { categoryIconPaths } from "@/lib/category-icons";
+import { iconPathsFor } from "@/lib/category-icons";
 
 /**
  * Ícone da categoria num quadrado âmbar suave, o mesmo desenho dos pontos do
  * mapa. Sem brilho: numa lista, só o botão Registrar fica "aceso".
  * Decorativo (`aria-hidden`): o nome da categoria aparece em texto ao lado.
+ * Categoria desconhecida ou vazia ganha o alfinete genérico.
  */
-export function CategoryIcon({ category }: { category: PlaceCategory }) {
+export function CategoryIcon({ category }: { category: string | null }) {
   return (
     <span
       aria-hidden="true"
@@ -21,7 +21,7 @@ export function CategoryIcon({ category }: { category: PlaceCategory }) {
         strokeLinejoin="round"
         className="size-5"
       >
-        {categoryIconPaths[category].map((path) => (
+        {iconPathsFor(category).map((path) => (
           <path key={path} d={path} />
         ))}
       </svg>

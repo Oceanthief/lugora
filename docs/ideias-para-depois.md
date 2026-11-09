@@ -23,6 +23,7 @@ Se não der para escrever a hipótese de uma ideia, ela ainda não está madura 
 | 1 | Registro offline em viagem | Aguardando a Fase 0 |
 | 2 | Importar listas salvas do Google Maps | Aguardando a Fase 0 |
 | 3 | Territórios e áreas em disputa no mapa de países | Aguardando a Fatia 6 |
+| 4 | Editar e excluir uma visita | Aguardando |
 
 ## Ideias
 
@@ -58,6 +59,21 @@ Se não der para escrever a hipótese de uma ideia, ela ainda não está madura 
   - Fase 1: contar marcações nesses territórios e pedidos de correção.
 - **Custo e riscos:** o custo de importar é baixo; o risco é político. Fronteiras e nomes em disputa pedem uma regra neutra e explícita, para o app não tomar lado sem querer. Não afeta o cadastro, que só usa cidades do Brasil (ADR 0008).
 - **Status:** aguardando a Fatia 6.
+
+### 4. Editar e excluir uma visita
+
+- **Data:** 06/11/2026
+- **Ideia:** a dona corrige uma visita já salva (nota, data, ocasiões, visibilidade) ou a apaga. A seção 7.1 já permite a edição ("a data original do registro é preservada para as métricas e para a sequência"), mas nenhuma fatia do roadmap tem a tarefa. Desde a Fatia 4, o banco não deixa mudar nem apagar visita pela API, só "publicar agora". Surgiu na Entrega 1 da Fatia 4.
+- **Hipótese:** quem erra a nota, a data ou o lugar no registro rápido (P3) deixa a visita errada ou para de confiar no próprio diário, se não puder corrigir. Sem excluir, um registro feito por engano conta para sempre no mapa e nos números.
+- **Como validar:**
+  - Fase 0: contar quantos participantes pedem para corrigir ou apagar um registro durante o teste concierge.
+  - Fase 1: medir quantas visitas são registradas duas vezes no mesmo lugar e no mesmo dia, um sinal de correção feita "na mão".
+- **Custo e riscos:**
+  - **Custo:** baixo no banco, com políticas de update e delete só para a dona, e médio na tela.
+  - **Regras:** editar não pode mexer em `is_resident`, `publish_at` nem na viagem, que o banco calcula.
+  - **Privacidade (9.3):** tornar "só eu" uma visita pública precisa valer na hora, inclusive nos números somados. Apagar precisa tirar a visita das contagens e do selo "primeiro a registrar".
+  - **Métricas (P10):** trocar o lugar de uma visita antiga não pode virar atalho para colorir o mapa.
+- **Status:** aguardando.
 
 ## Como adicionar uma ideia
 

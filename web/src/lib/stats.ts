@@ -1,4 +1,4 @@
-import type { MockCity, MockPlace, MockVisit } from "./mock-data";
+import type { MyVisitedPlace } from "./visited-places";
 
 /** Visitas mínimas para mostrar o eixo Onde (parâmetro, seção 7.12). */
 export const MIN_VISITS_FOR_TRAVEL_SHARE = 10;
@@ -11,53 +11,35 @@ export type ProfileStats = {
   /** Lugares distintos: visitar de novo não conta duas vezes (seção 7.4). */
   places: number;
   visits: number;
-  /** Visitas fora da cidade de residência (veja computeProfileStats). */
+  /** Visitas em viagem, fora da cidade de residência (veja computeProfileStats). */
   travelVisits: number;
 };
 
 /**
- * Estatísticas do próprio perfil.
- *
- * Simplificação da Fatia 0: "em viagem" é a visita a um lugar fora da cidade
- * de residência atual. A regra de verdade usa `is_resident`, gravado no
- * momento de cada visita (Fatia 4): assim, quem se muda não vê as visitas à
- * cidade antiga virarem viagens.
+ * Estatísticas do próprio perfil, a partir dos lugares do próprio mapa (uma
+ * linha por lugar). "Em viagem" usa `is_resident`, gravado no momento de cada
+ * visita: assim, quem se muda não vê as visitas à cidade antiga virarem viagens.
  */
-export function computeProfileStats({
-  visits,
-  places,
-  cities,
-  homeCityId,
-}: {
-  visits: readonly MockVisit[];
-  places: readonly MockPlace[];
-  cities: readonly MockCity[];
-  homeCityId: string;
-}): ProfileStats {
-  const placeById = new Map(places.map((place) => [place.id, place]));
-  const cityById = new Map(cities.map((city) => [city.id, city]));
-
-  const placeIds = new Set<string>();
+export function computeProfileStats(
+  places: readonly Pick<MyVisitedPlace, "city" | "visitCount" | "awayVisitCount">[],
+): ProfileStats {
   const cityIds = new Set<string>();
   const countryCodes = new Set<string>();
+  let visits = 0;
   let travelVisits = 0;
 
-  for (const visit of visits) {
-    const place = placeById.get(visit.placeId);
-    if (!place) continue;
-
-    placeIds.add(place.id);
-    cityIds.add(place.cityId);
-    const countryCode = cityById.get(place.cityId)?.countryCode;
-    if (countryCode) countryCodes.add(countryCode);
-    if (place.cityId !== homeCityId) travelVisits++;
+  for (const place of places) {
+    cityIds.add(place.city.id);
+    countryCodes.add(place.city.countryCode);
+    visits += place.visitCount;
+    travelVisits += place.awayVisitCount;
   }
 
   return {
     countryCodes: [...countryCodes].sort(),
     cityIds: [...cityIds].sort(),
-    places: placeIds.size,
-    visits: visits.length,
+    places: places.length,
+    visits,
     travelVisits,
   };
 }

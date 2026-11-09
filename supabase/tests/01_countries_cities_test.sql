@@ -37,10 +37,11 @@ select throws_ok(
   $$ insert into public.cities (name, country_id, boundary, gers_id) values ('X', '99999999-0000-4000-8000-000000000000', 'SRID=4326;MULTIPOLYGON(((0 0,0 1,1 1,1 0,0 0)))', 'x') $$,
   '42501', null, 'usuário não cria cidade'
 );
-select is_empty($$ update public.countries set name = 'Hackeado' where iso_code = 'ZZ' returning id $$, 'usuário não altera país');
-select is_empty($$ update public.cities set name = 'Hackeada' where gers_id = 'test-city' returning id $$, 'usuário não altera cidade');
-select is_empty($$ delete from public.countries where iso_code = 'ZZ' returning id $$, 'usuário não apaga país');
-select is_empty($$ delete from public.cities where gers_id = 'test-city' returning id $$, 'usuário não apaga cidade');
+-- Desde a Fatia 4, a API nem tem a permissão de alterar ou apagar: a tentativa dá erro.
+select throws_ok($$ update public.countries set name = 'Hackeado' where iso_code = 'ZZ' $$, '42501', null, 'usuário não altera país');
+select throws_ok($$ update public.cities set name = 'Hackeada' where gers_id = 'test-city' $$, '42501', null, 'usuário não altera cidade');
+select throws_ok($$ delete from public.countries where iso_code = 'ZZ' $$, '42501', null, 'usuário não apaga país');
+select throws_ok($$ delete from public.cities where gers_id = 'test-city' $$, '42501', null, 'usuário não apaga cidade');
 
 reset role;
 
