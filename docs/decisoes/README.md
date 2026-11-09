@@ -16,5 +16,5 @@ Para criar um novo, use a skill `/adr <título>` no Claude Code, ou copie `0000-
 | [0008](0008-paises-e-cidades-overture-ibge.md) | Países e cidades: polígonos do Overture, lista oficial do IBGE | aceita |
 | [0009](0009-login-por-codigo.md) | Login por código de 6 dígitos enviado por e-mail | aceita |
 | [0010](0010-busca-de-lugares-e-revisao.md) | Busca de lugares e revisão manual da deduplicação | aceita |
-| [0011](0011-publicacao-viagens-e-colunas-escondidas.md) | Publicação das visitas, viagens e colunas escondidas da API | proposta |
-| [0012](0012-protecao-da-api-antes-da-nuvem.md) | Proteção da API antes da nuvem | proposta |
+| [0011](0011-publicacao-viagens-e-colunas-escondidas.md) | Publicação das visitas, viagens e colunas escondidas da API | aceita |
+| [0012](0012-protecao-da-api-antes-da-nuvem.md) | Proteção da API antes da nuvem | aceita |

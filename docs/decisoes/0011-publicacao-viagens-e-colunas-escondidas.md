@@ -1,6 +1,6 @@
 # 0011. Publicação das visitas, viagens e colunas escondidas da API
 
-- **Status:** proposta
+- **Status:** aceita (Fatia 4)
 - **Data:** 2026-11-09
 
 ## Contexto

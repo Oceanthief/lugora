@@ -1,6 +1,6 @@
 # 0012. Proteção da API antes da nuvem
 
-- **Status:** proposta
+- **Status:** aceita (Fatia 4)
 - **Data:** 2026-11-09
 
 ## Contexto
